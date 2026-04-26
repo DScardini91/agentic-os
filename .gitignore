@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Claude Code
+.claude/worktrees/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Env / secrets
+.env
+.env.*
+*.pem
+*.key
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Logs
+*.log
