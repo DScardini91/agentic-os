@@ -4,6 +4,11 @@ A template for building a personal operating system on top of Claude — agents,
 
 This repo is the **generic, sanitized version** of the architecture. Fork it and fill in the placeholders to instantiate your own.
 
+## Architecture docs
+
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — Mermaid diagrams: agent hierarchy, canonical flow, quality gates pipeline, memory model, domain structure, agent state lifecycle
+- [`ARCHITECTURE-VISUAL.html`](ARCHITECTURE-VISUAL.html) — Interactive visual reference (open in browser): 5-panel dark-theme app with sidebar navigation
+
 ## What this is
 
 `agentic-os` is not an app. It's an architecture:
