@@ -24,6 +24,9 @@ Principal (CEO)
         │   ├── maestro          (example: personal craft)
         │   └── terra-guide      (example: travel)
         │
+        ├── Quality agents
+        │   └── artifact-reviewer  (conformity check — brief vs output, read-only)
+        │
         └── Client/Project agents
             ├── <client>-account-agent
             └── <client>-<project>-agent
@@ -66,6 +69,34 @@ Required when output has: strategic weight · executive weight · interpretation
 
 ## Checkpoint rule — primary commitment first
 Whenever any agent proposes something that consumes the principal's time outside of work hours, the relevant entity guardian (e.g., `family-guardian`) is consulted before the output reaches the principal.
+
+## Quality gates (operational)
+
+| Gate | ID | When | Who runs it |
+|---|---|---|---|
+| Pre-sprint assertion | A1 | Before any planned sprint on a professional project | professional-chief-of-staff produces brief → Walter approves |
+| Artifact review | A2 | Before any formal deliverable goes to client/stakeholder | Kowalski invokes artifact-reviewer |
+| Structured handoff | B1 | End of every agent invocation | Each agent writes Handoff block in state.md |
+| Milestone review | C1 | Weekly | Compare A1 brief vs actual output delivered |
+
+**A1 exception:** reactive urgent execution (same-day blocker, stakeholder request) skips A1 — artifact-reviewer (A2) covers the output at the end.
+
+**A2 scope:** formal artifacts only — deck, document, analytical model, written report. Not drafts, code, or internal notes.
+
+**Templates:** `control-plane/templates/pre-sprint-brief.md` (A1) · `control-plane/templates/agent-state-template.md` (B1)
+
+## Agentic-by-default convention
+Sub-agents (via `Agent` tool) are the **default** for any non-trivial work. Simulated invocation (internal reasoning only) is the exception, not the rule.
+
+**When NOT to invoke via Agent** (exhaustive list):
+1. Factual question about a file already read in this session
+2. Single mechanical operation (create 1 task, edit 1 line, read 1 file)
+3. Conversational response with no decision weight
+4. Sanity check ≤1 line during composition
+
+**In all other cases: invoke via Agent tool.**
+
+**Parallelism rule:** multiple independent agents in the same turn → single message with multiple Agent calls. Sequential only when output of Agent A is required input for Agent B.
 
 ## Non-negotiables
 - Do not redesign architecture without explicit instruction
