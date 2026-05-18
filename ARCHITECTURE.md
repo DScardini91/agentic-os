@@ -302,6 +302,64 @@ flowchart TD
 
 ---
 
+## 8. Enforcement Layer (Agentic-by-Default)
+
+```mermaid
+flowchart TD
+    subgraph Hooks ["Hook Layer"]
+        PTE["PreToolUse\nInspects every tool call\nbefore execution"]
+        SSV["SessionStart\nRuns at session open\ndetects prior violations"]
+    end
+
+    subgraph Detect ["Trigger Detection"]
+        T1["Control-plane edit\n→ Senior Advisor trigger\n⟨escalable⟩"]
+        T2["Personal / calendar edit\n→ Family Guardian trigger\n⟨escalable⟩"]
+        T3["Client path edit · no recent agent call\n→ Agentic reminder\n⟨reminder-only⟩"]
+    end
+
+    subgraph State ["Escalation State"]
+        ESC["escalation-state.json\nhard_block_matchers[]"]
+        OBS["Observability Logs\npre-tool-fires.jsonl\nagent-calls.jsonl"]
+    end
+
+    subgraph Outcome ["Outcome"]
+        REM["reminder\nadditionalContext injected\ntool proceeds"]
+        BLK["hard-block\npermissionDecision=deny\ntool rejected"]
+        REL["block released\nagent invoked this session"]
+    end
+
+    PTE --> T1 & T2 & T3
+    T1 & T2 -->|"first offense → reminder"| REM
+    T1 & T2 -->|"prior violation unresolved"| BLK
+    T3 --> REM
+    SSV -->|"cross-ref fires vs calls"| OBS
+    OBS -->|"unresolved escalable violation"| ESC
+    ESC --> BLK
+    BLK -->|"Agent(advisor) invoked"| REL
+
+    style PTE fill:#1A3A5C,stroke:#4A9EFF,color:#fff
+    style SSV fill:#1A3A5C,stroke:#4A9EFF,color:#fff
+    style T1 fill:#3A2A00,stroke:#F5A623,color:#F5A623
+    style T2 fill:#3A1A00,stroke:#F5A623,color:#F5A623
+    style BLK fill:#3A0000,stroke:#FF5B5B,color:#FF5B5B
+    style REL fill:#0A1A0F,stroke:#007A4D,color:#00C47A
+    style ESC fill:#1A1500,stroke:#3A2A00,color:#8CA8C0
+    style OBS fill:#1A1500,stroke:#3A2A00,color:#8CA8C0
+```
+
+### Trigger severity matrix
+
+| Matcher | Trigger | Escalable | Behavior |
+|---------|---------|-----------|----------|
+| `control-plane edit` | Senior Advisor | Yes | Reminder first offense; hard-block if prior session had unresolved violation |
+| `personal/calendar edit` | Family Guardian | Yes | Same as above |
+| `client path · no agent call` | Domain Specialist | No | Reminder-only; fires once per (session, domain); never blocks |
+| `git commit` | Senior Advisor | No | Reminder-only; commits with strategic weight should precede Senior Advisor review |
+
+> Escalable matchers carry their state across session boundaries via `escalation-state.json`. Releasing a block requires invoking the corresponding agent in the current session. Reminder-only matchers never accumulate state.
+
+---
+
 ## Design principles
 
 | Principle | Rationale |
@@ -314,3 +372,4 @@ flowchart TD
 | **Quality gates before and after** | A1 gates execution (brief approved before work starts). A2 gates delivery (artifact conforms to brief before leaving the system). B1 ensures no invocation is lost |
 | **Darwin governance loop** | OS Analyst observes the system over time. Proposals flow through Senior Advisor before reaching Principal. Decision-log closes the loop — Darwin reads past decisions to detect drift between what was decided and what was executed |
 | **Decision log as structural memory** | Every Senior-Advisor-approved strategic decision is logged with date, domain, decision, and implementation status. Without it, governance is opaque and Darwin rebuilds context from scratch each cycle |
+| **Hook enforcement layer** | Triggers fire before tool execution — not after. Violations accumulate in observability logs. Escalable violations carry forward as hard blocks into the next session, creating accountability that survives session boundaries. The system enforces itself; no manual audit required |
