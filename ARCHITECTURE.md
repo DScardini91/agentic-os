@@ -300,6 +300,10 @@ flowchart TD
 
 > `tasks_opened` / `tasks_closed` are deep-mode-only — require Notion query. Not in light-mode schema.
 
+### Darwin proposal lifecycle
+
+Darwin proposals have two outcomes: **approved** (Principal implements, decision-log entry) or **rejected**. Rejected proposals must include explicit **reopening criteria** — the conditions under which the proposal becomes valid again. Without this, the same proposal will resurface every governance cycle regardless of whether the blocking conditions changed. Darwin reads past rejections in each new pass and suppresses re-raising unless reopening criteria are met.
+
 ---
 
 ## 8. Enforcement Layer (Agentic-by-Default)
@@ -358,6 +362,16 @@ flowchart TD
 
 > Escalable matchers carry their state across session boundaries via `escalation-state.json`. Releasing a block requires invoking the corresponding agent in the current session. Reminder-only matchers never accumulate state.
 
+### Governance file change controls
+
+Governance files — agent specs, operating rules, hook configurations, system-level skills — carry elevated change controls regardless of the repo's general edit policy. Changes to these files require:
+
+1. **Senior Advisor pressure-test** — proposals reviewed through 3 lenses before proceeding
+2. **Principal explicit approval** — not assumed from prior context
+3. **Decision-log entry** — every approved structural change logged with date, domain, decision, and implementation status
+
+> Technical enforcement (PreToolUse hook that hard-blocks governance path edits without agent invocation) is the target state. Until implemented, the protocol is enforced operationally — the hook layer is the backstop, not the first line of defense.
+
 ---
 
 ## Design principles
@@ -373,3 +387,6 @@ flowchart TD
 | **Darwin governance loop** | OS Analyst observes the system over time. Proposals flow through Senior Advisor before reaching Principal. Decision-log closes the loop — Darwin reads past decisions to detect drift between what was decided and what was executed |
 | **Decision log as structural memory** | Every Senior-Advisor-approved strategic decision is logged with date, domain, decision, and implementation status. Without it, governance is opaque and Darwin rebuilds context from scratch each cycle |
 | **Hook enforcement layer** | Triggers fire before tool execution — not after. Violations accumulate in observability logs. Escalable violations carry forward as hard blocks into the next session, creating accountability that survives session boundaries. The system enforces itself; no manual audit required |
+| **Engineering canon as base layer** | Universal engineering standards form the floor of every code artifact in the system. Domain-specific canons (agent configurations, skill contracts, pipeline schemas) inherit this base and may override where domain requirements dictate — but cannot contradict the universal layer. Conflicts resolve in favor of the domain canon inside its scope, base canon everywhere else |
+| **Harness as structured environment** | The OS is a three-component harness: *design-time* (agent specs, memory tier definitions, hook configurations, skill contracts — what the system is), *execution* (runtime invocations, tool dispatch, context management — what the system does), and *signal* (observability feeds, Darwin accumulator, decision-log — what the system reports). Each component has a distinct maintenance rhythm; conflating them produces drift |
+| **Darwin rejection with reopening criteria** | A governance proposal that is rejected without exit conditions will re-emerge every cycle. Every rejected Darwin proposal must include the specific conditions under which it becomes valid again. Darwin reads past rejections and suppresses re-raising until those conditions are met — this is what closes the governance loop rather than just deferring it |
