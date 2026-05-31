@@ -291,8 +291,10 @@ flowchart TD
 | `session` | Session ID |
 | `date` | YYYY-MM-DD |
 | `ts` | UTC timestamp |
-| `agents_invoked` | Unique agents called this session |
-| `violations` | Pre-tool-use enforcement fire count |
+| `agents_invoked` | Unique **domain** agents called this session (excludes infrastructure agents: exploratory, general-purpose, visualization) |
+| `infra_agents_invoked` | Unique infrastructure agents called (Explore, general-purpose, viz orchestrators). Separated from domain agents so utilization metrics are honest. |
+| `violations` | Count of **escalable** (non-reminder-only) pre-tool-use hook fires. Excludes informational reminders. |
+| `reminder_only_fires` | Count of informational-only hook fires (e.g., git-commit reminders). Separated from `violations` so Darwin weekly reports reflect real escalable events only. |
 | `violation_matchers` | Which matchers fired |
 | `domains_touched` | Derived from agents invoked |
 | `duration_min` | Minutes from first agent call to session end (UTC-corrected) |
@@ -304,6 +306,18 @@ flowchart TD
 
 Darwin proposals have two outcomes: **approved** (Principal implements, decision-log entry) or **rejected**. Rejected proposals must include explicit **reopening criteria** — the conditions under which the proposal becomes valid again. Without this, the same proposal will resurface every governance cycle regardless of whether the blocking conditions changed. Darwin reads past rejections in each new pass and suppresses re-raising unless reopening criteria are met.
 
+### Darwin follow-through tracking
+
+Approved Darwin proposals are tracked in `state.md` with a follow-through table:
+
+| Field | Description |
+|-------|-------------|
+| `owner` | Who implements |
+| `deadline` | Target date |
+| `status` | open / resolved / parked |
+
+The weekly governance pass reads the follow-through table from `state.md` before raising new proposals — closed items are not re-raised, parked items require explicit reopening criteria to be re-evaluated.
+
 ---
 
 ## 8. Enforcement Layer (Agentic-by-Default)
@@ -312,13 +326,14 @@ Darwin proposals have two outcomes: **approved** (Principal implements, decision
 flowchart TD
     subgraph Hooks ["Hook Layer"]
         PTE["PreToolUse\nInspects every tool call\nbefore execution"]
-        SSV["SessionStart\nRuns at session open\ndetects prior violations"]
+        SSV["SessionStart\nRuns at session open\ndetects prior violations\n+ session-scoped Handoff cleanup\n⟨async · never blocks start⟩"]
     end
 
     subgraph Detect ["Trigger Detection"]
         T1["Control-plane edit\n→ Senior Advisor trigger\n⟨escalable⟩"]
         T2["Personal / calendar edit\n→ Family Guardian trigger\n⟨escalable⟩"]
         T3["Client path edit · no recent agent call\n→ Agentic reminder\n⟨reminder-only⟩"]
+        T4["No-direct-merge\n→ Senior Advisor trigger\n⟨escalable⟩"]
     end
 
     subgraph State ["Escalation State"]
@@ -332,9 +347,9 @@ flowchart TD
         REL["block released\nagent invoked this session"]
     end
 
-    PTE --> T1 & T2 & T3
-    T1 & T2 -->|"first offense → reminder"| REM
-    T1 & T2 -->|"prior violation unresolved"| BLK
+    PTE --> T1 & T2 & T3 & T4
+    T1 & T2 & T4 -->|"first offense → reminder"| REM
+    T1 & T2 & T4 -->|"prior violation unresolved"| BLK
     T3 --> REM
     SSV -->|"cross-ref fires vs calls"| OBS
     OBS -->|"unresolved escalable violation"| ESC
@@ -359,6 +374,7 @@ flowchart TD
 | `personal/calendar edit` | Family Guardian | Yes | Same as above |
 | `client path · no agent call` | Domain Specialist | No | Reminder-only; fires once per (session, domain); never blocks |
 | `git commit` | Senior Advisor | No | Reminder-only; commits with strategic weight should precede Senior Advisor review |
+| `no-direct-merge` | Senior Advisor | Yes | Blocks `git push <remote> <main-branch>` and `gh pr merge` commands. First offense: reminder. Prior unresolved violation: hard-block. Override: `MERGE_OVERRIDE=1` env var for emergency/authorized cases. |
 
 > Escalable matchers carry their state across session boundaries via `escalation-state.json`. Releasing a block requires invoking the corresponding agent in the current session. Reminder-only matchers never accumulate state.
 
@@ -390,3 +406,4 @@ Governance files — agent specs, operating rules, hook configurations, system-l
 | **Engineering canon as base layer** | Universal engineering standards form the floor of every code artifact in the system. Domain-specific canons (agent configurations, skill contracts, pipeline schemas) inherit this base and may override where domain requirements dictate — but cannot contradict the universal layer. Conflicts resolve in favor of the domain canon inside its scope, base canon everywhere else |
 | **Harness as structured environment** | The OS is a three-component harness: *design-time* (agent specs, memory tier definitions, hook configurations, skill contracts — what the system is), *execution* (runtime invocations, tool dispatch, context management — what the system does), and *signal* (observability feeds, Darwin accumulator, decision-log — what the system reports). Each component has a distinct maintenance rhythm; conflating them produces drift |
 | **Darwin rejection with reopening criteria** | A governance proposal that is rejected without exit conditions will re-emerge every cycle. Every rejected Darwin proposal must include the specific conditions under which it becomes valid again. Darwin reads past rejections and suppresses re-raising until those conditions are met — this is what closes the governance loop rather than just deferring it |
+| **Stale handoff auto-cleanup** | B1 Handoff sections older than 7 days accumulate without cleanup and cause Darwin false-positives in governance reviews. The SessionStart hook runs async cleanup per `state.md` file using file locks — stale sections cleared, active sessions unaffected. Cleanup runs in background and never blocks session start. |
