@@ -327,6 +327,7 @@ flowchart TD
     subgraph Hooks ["Hook Layer"]
         PTE["PreToolUse\nInspects every tool call\nbefore execution"]
         SSV["SessionStart\nRuns at session open\ndetects prior violations\n+ session-scoped Handoff cleanup\n⟨async · never blocks start⟩"]
+        STP["SessionStop\nRuns at session close\nsession telemetry report\n⟨tokens · cost · duration⟩\n⟨threshold-gated · async log⟩"]
     end
 
     subgraph Detect ["Trigger Detection"]
@@ -352,12 +353,14 @@ flowchart TD
     T1 & T2 & T4 -->|"prior violation unresolved"| BLK
     T3 --> REM
     SSV -->|"cross-ref fires vs calls"| OBS
+    STP -->|"above threshold\n→ usage telemetry log"| OBS
     OBS -->|"unresolved escalable violation"| ESC
     ESC --> BLK
     BLK -->|"Agent(advisor) invoked"| REL
 
     style PTE fill:#1A3A5C,stroke:#4A9EFF,color:#fff
     style SSV fill:#1A3A5C,stroke:#4A9EFF,color:#fff
+    style STP fill:#1A3A5C,stroke:#4A9EFF,color:#fff
     style T1 fill:#3A2A00,stroke:#F5A623,color:#F5A623
     style T2 fill:#3A1A00,stroke:#F5A623,color:#F5A623
     style BLK fill:#3A0000,stroke:#FF5B5B,color:#FF5B5B
@@ -377,6 +380,16 @@ flowchart TD
 | `no-direct-merge` | Senior Advisor | Yes | Blocks `git push <remote> <main-branch>` and `gh pr merge` commands. First offense: reminder. Prior unresolved violation: hard-block. Override: `MERGE_OVERRIDE=1` env var for emergency/authorized cases. |
 
 > Escalable matchers carry their state across session boundaries via `escalation-state.json`. Releasing a block requires invoking the corresponding agent in the current session. Reminder-only matchers never accumulate state.
+
+### Transparent mutations (PreToolUse, non-escalating)
+
+Some PreToolUse hooks perform **transparent mutations** — they silently adjust environment state before a tool call proceeds, always exit 0, and never block or accumulate escalation state. These are distinct from trigger matchers.
+
+| Hook | Intercepts | Action | Behavior |
+|------|-----------|--------|----------|
+| `git-identity-routing` | `git push/pull/fetch/clone` · `gh pr/repo` | Reads remote URL → resolves target account from a URL→identity map → switches auth context if needed | Always exits 0 · never blocks · no state accumulated |
+
+> Pattern: **Identity at execution time.** The correct credential is resolved from the operation's target URL at the moment the tool fires, not assumed from a global config. This eliminates silent misdirection when an operator manages multiple identities across repos.
 
 ### Governance file change controls
 
@@ -407,3 +420,5 @@ Governance files — agent specs, operating rules, hook configurations, system-l
 | **Harness as structured environment** | The OS is a three-component harness: *design-time* (agent specs, memory tier definitions, hook configurations, skill contracts — what the system is), *execution* (runtime invocations, tool dispatch, context management — what the system does), and *signal* (observability feeds, Darwin accumulator, decision-log — what the system reports). Each component has a distinct maintenance rhythm; conflating them produces drift |
 | **Darwin rejection with reopening criteria** | A governance proposal that is rejected without exit conditions will re-emerge every cycle. Every rejected Darwin proposal must include the specific conditions under which it becomes valid again. Darwin reads past rejections and suppresses re-raising until those conditions are met — this is what closes the governance loop rather than just deferring it |
 | **Stale handoff auto-cleanup** | B1 Handoff sections older than 7 days accumulate without cleanup and cause Darwin false-positives in governance reviews. The SessionStart hook runs async cleanup per `state.md` file using file locks — stale sections cleared, active sessions unaffected. Cleanup runs in background and never blocks session start. |
+| **Identity at execution time** | Credentials are resolved from the operation's target (remote URL, endpoint, account) at the moment the tool fires, not assumed from a global config. Global auth defaults are a source of silent misdirection when the operator manages multiple identities — per-operation resolution eliminates drift between what the system believes it is authenticated as and what it actually sends. |
+| **SessionStop as signal layer** | The hook lifecycle is three-phase: SessionStart (context bootstrap + cleanup), PreToolUse (gate + mutation), SessionStop (telemetry flush). SessionStop closes the signal loop — emitting session cost and token data into the observability stack when above threshold. Runs async; never blocks session delivery. |
