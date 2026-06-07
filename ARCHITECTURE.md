@@ -375,7 +375,7 @@ flowchart TD
 |---------|---------|-----------|----------|
 | `control-plane edit` | Senior Advisor | Yes | Reminder first offense; hard-block if prior session had unresolved violation |
 | `personal/calendar edit` | Family Guardian | Yes | Same as above |
-| `client path · no agent call` | Domain Specialist | No | Reminder-only; fires once per (session, domain); never blocks |
+| `client-scope write · no owner agent` | Codebase Owner Agent | No | Fires on Write/Edit/MultiEdit in client-scoped repo paths when the repo's designated owner agent has not been invoked this session (checked via `agent-calls.jsonl`). Reminder-only during initial observation period; never hard-blocks. Override: `CLIENT_WRITE_OVERRIDE=1` env var. |
 | `git commit` | Senior Advisor | No | Reminder-only; commits with strategic weight should precede Senior Advisor review |
 | `no-direct-merge` | Senior Advisor | Yes | Blocks `git push <remote> <main-branch>` and `gh pr merge` commands. First offense: reminder. Prior unresolved violation: hard-block. Override: `MERGE_OVERRIDE=1` env var for emergency/authorized cases. |
 
@@ -403,6 +403,87 @@ Governance files — agent specs, operating rules, hook configurations, system-l
 
 ---
 
+## 9. Agent Activation Model (On Invocation)
+
+Agents operate in one of two activation modes. On-invocation is the default for all non-infrastructure agents after Hub Reform.
+
+```mermaid
+flowchart LR
+    subgraph Legacy ["On Session Load (legacy)"]
+        LS["Agent spec fully loaded\nat session start\nFull context always present"]
+    end
+
+    subgraph Default ["On Invocation (default)"]
+        INV["Interface Agent\ninvokes agent"]
+        SP["state.md\n⟨fast path⟩\nLive context · Handoff · Open threads"]
+        SPEC["Agent spec\n⟨deep context⟩\nFrameworks · Rules · Pipeline"]
+        EX["Agent executes\ntask"]
+        UPD["state.md updated\n(Handoff block + Iteration log)"]
+
+        INV --> SP
+        SP --> EX
+        EX -.->|"task requires full spec"| SPEC
+        SPEC --> EX
+        EX --> UPD
+    end
+```
+
+### Progressive disclosure in practice
+
+| Layer | Content | When read |
+|-------|---------|-----------|
+| `state.md` | Live context: open threads, last handoff, recent decisions | Always — fast path at every invocation |
+| Agent spec | Frameworks, rules, pipeline, full mandate | On demand — only when task complexity requires it |
+
+> **Why this matters:** On-invocation agents receive context proportional to their task, not ambient full-spec context. This limits blast radius per invocation and prevents context contamination across unrelated tasks.
+
+---
+
+## 10. Dispatch Compilation Layer
+
+Routing is compiled at session open, not evaluated at query time. Two compilers run in the SessionStart hook and produce cached indexes injected into the Interface Agent's context.
+
+```mermaid
+flowchart TD
+    subgraph Sources ["Source Files"]
+        SK["Skill definitions\n+ trigger patterns"]
+        CD["Concept cards\n+ decision_types\n+ embed flag"]
+    end
+
+    subgraph Compilers ["SessionStart Compilers"]
+        SC["Skill Compiler\nreads source files\nchecks freshness cache\nproduces routing index"]
+        CC["Concept Compiler\nreads _cards/*.md\nresolves embed slots ⟨max 2⟩\nproduces routing index"]
+    end
+
+    subgraph Indexes ["Compiled Indexes (injected into context)"]
+        SRI["Skill Routing Index\ntrigger keywords → skill name\nexplicit + parsed triggers"]
+        CRI["Concept Routing Index\ndecision_types → framework\ninline embed for high-frequency cards"]
+    end
+
+    subgraph Dispatch ["Runtime Dispatch"]
+        TR["User request matches trigger\n→ Skill tool invoked"]
+        DT["Decision type detected\n→ Framework surfaced inline"]
+    end
+
+    SK --> SC --> SRI --> TR
+    CD --> CC --> CRI --> DT
+```
+
+### Index governance
+
+| Property | Skill Routing Index | Concept Routing Index |
+|----------|--------------------|-----------------------|
+| Source | Skill definitions directory | `_cards/*.md` with `decision_types` frontmatter |
+| Freshness | Source file mtime vs cache | Source file mtime vs cache |
+| Injection | SessionStart hook | SessionStart hook |
+| Embed limit | N/A | Max 2 cards with `embed: true` simultaneously |
+| On cache hit | Reuse cached index | Reuse cached index |
+| On cache miss | Recompile + cache | Recompile + cache |
+
+> **Pattern:** Compiled routing tables turn O(n) fuzzy matching at query time into O(1) lookup. The compilers are the slow path (run once at session open); the indexes are the fast path (instant dispatch at runtime).
+
+---
+
 ## Design principles
 
 | Principle | Rationale |
@@ -422,3 +503,6 @@ Governance files — agent specs, operating rules, hook configurations, system-l
 | **Stale handoff auto-cleanup** | B1 Handoff sections older than 7 days accumulate without cleanup and cause Darwin false-positives in governance reviews. The SessionStart hook runs async cleanup per `state.md` file using file locks — stale sections cleared, active sessions unaffected. Cleanup runs in background and never blocks session start. |
 | **Identity at execution time** | Credentials are resolved from the operation's target (remote URL, endpoint, account) at the moment the tool fires, not assumed from a global config. Global auth defaults are a source of silent misdirection when the operator manages multiple identities — per-operation resolution eliminates drift between what the system believes it is authenticated as and what it actually sends. |
 | **SessionStop as signal layer** | The hook lifecycle is three-phase: SessionStart (context bootstrap + cleanup), PreToolUse (gate + mutation), SessionStop (telemetry flush). SessionStop closes the signal loop — emitting session cost and token data into the observability stack when above threshold. Runs async; never blocks session delivery. |
+| **Progressive disclosure in agent specs** | An agent spec has two reading tiers: `state.md` (fast path — live context, open handoff, active threads, always read at invocation) and the full spec (deep context — frameworks, rules, pipeline, read only when task complexity requires it). Agents that conflate these tiers force the Interface Agent to load full specs for trivial tasks, burning context on work that doesn't need it. |
+| **Dispatch compilation at session open** | Skill routing and concept routing are compiled indexes, not evaluated at query time. Compilers run once at SessionStart, check source freshness against cache, and produce routing tables injected into context. Runtime dispatch is a lookup; the slow path runs once per session, not once per request. |
+| **Least privilege by activation model** | Agents are invoked on demand, not loaded at session start. On-invocation agents receive context proportional to their task (state.md fast path) rather than full ambient context from session open. Blast radius per invocation is bounded by what the task required — not by what the agent spec declares. Code-owner agents (those with Write access to high-trust paths) require explicit invocation before their paths accept edits. |
