@@ -1,0 +1,24 @@
+# protected-repos.yaml — repos/paths that require a designated owner agent
+# to be invoked before any Write/Edit/MultiEdit fires inside them.
+#
+# Used by block-protected-repo-writes.sh hook. Useful for client repos, model
+# code repos, or any path where the interface agent (Kowalski) should not edit
+# directly — the registered owner agent must be invoked first.
+#
+# Format:
+#   - path: <substring matched against tool_input.file_path>
+#     owner: <agent name that must be invoked in the session before writes>
+#     label: <human label used in the reminder message>
+#
+# After bootstrap, populate with your own protected paths. Empty list = no
+# enforcement (silent pass).
+
+protected:
+  []
+  # Examples (uncomment and edit after bootstrap):
+  # - path: /my-client-repo/
+  #   owner: my-client-agent
+  #   label: my-client-repo
+  # - path: /model-code/
+  #   owner: model-owner-agent
+  #   label: model-code

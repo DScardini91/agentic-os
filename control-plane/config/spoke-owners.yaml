@@ -1,0 +1,19 @@
+# spoke-owners.yaml — maps domain folders to their owner agent.
+#
+# Used by enforce-hub.sh hook to route Write/Edit/MultiEdit in domain folders
+# through the designated spoke owner. Kowalski (the interface agent) is the
+# hub: writes in spoke domains should pass through the owner agent, not the
+# hub directly.
+#
+# Format: <domain-folder>: <owner-agent-name>
+#
+# After bootstrap, edit this file to reflect your active domains and the
+# agents you have chosen to own them. Domains absent from this map are not
+# enforced (silent pass).
+
+professional: professional-chief-of-staff
+personal: personal-advisor
+finance: finance-advisor
+investments: finance-advisor
+spiritual: <spiritual-agent>
+learning: <learning-agent>

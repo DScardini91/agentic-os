@@ -1,0 +1,62 @@
+# triggers.yaml — declarative trigger rules read by pre-tool-use-trigger-check.sh
+#
+# Each trigger maps a pattern (tool + match) to a designated agent that must
+# be invoked in the session before the tool call proceeds. Fires log to
+# control-plane/memory/observability/pre-tool-fires.jsonl.
+#
+# Severity:
+#   reminder       — injects additionalContext, lets tool proceed.
+#   reminder-only  — same, never escalates (use for repetitive triggers like
+#                    git commit where escalation would be noise).
+#   block          — denies the tool call until the agent is invoked.
+#
+# Escalation: a `reminder` that fires without the agent being invoked in a
+# subsequent session can be escalated to `block` by session-start-violations.sh
+# (Etapa 3 mechanism, see harness rules).
+#
+# Override env vars:
+#   HARNESS_MERGE_OVERRIDE=1    — bypass no-direct-merge triggers
+#   HARNESS_HUB_OVERRIDE=1      — bypass hub enforcement
+#
+# After bootstrap, edit the agent names to match the names you chose.
+
+triggers:
+  # Edits to control-plane/ require senior-advisor (Walter equivalent) check
+  - tool: [Edit, Write, MultiEdit, NotebookEdit]
+    match_path: /control-plane/
+    exclude_paths:
+      - /control-plane/memory/daily/
+      - /control-plane/memory/observability/
+      - /control-plane/memory/darwin/
+    trigger_agent: <senior-advisor>
+    matcher: edit-control-plane
+    severity: reminder
+
+  # Edits to personal/ require the personal/family guardian agent
+  - tool: [Edit, Write, MultiEdit, NotebookEdit]
+    match_path: /personal/
+    trigger_agent: <family-guardian>
+    matcher: edit-personal-domain
+    severity: reminder
+
+  # git commit — gentle reminder for the senior advisor pressure-test pattern
+  - tool: Bash
+    match_command_regex: '(^|[^a-zA-Z])git[[:space:]]+commit'
+    trigger_agent: <senior-advisor>
+    matcher: git-commit
+    severity: reminder-only
+
+  # No direct merges to main without senior-advisor pressure-test
+  - tool: Bash
+    match_command_regex: 'git[[:space:]]+push[[:space:]].*[[:space:]]origin[[:space:]]+main|gh[[:space:]]+pr[[:space:]]+merge'
+    trigger_agent: <senior-advisor>
+    matcher: no-direct-merge
+    severity: reminder
+    override_env: HARNESS_MERGE_OVERRIDE
+
+  # Calendar / agenda manipulation requires family/personal guardian check
+  - tool: Bash
+    match_command_regex: '(gcal|icalbuddy|calendar\.google|/calendar/)'
+    trigger_agent: <family-guardian>
+    matcher: bash-agenda
+    severity: reminder-only
