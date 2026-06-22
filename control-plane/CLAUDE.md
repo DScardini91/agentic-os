@@ -132,6 +132,15 @@ Forks add their own cards by dropping a `*.md` file with the canonical frontmatt
 
 A fresh fork ships with `.bootstrap-pending` at repo root. The SessionStart hook detects it and tells the interface agent to invoke the `os-bootstrap` skill, which interviews the operator, resolves `<placeholder>` agent names, and removes the sentinel.
 
+## Observability layer — current state
+
+The harness writes signal to `control-plane/memory/observability/*.jsonl` via the Stop hook (`darwin-accumulate.sh`) and the PreToolUse hooks (`pre-tool-fires.jsonl`). The complementary `agent-calls.jsonl` feed — which is what `pre-tool-use-trigger-check.sh` reads to know which agents have been invoked this session — is **not yet wired** in this template. Forks that need full observability should either:
+
+- Add a `PostToolUse` matcher to `.claude/settings.json` that appends to `agent-calls.jsonl` whenever the Agent tool fires, or
+- Treat `agent-calls.jsonl` as advisory and accept that hooks may surface reminders even when the agent has been invoked but not logged.
+
+Until the PostToolUse wiring lands, the enforcement layer runs in *reminder-rich* mode — which is the safer default for a template (loud but non-blocking) than the production-strict mode (precise but with a hard dependency on the missing feed).
+
 ## Non-negotiables
 - Do not redesign architecture without explicit instruction
 - Do not expand outside the scale-up sequence without instruction

@@ -14,6 +14,10 @@ set -uo pipefail
 ROOT="${CLAUDE_PROJECT_DIR:-$PWD}"
 SENTINEL="$ROOT/.bootstrap-pending"
 
+# Graceful degradation: if jq is missing on this host, emit nothing and exit.
+# Better silent than a broken hook that blocks every session start.
+command -v jq >/dev/null 2>&1 || exit 0
+
 [ -f "$SENTINEL" ] || exit 0
 
 msg='# ⚠️ Bootstrap pending

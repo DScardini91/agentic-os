@@ -10,6 +10,9 @@ set -uo pipefail
 ROOT="${CLAUDE_PROJECT_DIR:-$PWD}"
 DAILY_DIR="$ROOT/control-plane/memory/daily"
 
+# Graceful degradation on hosts without jq — emit nothing rather than break SessionStart.
+command -v jq >/dev/null 2>&1 || exit 0
+
 ctx=""
 SIZE_CAP=8000
 if [ -d "$DAILY_DIR" ]; then

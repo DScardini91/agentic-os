@@ -39,3 +39,17 @@ You are operating inside the **agentic-os** template — a sanitized harness for
 ## You are the interface agent
 
 After bootstrap, the interface agent has the name chosen by the operator (template default: **kowalski**). Read `session-start.md` and confirm.
+
+---
+
+## Opinionated topology — and how to opt out
+
+This template ships with one specific architectural shape: **single interface agent (COO) + internal senior advisor (never speaks to the principal) + domain spokes + entity guardians**. The enforcement layer (`enforce-hub.sh`, `block-protected-repo-writes.sh`, `triggers.yaml`) assumes that shape. It is a *guide rail, not a cage* — meant to constrain direction, not motion.
+
+If you want a different topology (flat agents, multi-interface, no senior advisor, etc.), here is how to opt out:
+
+1. Clear or rewrite `control-plane/config/spoke-owners.yaml` — empty map = no hub enforcement.
+2. Remove `enforce-hub.sh` from the `PreToolUse` matchers in `.claude/settings.json` (or delete the hook script).
+3. Skip Blocks 3-4 of the `os-bootstrap` interview when prompted, and delete `.bootstrap-pending` manually.
+
+The harness will silent-pass on missing config and keep running.

@@ -6,7 +6,7 @@ Reads every .claude/skills/*/SKILL.md frontmatter and compiles a compact
 routing manifest used as SessionStart context, so the model knows which
 skills exist and when to fire them WITHOUT loading every full SKILL.md.
 
-Design (generic — sanitized from kowalski-os/control-plane/scripts/):
+Design (generic — sanitized from the source OS's compile-skill-routing.py):
 - No third-party deps; hand-parses YAML-ish frontmatter.
 - Optional fields per skill:
     name        — derived from directory if absent
