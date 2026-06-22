@@ -87,18 +87,23 @@ Open the interview by reading [`control-plane/agent-patterns/domain-entry-agent.
 
 > *"A domain is a recurring area of work or life with its own vocabulary, stakeholders, and trade-offs — generating at least one task per week or one decision per month. What are yours? List them in your own words."*
 
-Then for each domain the operator names:
+Then for each domain the operator names, walk this micro-loop:
 
-1. **Pick a slug** in `kebab-case` (e.g. `health`, `coaching`, `side-business`).
-2. **Decide on the entry agent** — does the domain need its own first-reader agent? Use [`domain-entry-agent.md`](../../../control-plane/agent-patterns/domain-entry-agent.md) as the pattern. If yes, instantiate from the template; if no, the interface agent handles the domain inline.
-3. **Decide on entity guardians** — does the domain have a structural priority that needs protection (family, craft, health)? Use [`entity-guardian.md`](../../../control-plane/agent-patterns/entity-guardian.md). Worked examples in the template: `family-guardian`, `maestro`, `terra-guide`. Rename or remove as appropriate.
-4. **Create the folder** `<domain-slug>/` at repo root (if it doesn't exist) with a `domain.md` describing scope, vocabulary, and stakeholders.
+1. **Pick a slug** in `kebab-case` (operator chooses, e.g. `health`, `coaching`, `side-business`, `learning`).
+2. **Want a first-reader agent for this domain?** Read out [`agent-patterns/domain-entry-agent.md`](../../../control-plane/agent-patterns/domain-entry-agent.md) signal: "yes if the domain has ≥ 1 task/week or 1 decision/month and you notice the interface agent simulating it inline; no if it's lighter than that".
+   - **If yes:** ask the operator what to call the agent (default suggestion: `<slug>-advisor` or `<slug>-curator`, but the operator picks). Then copy `control-plane/templates/agents/domain-entry.template.md` to `.claude/agents/<chosen-name>.md` and fill the `<placeholder>` markers via Q&A (description, scope in/out, vocabulary, recurring decisions). Also create `control-plane/memory/<chosen-name>/state.md` from `templates/agent-state-template.md`.
+   - **If no:** skip — interface agent handles the domain inline.
+3. **Want an entity guardian for this domain?** Same logic via [`agent-patterns/entity-guardian.md`](../../../control-plane/agent-patterns/entity-guardian.md). Instantiate via `control-plane/templates/agents/entity-guardian.template.md` if yes.
+4. **Create the folder** `<slug>/` at repo root (if it doesn't exist) with a `domain.md` describing scope, vocabulary, stakeholders.
+5. **Register** every newly instantiated agent in `control-plane/registry/agents.md` and `control-plane/registry/domains.md`.
 
-**For each of the six template-shipped folders the operator does NOT want:** `rm -rf <folder>` and remove its row from `control-plane/CLAUDE.md` § "Active domains" and from `spoke-owners.yaml`.
+**For each of the six template-shipped folders the operator does NOT want** (`professional/`, `personal/`, `finance/`, `investments/`, `learning/`, `spiritual/`): `rm -rf <folder>` and remove its row from `control-plane/CLAUDE.md` § "Active domains" and `spoke-owners.yaml`.
 
-**For each shipped agent the operator does NOT want** (e.g. `maestro` if no music practice, `terra-guide` if no travel emphasis): delete the agent spec and its memory folder. Removed agents must also disappear from the registry.
+**For each shipped agent the operator does NOT want** (e.g. `maestro` if no craft, `terra-guide` if no travel, `finance-advisor` if folded into a single domain): delete the agent spec, the memory folder, and the registry row.
 
-**Do not pressure the operator** to keep any specific shipped domain or agent. The template is one operator's example; the agent patterns are the replicable knowledge.
+**Do not assign names yourself.** Every domain agent and every entity guardian gets a name from the operator — even if the operator says "use the default", confirm the suggestion before writing. Names are sticky; one Q&A turn is the cheapest insurance against weeks of awkward re-reading.
+
+**Do not pressure the operator** to keep any specific shipped domain or agent. The template ships one operator's example; the patterns are the replicable knowledge.
 
 ### Block 4 — Technical wiring
 
