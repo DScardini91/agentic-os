@@ -331,6 +331,19 @@ The watchdog is reactive — it observes and accumulates. The reconciliation rit
 
 > **Pattern:** Two rhythms map to two cognitive modes. Watchdog = pattern matching against thresholds. Reconciliation = judgment on accumulated patterns. Each rhythm has its own failure mode if the other tries to do its job.
 
+### Emerging practice: canon + self-audit pairing
+
+When a body of external knowledge is absorbed into the OS (engineering standard, framework, certification material), the absorption produces *two* artifacts, not one: the canon itself (the external content distilled into the OS's vocabulary) and a self-audit document (current OS state scored against the canon, with gap re-check dates).
+
+| Artifact | Role | Update trigger |
+|----------|------|----------------|
+| Canon | Reference body, treated as stable until the source updates | External source revises, or operator deliberately re-ingests |
+| Self-audit | Living par to the canon — scores OS state against it | Canon updates, or OS state changes materially |
+
+Canon without self-audit tends to decay into shelfware. Self-audit without canon drifts into vibes. Treating the pair as the unit (not either alone) is what keeps the absorption load-bearing rather than decorative.
+
+> **Status:** Emerging practice — observed twice in rapid succession (mid-2026) on engineering-flavoured canons. Whether the pattern generalises to domain-flavoured canons is open. Documented here so forks can opt in, not prescribed as canonical.
+
 ---
 
 ## 8. Enforcement Layer (Agentic-by-Default)
@@ -519,6 +532,5 @@ flowchart TD
 | **Progressive disclosure in agent specs** | An agent spec has two reading tiers: `state.md` (fast path — live context, open handoff, active threads, always read at invocation) and the full spec (deep context — frameworks, rules, pipeline, read only when task complexity requires it). Agents that conflate these tiers force the Interface Agent to load full specs for trivial tasks, burning context on work that doesn't need it. |
 | **Dispatch compilation at session open** | Skill routing and concept routing are compiled indexes, not evaluated at query time. Compilers run once at SessionStart, check source freshness against cache, and produce routing tables injected into context. Runtime dispatch is a lookup; the slow path runs once per session, not once per request. |
 | **Least privilege by activation model** | Agents are invoked on demand, not loaded at session start. On-invocation agents receive context proportional to their task (state.md fast path) rather than full ambient context from session open. Blast radius per invocation is bounded by what the task required — not by what the agent spec declares. Code-owner agents (those with Write access to high-trust paths) require explicit invocation before their paths accept edits. |
-| **OS evolution as deliberate accretion** | The OS grows by addition, not by replacement. Subtraction requires justification, accretion is the default — each retained component is treated as a compounding asset. External frameworks pass through a mandatory filter before adoption: does this refine an existing rail, or does it impose a new prison? Patterns that would force the operator to abandon working rails are rejected even when locally appealing. The system is a trilho, not a prisão — it constrains direction, not motion. |
-| **Canon + self-audit as paired artifacts** | Every absorbed canon (external body of knowledge ingested into the OS — engineering standard, framework, certification) is stored alongside a self-audit document. The audit scores current OS state against the canon, lists gaps with re-check dates, and is treated as a living par — when the canon updates, the audit updates; when the OS state changes, the audit is re-scored. Canon without self-audit decays into shelfware; self-audit without canon drifts into vibes. The pair is the unit, not either alone. |
+| **OS evolution as deliberate accretion** | The OS grows by addition, not by replacement. Subtraction requires justification, accretion is the default — each retained component is treated as a compounding asset. External frameworks pass through a mandatory filter before adoption: does this refine an existing rail, or does it impose a new cage? Patterns that would force the operator to abandon working rails are rejected even when locally appealing. The system is a guide rail, not a cage — it constrains direction, not motion. *(This principle is recent and is expected to gain qualifying conditions as the Darwin loop encounters edge cases. Forks should treat it as direction, not law.)* |
 | **Watchdog and reconciliation as separate rhythms** | Governance has two cognitive modes: pattern-matching against thresholds (watchdog, continuous, per-session) and judgment on accumulated patterns (reconciliation, weekly or on-demand). Mixing the rhythms produces noise (continuous deliberation) or blindness (deliberation without accumulated signal). The watchdog never blocks and never deliberates; the reconciliation ritual never runs continuously and never fires automatically without operator invocation. |
