@@ -1,0 +1,11 @@
+This file marks the agentic-os template as not-yet-configured.
+
+When present, the SessionStart bootstrap-check hook injects a directive
+telling the interface agent to invoke the `os-bootstrap` skill before
+doing other work. The skill interviews the operator, resolves placeholder
+agent names (`<interface-agent>`, `<senior-advisor>`, etc.), populates
+memory tier scaffolds, and removes this sentinel.
+
+To skip bootstrap and use the template in placeholder mode, delete this
+file manually. Hooks and routing depending on agent names will silent-pass
+on unresolved `<placeholder>` strings.

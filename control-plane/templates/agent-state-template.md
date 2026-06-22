@@ -1,35 +1,35 @@
 # state — <agent-name>
-_Atualizado: YYYY-MM-DD_
+_Updated: YYYY-MM-DD_
 
-State vivo do agent. Lido pelo agent ao ser invocado, escrito pelo agent ao final da execução. Não é spec (isso vive em `.claude/agents/<agent>.md`) e não é memória estática (isso vive em outros arquivos sob `control-plane/memory/<agent>/`). É o que está aberto **agora**.
+Live state of the agent. Read by the agent at invocation; written at end of execution. Not the spec (that lives in `.claude/agents/<agent>.md`) and not static memory (that lives elsewhere under `control-plane/memory/<agent>/`). This file holds what is open **now**.
 
-Três campos de estado contínuo + seção Handoff por execução. Manter enxuto — se cresceu além de uma tela, consolidar e arquivar.
+Three continuous-state fields + a per-execution Handoff section. Keep it tight — if it grows past one screen, consolidate and archive.
 
-## Decisões em aberto
-_Decisões que dependem de input do principal ou de um próximo evento. Cada uma com data de origem e o que destrava._
+## Open decisions
+_Decisions waiting on principal input or a future event. Each one with origin date and what unblocks it._
 - ...
 
-## Threads ativas
-_Trabalho em curso que cruza sessões. Inclui owner (quem move) e próximo passo concreto._
+## Active threads
+_Work in progress that spans sessions. Includes owner (who moves it) and the concrete next step._
 - ...
 
-## Último update
-_Carimbo de quem atualizou e por quê. Apenas a última entrada — não vira changelog._
-- YYYY-MM-DD — <agent ou kowalski> — <razão em uma linha>
+## Last update
+_Timestamp of who updated and why. Only the most recent entry — this is not a changelog._
+- YYYY-MM-DD — <agent or interface-agent> — <one-line reason>
 
 ---
 
-## Handoff — última execução
-_Substituído integralmente ao final de cada invocação. Kowalski lê este bloco para saber o que aconteceu sem reconstruir o contexto completo._
+## Handoff — last execution
+_Replaced wholesale at end of each invocation. The interface agent reads this block to know what happened without rebuilding full context._
 
-**Concluído:**
+**Completed:**
 - ...
 
-**Não concluído:**
+**Not completed:**
 - ...
 
 **Blockers:**
 - ...
 
-**Perguntas abertas:**
+**Open questions:**
 - ...
