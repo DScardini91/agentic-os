@@ -11,6 +11,14 @@ triggers:
 
 # Skill: pr-review
 
+## Preconditions
+
+- `gh` CLI is installed and authenticated against the relevant remote (`gh auth status` returns OK).
+- `git` cwd is the target repo (or the `repo` input is supplied as `owner/repo`).
+- The senior advisor agent is available if depth ≥ standard and strategic weight is present.
+
+If `gh` is not authenticated, the `auto-gh-auth.sh` hook surfaces this before the first `gh` call and the skill should pause for authentication.
+
 ## When to use
 
 Whenever a PR shows up that the principal needs to review — own repo or any repo where review is needed.

@@ -10,6 +10,14 @@ triggers:
 
 # Skill: harness-onboarding
 
+## Preconditions
+
+- The project has either a `docs/harness/` structure (preferred) or, at minimum, a `README.md` + `ARCHITECTURE.md` + recent commits the skill can read.
+- The principal has supplied `dev_name` and `role`.
+- A target location for the output pack is writable (defaults to `docs/harness/onboarding-<dev_name>-YYYY-MM-DD.md`).
+
+If the project has neither a harness nor a README, the skill asks the principal whether to construct an ad-hoc pack from `git log` + top-level files, or to defer until docs exist.
+
 ## When to use
 
 A new developer is joining the project and needs to absorb context before contributing. Without a structured pack, week 1 is spent asking the obvious instead of producing a PR.

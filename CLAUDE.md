@@ -28,7 +28,9 @@ You are operating inside the **agentic-os** template — a sanitized harness for
 
 ## Domain folders
 
-`professional/`, `personal/`, `spiritual/`, `learning/`, `finance/`, `investments/` — populated and shaped during `os-bootstrap`. Unused domains are removed at bootstrap time so the workspace reflects only the operator's active areas.
+`professional/`, `personal/`, `spiritual/`, `learning/`, `finance/`, `investments/` ship as **examples** — they are one operator's taxonomy, not a required set. During `os-bootstrap` the operator defines their own active domains in their own vocabulary; unused example folders are removed.
+
+The replicable knowledge — how a domain becomes an entry point in the system, how entity guardians protect structural priorities, how to add an orchestrator when a domain has internal committees — lives in [`control-plane/agent-patterns/`](control-plane/agent-patterns/), not in the example folders.
 
 ## Critical conventions
 

@@ -11,6 +11,11 @@ triggers:
 
 # Skill: decision-log-entry
 
+## Preconditions
+
+- `control-plane/memory/decisions/decision-log.md` exists (or the project supplies an alternate path via the `project` input). If neither, the skill asks the principal where to create it before writing.
+- The principal's raw decision text is available verbatim.
+
 ## When to use
 
 The principal just made a decision (methodological, architectural, stakeholder, override) and wants it recorded in the decision-log before it slips. They usually speak free-form; this skill formats.

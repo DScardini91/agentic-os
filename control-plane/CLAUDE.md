@@ -119,6 +119,23 @@ Sub-agents (via `Agent` tool) are the **default** for any non-trivial work. Simu
 | Engineering standards | `rules/engineering-standards.md` | Universal floor for any code written by this OS |
 | Post-MVP expansion | `rules/post-mvp-expansion-directive.md` | Sequencing of domain stand-ups |
 
+## Agent patterns (`control-plane/agent-patterns/`)
+
+The eight canonical agent roles documented as replicable patterns, not as a required set. Each pattern explains the role, when to instantiate, when not to, and gives a worked example shipped in the template.
+
+| Pattern | Worked example in this template |
+|---|---|
+| Interface agent | `kowalski` |
+| Senior advisor | `walter` |
+| Domain entry agent | `professional-chief-of-staff`, `personal-advisor`, `finance-advisor` |
+| Entity guardian | `family-guardian`, `maestro`, `terra-guide` |
+| Quality gate | `artifact-reviewer` |
+| OS analyst | `darwin` |
+| Orchestrator | none — see pattern doc for inspiration |
+| Fallback | none — instantiate when OS has > 5 specialists |
+
+Read [`agent-patterns/README.md`](agent-patterns/README.md) before adding any new agent. The patterns are descriptive; the operator decides which apply.
+
 ## Concept cards (routed via SessionStart)
 
 `control-plane/concepts/_cards/` holds decision frameworks compiled into the routing index:

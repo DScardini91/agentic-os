@@ -79,20 +79,26 @@ Apply the chosen names across the repo via search-and-replace on `<interface-age
 
 Rename memory folders: `control-plane/memory/kowalski/` → `<interface-agent>/`, `control-plane/memory/walter/` → `<senior-advisor>/`.
 
-### Block 3 — Domain selection
+### Block 3 — Domain selection (operator's own taxonomy)
 
-Ask the operator which of the six template domains to keep:
+The template ships with six example domain folders (`professional/`, `personal/`, `finance/`, `investments/`, `learning/`, `spiritual/`). **These are examples, not a required set.** Ask the operator to define their own active domains in their own vocabulary.
 
-- `professional/` (default: yes)
-- `personal/`
-- `finance/`
-- `investments/`
-- `learning/`
-- `spiritual/`
+Open the interview by reading [`control-plane/agent-patterns/domain-entry-agent.md`](../../../control-plane/agent-patterns/domain-entry-agent.md) signals to the operator:
 
-For each kept domain: leave the folder. For each removed domain: `rm -rf` the folder and remove its row from `control-plane/CLAUDE.md` § "Active domains" table and from `spoke-owners.yaml`.
+> *"A domain is a recurring area of work or life with its own vocabulary, stakeholders, and trade-offs — generating at least one task per week or one decision per month. What are yours? List them in your own words."*
 
-Ask each kept domain whether the operator wants the default agent (e.g., `professional-chief-of-staff`, `finance-advisor`) or a renamed one. Apply the rename if asked.
+Then for each domain the operator names:
+
+1. **Pick a slug** in `kebab-case` (e.g. `health`, `coaching`, `side-business`).
+2. **Decide on the entry agent** — does the domain need its own first-reader agent? Use [`domain-entry-agent.md`](../../../control-plane/agent-patterns/domain-entry-agent.md) as the pattern. If yes, instantiate from the template; if no, the interface agent handles the domain inline.
+3. **Decide on entity guardians** — does the domain have a structural priority that needs protection (family, craft, health)? Use [`entity-guardian.md`](../../../control-plane/agent-patterns/entity-guardian.md). Worked examples in the template: `family-guardian`, `maestro`, `terra-guide`. Rename or remove as appropriate.
+4. **Create the folder** `<domain-slug>/` at repo root (if it doesn't exist) with a `domain.md` describing scope, vocabulary, and stakeholders.
+
+**For each of the six template-shipped folders the operator does NOT want:** `rm -rf <folder>` and remove its row from `control-plane/CLAUDE.md` § "Active domains" and from `spoke-owners.yaml`.
+
+**For each shipped agent the operator does NOT want** (e.g. `maestro` if no music practice, `terra-guide` if no travel emphasis): delete the agent spec and its memory folder. Removed agents must also disappear from the registry.
+
+**Do not pressure the operator** to keep any specific shipped domain or agent. The template is one operator's example; the agent patterns are the replicable knowledge.
 
 ### Block 4 — Technical wiring
 
