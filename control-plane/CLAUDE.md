@@ -98,10 +98,44 @@ Sub-agents (via `Agent` tool) are the **default** for any non-trivial work. Simu
 
 **Parallelism rule:** multiple independent agents in the same turn → single message with multiple Agent calls. Sequential only when output of Agent A is required input for Agent B.
 
+## Harness machinery (read on demand)
+
+| Layer | Path | Purpose |
+|---|---|---|
+| **Hooks config** | `.claude/settings.json` | Wires SessionStart × 5, PreToolUse × 4 matchers, Stop × 2 |
+| **PreToolUse hooks** | `.claude/hooks/` | auto-gh-auth · block-pr-merge · block-protected-repo-writes · enforce-hub · session-cost-report |
+| **Trigger engine** | `control-plane/scripts/pre-tool-use-trigger-check.sh` | Reads `config/triggers.yaml` and fires reminders / hard-blocks |
+| **SessionStart scripts** | `control-plane/scripts/session-start-*.sh` + `inject-*.sh` | Bootstrap detection, escalation state, freshness-cached skill + concept routing indexes, recent dailies |
+| **Stop hook** | `control-plane/scripts/darwin-accumulate.sh` | One-line-per-session signal accumulator |
+| **Compilers** | `control-plane/scripts/compile-*.py` | Skill routing index + concept routing index |
+| **Maintenance** | `control-plane/scripts/memory-ttl-compaction.sh` · `state-drift-check.sh` · `canon-recheck-due.sh` · `validate-harness.sh` · `decision-log-trailing.sh` | TTL, drift, audits, integrity |
+| **Configs** | `control-plane/config/` | `spoke-owners.yaml` · `protected-repos.yaml` · `triggers.yaml` |
+
+## Reference rules
+
+| Rule | Path | When it applies |
+|---|---|---|
+| Parallel-session reconciliation | `rules/parallel-session-reconciliation.md` | Merge with `[ahead N, behind M]` on accumulative files |
+| Engineering standards | `rules/engineering-standards.md` | Universal floor for any code written by this OS |
+| Post-MVP expansion | `rules/post-mvp-expansion-directive.md` | Sequencing of domain stand-ups |
+
+## Concept cards (routed via SessionStart)
+
+`control-plane/concepts/_cards/` holds decision frameworks compiled into the routing index:
+- `dalio-compact.md` (embedded inline)
+- `walter-pressure-test.md`
+- `interface-operating-core.md`
+
+Forks add their own cards by dropping a `*.md` file with the canonical frontmatter — `compile-concept-routing.py` picks it up next session.
+
+## Bootstrap
+
+A fresh fork ships with `.bootstrap-pending` at repo root. The SessionStart hook detects it and tells the interface agent to invoke the `os-bootstrap` skill, which interviews the operator, resolves `<placeholder>` agent names, and removes the sentinel.
+
 ## Non-negotiables
 - Do not redesign architecture without explicit instruction
 - Do not expand outside the scale-up sequence without instruction
-- Do not let the operational system (Notion) become authoritative for code/identity
-- Walter never interfaces directly with the principal
+- Do not let the operational system (Notion, etc.) become authoritative for code/identity
+- Senior advisor never interfaces directly with the principal
 - Do not modify identity files without explicit instruction
 - Do not bypass primary-commitment rules
