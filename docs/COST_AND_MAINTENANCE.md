@@ -20,6 +20,8 @@
 | 12–17 (mastery) | 1–2 hours/week | $40–100/week | Strategic decisions land in minutes; reputational risk structurally managed |
 | 18–22 (authorship) | 2–4 hours/week | $100–300+/week | You're authoring canon others ingest |
 
+> 💰 **Dollar figures assume Claude Sonnet pricing as of 2026-06.** Re-derive from Anthropic's current rate card if pricing has shifted — these numbers are directional, not contractual. The $2,000/year line in the 12-month TCO section below inherits the same caveat.
+
 The system is designed to **earn back its overhead** at every rung. If at any rung the weekly cost feels like overhead-without-payoff, that's the signal to **stop climbing** (not to push harder).
 
 ---

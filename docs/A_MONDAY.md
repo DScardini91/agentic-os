@@ -193,11 +193,11 @@ Accept conditional on:
       with partner before kickoff
 ```
 
-### 08:23 — She replies to the senior partner
+### 08:30 — She replies to the senior partner
 
 > *"Yes, conditional on two items I'll close by Friday. Calling tomorrow."*
 
-**8 minutes from email to a decision** that integrates strategic fit, capacity, relationship and risk — all reasoned through frameworks SHE authored over 14 months. Walter pressure-tested the orchestrator's synthesis silently before it reached her.
+**~15 minutes from email to a conditional reply** that integrates strategic fit, capacity, relationship and risk — all reasoned through frameworks SHE authored over 14 months. Walter pressure-tested the orchestrator's synthesis silently before it landed. **The reply is conditional; the decision isn't real until she closes the two conditions by Friday.** What the system gave her was not speed for its own sake — it was the structural framing she would have spent the day intuiting instead.
 
 ### 10:00 — A book she just finished is ready to become canon
 
