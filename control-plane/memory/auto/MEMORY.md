@@ -24,6 +24,17 @@ _(external systems: trackers, dashboards, notion workspaces, slack channels — 
 
 ---
 
+## Worked examples (delete after bootstrap if you don't need them)
+
+Four shipped examples — leading underscore so they sort to the top and are obviously placeholders. Each demonstrates the format expected for its `type:`. Read once for the shape, then delete or replace with your own.
+
+- [`_example_user_profile.md`](_example_user_profile.md) — `type: user` — what the principal does, focus, expected expertise level.
+- [`_example_feedback_communication.md`](_example_feedback_communication.md) — `type: feedback` — captured correction (conclusion-first), with Why and How-to-apply.
+- [`_example_project.md`](_example_project.md) — `type: project` — who is doing what by when, with absolute dates and update/remove rules.
+- [`_example_reference.md`](_example_reference.md) — `type: reference` — pointer to an external system (Notion, tracker), with what lives there vs here.
+
+---
+
 ## Memory tier conventions
 
 **Memory types** (lead with one of these in each file's frontmatter):

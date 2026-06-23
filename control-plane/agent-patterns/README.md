@@ -23,6 +23,23 @@ The patterns are descriptive, not prescriptive. **You do not need every pattern.
 | [Orchestrator](orchestrator.md) | Coordinates a committee of multiple specialists into a single synthesis | none (see worked-example pointer) |
 | [Fallback](fallback.md) | Catch-all for tasks no specialist owns; documents the call so coverage gaps surface | none (see worked-example pointer) |
 
+## Pattern ↔ shipped agent crosswalk
+
+Every shipped agent is a worked example of exactly one pattern. When the patterns library says "see the worked example", this is the mapping:
+
+| Pattern | Shipped agent(s) | Notes |
+|---|---|---|
+| Interface agent | `kowalski` | Canonical. Exactly one per installation. |
+| Senior advisor | `walter` | Canonical. Exactly one per installation. |
+| Domain entry agent | `professional-chief-of-staff`, `personal-advisor`, `finance-advisor` | Three example domains. Operator instantiates more via `templates/agents/domain-entry.template.md`. |
+| Entity guardian | `family-guardian`, `maestro`, `terra-guide` | Three example protected categories (household, craft, travel). Operator instantiates more via `templates/agents/entity-guardian.template.md`. |
+| Quality gate | `artifact-reviewer` | Single conformity gate; customize rather than fork. |
+| OS analyst | `darwin` | Canonical governance agent. |
+| Orchestrator | _(none shipped)_ | Instantiate when a domain has 3+ named lenses voting independently. Pattern doc has the template. |
+| Fallback | _(none shipped)_ | Instantiate when the OS has > 5 specialists and Darwin flags coverage gaps. |
+
+If a shipped agent is not listed above, the registry is wrong; update both.
+
 ## How to use this directory
 
 1. **Read [domain-entry-agent.md](domain-entry-agent.md) first** if you are adding a domain. The pattern explains how a domain becomes an entry-point in the system.
