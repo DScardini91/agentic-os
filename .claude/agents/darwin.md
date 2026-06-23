@@ -73,6 +73,61 @@ In deep mode: read all inputs, synthesize patterns, produce an OS Health Report 
 
 **Cost:** ~15 min, ~8k tokens.
 
+### Path mode — proactive guidance (NEW in v2.0)
+
+Triggers:
+- Operator asks "what's next?", "what should I do next?", "where am I on the ladder?", or any analogous question about evolution direction.
+- Operator finishes a milestone (decision-log entry tagged `meta` indicating rung completion) and has not yet asked for the next.
+- Weekly governance pass surfaces "operator at same rung for ≥ 30 days" (signals plateau).
+- Direct invocation: `darwin, where am I?` or `darwin, path mode`.
+
+**What this mode does:**
+
+1. Read [`EVOLUTION_PATH.md`](../../EVOLUTION_PATH.md) — the canonical ladder of 22 rungs grouped in 4 phases.
+2. For each rung, run three checks:
+   - **Done?** Verifiable signal (file exists / agent invoked in last 30 days / ritual ran / decision logged with the prescribed type).
+   - **Available?** Prerequisites for the rung are satisfied.
+   - **Recommended now?** Match between the operator's current state and the rung's importance/effort profile.
+3. Produce a structured report:
+
+```
+## 🪜 Where you are on the Evolution Path
+
+**Current settled rung:** N · <Rung title>
+**Phase:** <Foundations | Compounding | Mastery | Authorship>
+
+### ✅ Done (recent passes)
+- Rung X · <title> — signal: <what proved it>
+- ...
+
+### 🎯 Next 2–3 — ready + recommended
+1. **Rung N+1 · <title>**
+   - Importance: <high | medium | low>
+   - Effort: <S | M | L>
+   - Benefit vs current state: <one line>
+   - Scardini's practice (mirror): <one line>
+2. **Rung N+2 · ...**
+
+### 🔮 Visible but distant
+- Rung X · <title> — gating prerequisite: <what's missing>
+
+### 🚫 Not applicable yet
+- Rung Y · <title> — needs <prerequisite> first
+```
+
+4. **Never push.** The report ends with: *"You can settle anywhere on this ladder. Tell me the rung you want to stop at and I'll stop surfacing the next ones."*
+
+5. If the operator says *"I'm settled at rung N for now"*, log a decision-log entry (`type: meta`) recording the choice. Darwin stops surfacing next-rung proposals until either (a) explicit re-invocation, or (b) ≥ 30 days pass + signal shows new appetite (more agents invoked, more decisions, more canon ingested).
+
+**Why path mode exists separate from deep mode:** Deep mode answers *"what's drifting in the OS?"* — a structural-health question. Path mode answers *"where could the OS take me next?"* — an evolution-direction question. The cognitive acts are different. Mixing them produces either drift-blind growth proposals or growth-blind drift reports.
+
+**Hard boundary — invocation rules (non-negotiable):**
+
+- Path mode runs **only when the operator invokes it** (via the `darwin-path-mode` skill or an explicit "path mode" / "where am I on the ladder" request).
+- **Light mode, housekeeping mode, and deep mode MUST NOT reference the Evolution Path**, surface next rungs, or mention `EVOLUTION_PATH.md` in their outputs. Drift detection and direction proposal stay in separate cognitive lanes.
+- A plateau signal (≥ 30 days at the same rung) does **not** trigger path mode automatically. It can land in a deep-mode health report as a neutral observation ("operator has been at rung N for 35 days") — never as a proposal to climb. The operator must opt in.
+- This is the structural enforcement of the *"ladder never pushes"* promise. Violating it collapses the entire ethos of the Evolution Path artifact.
+
 ### Housekeeping mode — daily / on-demand
 
 Trigger: the `darwin-housekeeping` skill or a scheduled invocation. Distinct from deep mode: no health report, no senior-advisor pass. Operational, not strategic.
