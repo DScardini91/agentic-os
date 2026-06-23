@@ -34,7 +34,7 @@ All notable changes to this template are documented here. The format follows [Ke
 ### 🔄 Migration from v1.0.x
 
 - No breaking changes. Forks that bootstrapped in v1.0 are already configured (sentinel removed); the new script does nothing on a configured system.
-- Forks mid-bootstrap (sentinel still present) on v1.0 → v1.1 upgrade: run `bootstrap-progress.sh status` to initialize the progress file at the current state, then continue.
+- **Mid-bootstrap forks** (sentinel still present, but some blocks were already completed manually under v1.0): run `bootstrap-progress.sh status` to initialize the progress file, **then run `bootstrap-progress.sh complete <block-name>` for each block you already finished** (`1_identity`, `2_harness_naming`, `3_domains`, `4_technical_wiring` in canonical order). Without this, the next `os-bootstrap` invocation will resume from block 1 and re-execute work you already did.
 
 ---
 
