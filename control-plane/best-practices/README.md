@@ -42,3 +42,11 @@
 
 ### 🧪 Testing
 - [`post-success-path-testing.md`](post-success-path-testing.md) — The terminal state of a happy path is itself a state. Test what happens AFTER the happy path completes. Case study: PR #3 → dry-run → PR #4
+
+---
+
+## 🪜 Where does this discipline take me?
+
+The best practices above are **the floor**. The full operating ladder — 22 rungs across 4 phases (Foundations → Compounding → Mastery → Authorship) — lives in [`EVOLUTION_PATH.md`](../../EVOLUTION_PATH.md).
+
+Invoke `darwin-path-mode` (or ask *"where am I on the ladder?"*) and Darwin reads your current state, surfaces the next 2-3 rungs that are ready + recommended, and never pushes.

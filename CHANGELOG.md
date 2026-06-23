@@ -11,6 +11,45 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ---
 
+## 🌲 [2.0.0] — 2026-06-23
+
+> Minor-major release: introduces the **Evolution Path** — a 22-rung ladder that guides operators from fresh install all the way to authoring their own canons. Darwin gains a third invocation mode (**path mode**) that proactively surfaces the next 2-3 rungs without ever pushing.
+
+### ✨ Added
+
+- **`EVOLUTION_PATH.md`** — the canonical 22-rung ladder organized in 4 phases:
+  - 🌱 Foundations (1-5): bootstrap, first domain, first decision, daily log, first housekeeping pass
+  - 🌿 Compounding (6-11): second domain, entity guardian, first canon+audit pair, weekly ritual, auto-memory curation, concept cards routing
+  - 🌳 Mastery (12-17): orchestrator pattern, custom canon, quality gate enforcement, CI-enforced harness, two-rhythm governance, visibility-as-deliverable
+  - 🌲 Authorship (18-22): books → decisions pipeline, multi-school orchestrator (10+), fallback agent + coverage-gap log, deliberate accretion as operating principle, operator-authored canon shipped publicly
+
+  Every rung documents **what you'll have**, **why it matters**, **recommended? optional? already done?**, and **Scardini's practice** as a mirror. The operator can settle at any rung; the ladder never pushes.
+
+- **Darwin path mode** — new invocation mode on the `darwin` agent, distinct from light mode (Stop hook), housekeeping mode (daily), and deep mode (weekly). Path mode reads `EVOLUTION_PATH.md`, evaluates which rungs the operator has completed, and surfaces the next 2-3 ready + recommended rungs with importance/effort/benefit framing.
+
+- **`darwin-path-mode` skill** — the canonical wrapper for invoking Darwin in path mode. Triggers include *"where am I on the ladder?"*, *"what's next?"*, *"path mode"*, *"/darwin-path-mode"*. Skill ends with the never-push line: *"You can settle anywhere on this ladder. Tell me the rung you want to stop at and I'll stop surfacing the next ones."*
+
+- **Operator settlement contract** — when the operator says *"I'm settled at rung N for now"*, a meta-type decision-log entry records the choice and Darwin stops surfacing next-rung proposals for 30 days (or until explicit re-invocation).
+
+### 🔄 Updated
+
+- **README** gains a 🪜 evolution-path section with the four-phase summary and a pointer to `darwin-path-mode`.
+- **Darwin agent spec** (`.claude/agents/darwin.md`) documents path mode alongside the existing three modes, with explicit cognitive-act separation (deep mode = drift detection; path mode = direction proposal).
+
+### 🔄 Why minor-major (2.0.0) and not a 1.x minor
+
+Path mode is a **new cognitive surface** for the OS analyst, not just an additive feature. The Darwin contract grows from three modes to four; the operator's mental model of *"how do I know what to do next?"* has a structural answer for the first time. SemVer minor would understate this.
+
+No breaking changes to the existing harness — v1.1.2 forks upgrade by pulling the new files; no scripts, configs, or memory schemas were modified.
+
+### 🔄 Migration from v1.1.2
+
+- Pull the new files (`EVOLUTION_PATH.md`, `.claude/skills/darwin-path-mode/SKILL.md`).
+- The Darwin agent gains path mode automatically — its spec is updated in-place; no agent restart required.
+- Optional: invoke `darwin-path-mode` once to see where you currently sit on the ladder. Most v1.x operators will land between Rungs 5-11.
+
+---
+
 ## 🩹 [1.1.2] — 2026-06-23
 
 > Patch release closing the two remaining Walter conditions from PR #4: marker check for non-agentic-os repos, and the canon entry for post-success-path testing.

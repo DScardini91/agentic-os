@@ -14,6 +14,7 @@
 [![last commit](https://img.shields.io/github/last-commit/DScardini91/agentic-os?color=orange)](https://github.com/DScardini91/agentic-os/commits/main)
 [![claude code](https://img.shields.io/badge/built%20for-Claude%20Code-1a3a5c)](https://docs.claude.com/claude-code)
 
+[**🪜 Evolution Path**](EVOLUTION_PATH.md) ·
 [**📖 Architecture**](ARCHITECTURE.md) ·
 [**📋 Done Contract**](DONE_CONTRACT.md) ·
 [**📜 Changelog**](CHANGELOG.md) ·
@@ -209,6 +210,21 @@ Single interface agent fronts everything. Domain entries own recurring work. Ent
 Hooks fire deterministically at **SessionStart**, **PreToolUse**, **PostToolUse**, and **Stop**. The rules you set don't drift across sessions because they're enforced at tool dispatch time, not relied on the model to remember.
 
 > 📖 Read [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full canonical flow, design principles, and the 10 Mermaid diagrams describing each layer.
+
+---
+
+## 🪜 Where do you go from here?
+
+Once bootstrap is done, the system has a **22-rung evolution ladder** in [`EVOLUTION_PATH.md`](EVOLUTION_PATH.md) — grouped into 4 phases:
+
+- 🌱 **Foundations** (Rungs 1–5) — first domain, first decision, first habit
+- 🌿 **Compounding** (Rungs 6–11) — second domain, canon ingestion, weekly ritual
+- 🌳 **Mastery** (Rungs 12–17) — orchestrators, custom canons, governance rigor
+- 🌲 **Authorship** (Rungs 18–22) — books → decisions, multi-school committees, authored canon
+
+Every rung tells you **what you'll have**, **why it matters**, and **Scardini's practice** as a mirror. You stop wherever you want.
+
+> ✨ **Darwin runs in path mode** — invoke the `darwin-path-mode` skill (or ask *"where am I on the ladder?"*) and Darwin reads your current state, surfaces the next 2-3 rungs that are ready + recommended, and **never pushes** beyond what you ask for.
 
 ---
 

@@ -8,31 +8,36 @@
 
 ## 🎯 Currently shipped
 
-`v1.0.0` released **2026-06-22**. See [`CHANGELOG.md`](CHANGELOG.md) for the full inventory.
+**Latest:** `v2.0.0` released **2026-06-23** — Evolution Path (22-rung ladder) + Darwin path mode.
+Release history: `v1.0.0` → `v1.0.1` → `v1.1.0` → `v1.1.1` → `v1.1.2` → **`v2.0.0`**.
+
+See [`CHANGELOG.md`](CHANGELOG.md) for the full inventory and [`EVOLUTION_PATH.md`](EVOLUTION_PATH.md) for the rung ladder itself.
 
 ---
 
-## 🚧 In flight (v1.0.x patches)
+## ✅ Completed since v1.0
 
-| Priority | Item | Why now |
-|---|---|---|
-| 🟢 High | **Visual polish** of architecture + sub-READMEs | First-impression for BCG / external readers |
-| 🟢 High | **ROADMAP.md** + TOC on README | Reader navigation on a 300-line README |
-| 🟡 Medium | **Architecture-VISUAL.html** refresh | Currently last-rebuilt before v1.0 polish pass |
-| 🟡 Medium | **Migration script** for orphaned legacy `~/.config/agentic-os/escalation-state.json` | Old installs not yet on the namespaced path |
+| Item | Release |
+|---|---|
+| ROADMAP.md + visual polish across ARCHITECTURE + sub-READMEs | v1.0.1 |
+| `bootstrap-progress.sh` real progress persistence + social preview PNG + CI smoke tests | v1.1.0 |
+| Phantom-reinit fix + 6 CI fixture tests | v1.1.1 |
+| Marker check for non-agentic-os repos + post-success-path canon | v1.1.2 |
+| **Evolution Path** (22 rungs, 4 phases) + **Darwin path mode** + `darwin-path-mode` skill | **v2.0.0** |
 
 ---
 
-## 🧪 Tentative (v1.1)
+## 🧪 Tentative (v2.1+)
 
 | Item | Trigger | Effort |
 |---|---|---|
-| 🎬 **Asciinema demo cast** in README | Real bootstrap session to record | M |
-| 🖼️ **Social preview image** | Design + upload via `gh repo edit` | S |
-| 💾 **`os-bootstrap` actual progress persistence** | First real fork exercises the contract | M |
+| 🎬 **Asciinema demo cast** in README | Real bootstrap session to record (needs operator) | M |
+| 🖼️ **Social preview image** upload to repo Settings | Manual step (gh CLI doesn't support OG upload) | S |
 | 📚 **More canon + self-audit pairs** shipped as worked examples | Operator absorbs a second canon | M |
-| 🧠 **`agent-state/` per-agent state files** with richer worked examples | Templates landed; live examples now valuable | S |
+| 🧠 **Richer agent-state worked examples** with real Handoff blocks | Templates landed; live examples now valuable | S |
 | 🔧 **`install.sh` Linux smoke test** in CI | Validate beyond macOS dev environment | M |
+| 🪜 **Rung completion auto-detection** beyond Darwin manual evaluation | After 30+ days of path-mode usage data | L |
+| 🎴 **Per-rung skill triggers** so the path is invokable by rung number | Path mode usage validates the rung naming | M |
 
 ---
 
