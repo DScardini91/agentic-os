@@ -11,6 +11,30 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ---
 
+## 🩹 [1.1.1] — 2026-06-23
+
+> Patch release fixing a phantom-reinit bug in `bootstrap-progress.sh` discovered during the v1.1.0 dry-run.
+
+### 🐛 Fixed
+
+- **Phantom progress-file reinit after ALL_COMPLETE.** `bootstrap-progress.sh next` was calling `_init_if_missing` unconditionally, which re-created the progress file with all-pending blocks on a freshly bootstrapped system. Any downstream check that ran `next` post-bootstrap would falsely report "1_identity next", producing infinite directive loops or re-execution of completed work.
+
+  Fix: `_init_if_missing` is now sentinel-aware — it does not create a progress file when `.bootstrap-pending` is absent. `status` and `next` short-circuit to `{"state":"bootstrapped"}` and `done` respectively in that case. `start` and `complete` refuse with a clear message when the system is already bootstrapped, exit code 3.
+
+### 🧪 Added
+
+- **Six CI fixture tests** for `bootstrap-progress.sh` (was one end-to-end test). New coverage:
+  - Test 3: post-bootstrap `next` returns `done` without phantom re-init
+  - Test 4: `status` reports `{"state":"bootstrapped"}` without side-effects
+  - Test 5: `start` refused with helpful message when sentinel absent
+  - Test 6: mid-bootstrap interruption + resume returns the in-progress block
+
+### 🔄 Migration from v1.1.0
+
+- No action required. The fix only changes behavior when the system is already bootstrapped (where the old behavior was broken).
+
+---
+
 ## 🚀 [1.1.0] — 2026-06-23
 
 > Feature release closing three known limitations from v1.0.

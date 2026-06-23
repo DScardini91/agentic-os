@@ -25,8 +25,14 @@ command -v jq >/dev/null 2>&1 || { echo "jq required" >&2; exit 1; }
 BLOCKS=("1_identity" "2_harness_naming" "3_domains" "4_technical_wiring")
 
 # ── Initialize file if absent ──────────────────────────────────────────────
+# Only initializes if the sentinel is present (system is virgin or mid-bootstrap).
+# Without sentinel = already bootstrapped (or placeholder mode chosen); creating
+# a progress file here would be wrong — it would re-trigger phantom blocks.
 _init_if_missing() {
   [ -f "$PROGRESS_FILE" ] && return
+  if [ ! -f "$SENTINEL" ]; then
+    return  # bootstrapped state — do not init
+  fi
   local now; now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
   jq -n --arg now "$now" '{
     started_at: $now,
@@ -42,14 +48,27 @@ _init_if_missing() {
 
 # ── Subcommand: status ────────────────────────────────────────────────────
 _status() {
+  if [ ! -f "$SENTINEL" ] && [ ! -f "$PROGRESS_FILE" ]; then
+    echo '{"state":"bootstrapped","note":"no sentinel and no progress file present"}'
+    return
+  fi
   _init_if_missing
   cat "$PROGRESS_FILE"
 }
 
 # ── Subcommand: next ──────────────────────────────────────────────────────
 _next() {
+  # If sentinel is absent (bootstrapped) and no progress file lingering,
+  # the answer is "done" — do not synthesize a fresh progress file.
+  if [ ! -f "$SENTINEL" ] && [ ! -f "$PROGRESS_FILE" ]; then
+    echo "done"
+    return
+  fi
   _init_if_missing
-  local nxt
+  if [ ! -f "$PROGRESS_FILE" ]; then
+    echo "done"
+    return
+  fi
   for blk in "${BLOCKS[@]}"; do
     state=$(jq -r --arg b "$blk" '.blocks[$b]' "$PROGRESS_FILE")
     if [ "$state" != "completed" ]; then
@@ -64,6 +83,10 @@ _next() {
 _start() {
   local blk="$1"
   [ -z "$blk" ] && { echo "usage: $0 start <block-name>" >&2; exit 2; }
+  if [ ! -f "$SENTINEL" ]; then
+    echo "refused: system is already bootstrapped (no .bootstrap-pending). To re-bootstrap, recreate the sentinel first." >&2
+    exit 3
+  fi
   _init_if_missing
   local now; now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
   local tmp; tmp=$(mktemp)
@@ -77,6 +100,10 @@ _start() {
 _complete() {
   local blk="$1"
   [ -z "$blk" ] && { echo "usage: $0 complete <block-name>" >&2; exit 2; }
+  if [ ! -f "$SENTINEL" ] && [ ! -f "$PROGRESS_FILE" ]; then
+    echo "refused: system is already bootstrapped — nothing to complete." >&2
+    exit 3
+  fi
   _init_if_missing
   local now; now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
   local tmp; tmp=$(mktemp)
