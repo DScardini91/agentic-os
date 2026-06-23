@@ -52,6 +52,30 @@ jobs:
           print("All YAML configs parse cleanly.")
           EOF
 
+      - name: Smoke test install.sh (--check mode, no mutations)
+        run: |
+          # Add yq to test the optional-prereq path is OK without it
+          # Verify --check exits 0 and reports prereqs cleanly
+          bash scripts/install.sh --check || (echo "install.sh --check FAILED" && exit 1)
+          # Verify full install on fresh checkout (in CI, scripts not yet exec)
+          bash scripts/install.sh --quiet || (echo "install.sh FAILED" && exit 1)
+
+      - name: Smoke test bootstrap-progress.sh contract
+        run: |
+          mkdir -p /tmp/bp-ci-test
+          touch /tmp/bp-ci-test/.bootstrap-pending
+          CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh status >/dev/null
+          NXT=$(CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh next)
+          test "$NXT" = "1_identity" || (echo "expected next=1_identity, got $NXT" && exit 1)
+          CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh complete 1_identity >/dev/null
+          CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh complete 2_harness_naming >/dev/null
+          CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh complete 3_domains >/dev/null
+          OUT=$(CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh complete 4_technical_wiring)
+          echo "$OUT" | grep -q "ALL_COMPLETE" || (echo "ALL_COMPLETE not emitted: $OUT" && exit 1)
+          test ! -f /tmp/bp-ci-test/.bootstrap-pending || (echo "sentinel not removed" && exit 1)
+          test ! -f /tmp/bp-ci-test/.bootstrap-progress.json || (echo "progress file not removed" && exit 1)
+          echo "bootstrap-progress.sh contract OK"
+
       - name: Check markdown link integrity (control-plane + root)
         run: |
           python3 - <<'EOF'
