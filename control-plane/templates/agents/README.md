@@ -1,6 +1,12 @@
-# Agent templates
+# 📐 Agent templates
 
-Instantiable templates the operator (or `os-bootstrap`) uses to create new agents. Each template is a `.template.md` file with `<placeholder>` markers the operator fills in.
+> **Instantiable templates** the operator (or `os-bootstrap`) uses to create new agents. Each template is a `.template.md` file with `<placeholder>` markers the operator fills in.
+
+[← Back to README](../../../README.md) · [Agent patterns](../../agent-patterns/README.md) · [Agent-state template](../agent-state-template.md)
+
+---
+
+## 📋 Available templates
 
 | Template | Pattern doc | When to instantiate |
 |---|---|---|
@@ -9,7 +15,9 @@ Instantiable templates the operator (or `os-bootstrap`) uses to create new agent
 | [orchestrator.template.md](orchestrator.template.md) | [agent-patterns/orchestrator.md](../../agent-patterns/orchestrator.md) | Domain has 3+ named lenses voting independently and the synthesis is non-trivial |
 | [fallback.template.md](fallback.template.md) | [agent-patterns/fallback.md](../../agent-patterns/fallback.md) | OS has > 5 specialists and Darwin has flagged "interface agent did non-trivial work itself" twice or more |
 
-## How `os-bootstrap` uses these
+---
+
+## 🤖 How `os-bootstrap` uses these
 
 During Block 3 (domain selection) and the entity-guardian step:
 
@@ -19,14 +27,18 @@ During Block 3 (domain selection) and the entity-guardian step:
 4. `control-plane/memory/<chosen-name>/state.md` is created from `templates/agent-state-template.md`.
 5. The new agent is registered in `control-plane/registry/agents.md`.
 
-## Why templates separate from pattern docs
+---
+
+## 🎯 Why templates separate from pattern docs
 
 - **Pattern docs** (`agent-patterns/*.md`) explain the role, when to instantiate, and anti-patterns. They are reference reading.
 - **Templates** (`templates/agents/*.template.md`) are the concrete files copied at instantiation time.
 
 Splitting them lets pattern docs evolve without breaking the instantiation flow, and lets templates be edited without re-writing the pedagogy.
 
-## Operator override
+---
+
+## ✏️ Operator override
 
 Operators can edit templates freely after bootstrap. A common change: adopting a different state-file location convention, or adding a fixed footer block (emoji policy, escalation rules) every new domain agent should inherit.
 
