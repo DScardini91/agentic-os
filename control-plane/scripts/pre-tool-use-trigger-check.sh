@@ -22,7 +22,9 @@ LOG_DIR="$ROOT/control-plane/memory/observability"
 FIRES_LOG="$LOG_DIR/pre-tool-fires.jsonl"
 CALLS_LOG="$LOG_DIR/agent-calls.jsonl"
 TRIGGERS="$ROOT/control-plane/config/triggers.yaml"
-ESC_FILE="$HOME/.config/agentic-os/escalation-state.json"
+# Namespace by project hash (matches session-start-violations.sh)
+PROJECT_HASH=$(echo "$ROOT" | shasum 2>/dev/null | cut -c1-12 || echo "default")
+ESC_FILE="$HOME/.config/agentic-os/$PROJECT_HASH/escalation-state.json"
 
 mkdir -p "$LOG_DIR"
 [ -f "$TRIGGERS" ] || exit 0

@@ -20,7 +20,11 @@ ROOT="${CLAUDE_PROJECT_DIR:-$PWD}"
 LOG_DIR="$ROOT/control-plane/memory/observability"
 FIRES_LOG="$LOG_DIR/pre-tool-fires.jsonl"
 CALLS_LOG="$LOG_DIR/agent-calls.jsonl"
-ESC_DIR="$HOME/.config/agentic-os"
+
+# Namespace escalation state by project-dir hash so two clones / forks on the
+# same machine do not contaminate each other's escalation file (gamma-guardian D1).
+PROJECT_HASH=$(echo "$ROOT" | shasum 2>/dev/null | cut -c1-12 || echo "default")
+ESC_DIR="$HOME/.config/agentic-os/$PROJECT_HASH"
 ESC_FILE="$ESC_DIR/escalation-state.json"
 
 mkdir -p "$ESC_DIR"
