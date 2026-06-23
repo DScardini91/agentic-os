@@ -1,8 +1,13 @@
 # agentic-os
 
+[![validate](https://github.com/DScardini91/agentic-os/actions/workflows/validate.yml/badge.svg)](https://github.com/DScardini91/agentic-os/actions/workflows/validate.yml)
+[![license](https://img.shields.io/github/license/DScardini91/agentic-os)](LICENSE)
+[![latest tag](https://img.shields.io/github/v/tag/DScardini91/agentic-os?sort=semver)](https://github.com/DScardini91/agentic-os/releases)
+[![last commit](https://img.shields.io/github/last-commit/DScardini91/agentic-os)](https://github.com/DScardini91/agentic-os/commits/main)
+
 > A personal operating system on top of Claude Code. Agents, memory, hooks, skills, and conventions that turn an LLM from a generic assistant into a chief of staff for your work and life.
 
-**v1.0** · MIT license · 12-line quickstart · [Architecture](ARCHITECTURE.md) · [Done Contract](DONE_CONTRACT.md)
+**v1.0** · MIT license · 12-line quickstart · [Architecture](ARCHITECTURE.md) · [Done Contract](DONE_CONTRACT.md) · [Changelog](CHANGELOG.md)
 
 ---
 
