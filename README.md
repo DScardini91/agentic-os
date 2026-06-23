@@ -55,7 +55,7 @@ You open Claude Code in this repo. It detects you're new, runs a **10-minute int
 >
 > 🧬 **An OS analyst (Darwin)** observes the system over weeks. Surfaces drift. Proposes structural change in a weekly governance pass.
 >
-> 🚧 **Hooks** enforce the rules deterministically *before any tool fires* — no direct merges to main, no edits to control-plane files without senior-advisor invocation, no work on protected repos without owner-agent invocation.
+> 🚧 **Hooks** run *before every tool fires* — some hard-deny (direct merges to main, writes to declared protected repos without owner agent invoked); others warn-loud (edits to control-plane files without senior-advisor invocation, hub-mandate violations). Deny vs warn is documented per-hook in `.claude/settings.json`; the harness ships in warn-loud mode by default so a fork operator can observe drift before promoting hooks to hard-deny.
 
 The system is opinionated **and the opinions are documented**. Opt out of any of them with a one-line config edit. See [the opt-out section](#-opinionated-topology-and-how-to-opt-out).
 
@@ -140,7 +140,7 @@ bash scripts/validate-all.sh
 </tr>
 <tr>
 <td>🪝 <b>Hooks</b><br/>(<code>.claude/hooks/</code> + <code>settings.json</code>)</td>
-<td>5 hooks across SessionStart × 6, PreToolUse × 4 matchers, PostToolUse × 1, Stop × 2</td>
+<td>6 hook scripts in <code>.claude/hooks/</code>; wired in <code>settings.json</code> as: SessionStart × 6 invocations (calling control-plane scripts), PreToolUse × 4 matchers (Bash/Write/Edit/MultiEdit), PostToolUse × 1 (Agent → <code>log-agent-call</code>), Stop × 2</td>
 <td><a href="./.claude/settings.json"><code>.claude/settings.json</code></a></td>
 </tr>
 <tr>
@@ -288,7 +288,7 @@ Everything in this repo is meant to be edited:
 | 🤖 Agents shipped | **10** (all with YAML frontmatter) |
 | 🧩 Agent patterns documented | **8** |
 | 📋 Universal best practices | **11** |
-| 🪝 Hook integrations | **5 hooks across 4 lifecycle events** |
+| 🪝 Hook integrations | **6 hook scripts** wired across SessionStart / PreToolUse / PostToolUse / Stop |
 | 🧪 CI checks | **6 (frontmatter, fixtures, compilers, YAML lint, link integrity, regex)** |
 | ✅ Status | All CI green |
 

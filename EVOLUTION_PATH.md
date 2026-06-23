@@ -20,10 +20,11 @@ Every rung tells you:
 - **Why it matters** (in operator terms, not theory)
 - **Recommended? Optional? Already done?**
 - **Scardini's practice** — a concrete example from how Daniel Scardini operates his own OS, so you can see the pattern compound, not just sit on a page
+- **Other operator shapes** — for select rungs, alternative archetypes that take the same rung in a different direction, so the example doesn't lock you into one operator's choices
 
-> 💡 The template starts you at **Rung 0**. Most operators stop somewhere around **Rung 8–10**. Scardini lives around **Rung 18–20**. You decide where you settle.
+> 💡 The template starts you at **Rung 0**. Most operators stop somewhere around **Rung 8–10**. Scardini aims for Rungs 18–20 — and honestly **settles around 14–16 most weeks** (Mastery, not Authorship-on-tap). You decide where you settle.
 
-> ⚠️ **Read "Scardini's practice" as mirror, not prescription.** The specific books, ratios, and choices below are one operator's. Yours will differ. **The pattern is the canon; the instances are personal.** Do not adopt Scardini's choices because they're listed — adopt the *shape* of the discipline, then fill it with your own content.
+> ⚠️ **Read "Scardini's practice" as mirror, not prescription.** The specific books, ratios, and choices below are one operator's. **The pattern is the canon; the instances are personal.** Adopt the *shape* of the discipline, then fill it with your own content. This is the only disclaimer needed — it applies to every "Scardini's practice" block below; we don't repeat it.
 
 ---
 
@@ -55,7 +56,6 @@ You read the rungs in order, but you implement only as many as compound real val
 **Recommended?** ✅ Required.
 
 **Scardini's practice:** Daniel runs the same interview every time he forks the template for a peer. He treats `memory/self/communication-style.md` as the single load-bearing file — *"if Claude reads only one thing about me, it reads this"* — and updates it on every real correction.
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -68,7 +68,6 @@ You read the rungs in order, but you implement only as many as compound real val
 **Recommended?** ✅ Strongly recommended.
 
 **Scardini's practice:** Daniel writes 200–500 words a day. Never a task list — always a narrative ("what I learned about myself today" is a recurring section). The discipline took ~3 weeks to stick.
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -81,7 +80,6 @@ You read the rungs in order, but you implement only as many as compound real val
 **Recommended?** ✅ Required for any non-trivial operation.
 
 **Scardini's practice:** Daniel uses the `decision-log-entry` skill so the model captures **verbatim quotes** — *"polished paraphrase is the #1 failure mode"*. His decision log on his private OS sits at D-150+ after a year.
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -94,7 +92,11 @@ You read the rungs in order, but you implement only as many as compound real val
 **Recommended?** ✅ Required. Start with **one**. Resist the urge to seed three.
 
 **Scardini's practice:** Daniel started with only `professional/` for the first month. Added `finance/` only when his monthly close started taking real time. The other four shipped folders sat untouched until they earned activation.
-> *Mirror, not prescription — your shape will differ.*
+
+**Other operator shapes for Rung 4:**
+- *A solo founder* might activate only `business/` first — collapses professional + finance into one because the boundary doesn't exist yet.
+- *A grad student* might start with `research/` + `learning/`, leaving `finance/` deferred until thesis defense closes.
+- *A creative* might activate `craft/` first (writing, music, design) — domain where most decisions actually compound — and treat `professional/` as a service domain that exists to fund the craft.
 
 ---
 
@@ -107,7 +109,6 @@ You read the rungs in order, but you implement only as many as compound real val
 **Recommended?** ✅ Run weekly minimum.
 
 **Scardini's practice:** Daniel ties it to Friday afternoons. *"Like clearing the desk before the weekend."*
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -126,7 +127,6 @@ You read the rungs in order, but you implement only as many as compound real val
 **Recommended?** 🟡 Optional. Only if your real life has two distinct areas that generate ≥ 1 decision/month each.
 
 **Scardini's practice:** Daniel added `finance/` second, then `learning/` third, then `investments/` fourth. Each addition was triggered by **observable need**, never speculative.
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -139,7 +139,13 @@ You read the rungs in order, but you implement only as many as compound real val
 **Recommended?** ✅ Strongly recommended for any operator with a primary commitment.
 
 **Scardini's practice:** Daniel runs a `family-guardian` that knows his household by member, the recurring evening routine, and the boundaries he's declared. It surfaces concrete observations — *"this would be the 4th evening this week the principal hasn't seen the youngest dependent awake"* — never abstractions like "balance" or "self-care". He treats it as **the most load-bearing agent in the system**.
-> *Mirror, not prescription — your shape will differ.*
+
+**Other operator shapes for Rung 7:**
+- *An athlete in training* might run a `recovery-guardian` that knows the macro-cycle, the planned rest days, and the sleep floor — fires when a proposal compresses recovery below threshold.
+- *A solo creative* might run a `deep-work-guardian` that protects a specific morning block — fires when meetings or context-switches try to fragment it.
+- *A primary caregiver* might run a `caregiving-guardian* that surfaces concrete schedule conflicts ("this would be the second medical appointment you committed to this week — both before 9am").
+
+The pattern is always the same: **concrete observations, not abstractions**.
 
 ---
 
@@ -158,9 +164,15 @@ You read the rungs in order, but you implement only as many as compound real val
 - **The Black Swan + Fooled by Randomness + Antifragile + Skin in the Game** — Taleb (informs Walter lens 2 entirely)
 - **Predictably Irrational** — Ariely (bias detection in Walter lens 1)
 - **The 7 Habits of Highly Effective People** — Covey (Q2 priority in the operating core)
-> *Mirror, not prescription — your shape will differ.*
 
 Every one of those has a self-audit. He re-checks on the dates the audit prescribes — *"I read the canon, never the prior audit, when re-scoring. Otherwise the loop becomes the OS following the OS."*
+
+**Other operator shapes for Rung 8:**
+- *A medical practitioner* might ingest *Atul Gawande's Checklist Manifesto* + a clinical-decision-making text + an institutional protocol → audit measures *"how many of my recent decisions used a written checklist?"*
+- *A craftsperson* might ingest two books on their craft (one technical, one philosophical) → audit measures *"how often did I apply the deliberate-practice scaffolding this month?"*
+- *A research scientist* might ingest a methods textbook + a philosophy-of-science work → audit measures *"how often did I pre-register hypotheses vs post-hoc rationalize?"*
+
+The shelf is **always the operator's**. The pattern — canon paired with audit, re-checked on dated cadence — is what travels.
 
 ---
 
@@ -173,7 +185,11 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** ✅ Required once the OS has > 7 days of accumulated signal.
 
 **Scardini's practice:** Daniel invokes deep mode every Friday at 17:00. Walter pressure-tests each proposal before it reaches him. Proposals that arrive without explicit reopening criteria are returned. *"If you don't know how to know you were wrong, you don't get to be right."*
-> *Mirror, not prescription — your shape will differ.*
+
+**Other operator shapes for Rung 9:**
+- *A weekend operator* might run deep mode Sunday morning — when the prior week is closed and the next week hasn't started. Different cognitive state; same loop.
+- *A monthly rhythm* works for operators with low-frequency, high-stakes decisions (board members, fund managers). Weekly is overkill; monthly deep mode + daily housekeeping is sufficient.
+- *A milestone-driven operator* might invoke deep mode at sprint or quarter boundaries instead of on a clock. Calendar-agnostic; what matters is that deep mode actually runs with accumulated signal, not that it runs on a specific day.
 
 ---
 
@@ -186,7 +202,6 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** ✅ Run `memory-consolidate` weekly alongside the governance ritual.
 
 **Scardini's practice:** Daniel's `auto/` tier carries ~80 entries. Almost half are `feedback` type — corrections he made once that the model now persists across sessions. *"Every correction not persisted is a correction I'll have to make again."*
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -199,7 +214,6 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** 🟡 Recommended once you've ingested 2+ canons.
 
 **Scardini's practice:** Daniel runs four canonical cards (Dalio compact embedded, Walter pressure-test, Kowalski operating core, domain specialist routing). He's stricter than the template default about the embed slot — *"one inline card is more usable than two."* The default is 1/2 embed slots used.
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -218,7 +232,11 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** 🟡 Optional. Only if a single domain in your life has 3+ stable lenses that should evaluate the same input independently.
 
 **Scardini's practice:** Daniel runs an `investment-cio` orchestrator coordinating **10 voting schools** (Buffett · Graham · Damodaran · Markowitz · Fama-French · Black-Litterman · Bogle · Momentum · Fisher · Ensemble Quant) plus 4 consultative modules. Every allocation passes through the committee with explicit weights. *"Disagreement that's logged is disagreement that compounds."*
-> *Mirror, not prescription — your shape will differ.*
+
+**Other operator shapes for Rung 12:**
+- *A product manager* might orchestrate a `feature-decision` committee of 3-5 lenses (user research / engineering cost / business case / strategic fit / risk) for each major roadmap call.
+- *A clinician* might orchestrate a `differential-diagnosis` committee with named specialist sub-agents (cardio / endocrine / neuro / etc.) — integration rule: any "rule out" carries veto until labs return.
+- *An editor* might orchestrate a `manuscript-review` committee (substance / voice / pacing / hostile-reader) — integration rule: majority + minority report when at least one lens dissents.
 
 ---
 
@@ -231,7 +249,6 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** 🟡 Optional. Only the deepest operators reach this.
 
 **Scardini's practice:** Daniel is mid-authorship of two canons — *Harness Engineering for Knowledge Workers* and *Operator OS as Compounding Asset*. Both started as observed patterns in his own work; both will ship as paired canon+audit.
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -244,7 +261,6 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** ✅ Required for any client-facing operator.
 
 **Scardini's practice:** Daniel runs the gate on every deck that leaves his system. Including drafts he was *sure* were ready. *"The gate is cheap. The 'they didn't answer the question' email is not."*
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -257,7 +273,6 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** ✅ Required for any public or multi-operator fork.
 
 **Scardini's practice:** Daniel's CI catches frontmatter drift weekly. *"Every catch is a future regression I didn't have to debug at 11 pm."*
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -270,7 +285,6 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** ✅ Required once weekly ritual runs.
 
 **Scardini's practice:** Daniel calls this *"the most expensive lesson I learned about systems"* — early versions had Darwin generating proposals on every session, which collapsed into noise within two weeks. The 7-day frequency lock is non-negotiable now.
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -283,7 +297,11 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** ✅ Required for any operator whose work depends on stakeholder perception (which is most of them).
 
 **Scardini's practice:** Daniel applies the rule strictly. Every client-facing deliverable gets a planned signaling layer. He calibrates the ratio per artifact — *"a routine internal weekly doesn't need it; a board-track update does."* The calibration is itself documented in his auto-memory.
-> *Mirror, not prescription — your shape will differ.*
+
+**Other operator shapes for Rung 17:**
+- *A solo creator* might invert the ratio entirely — signaling layer = 60%+ for any piece destined for public audience, because reach is the whole job.
+- *An engineer in a flat org* might apply the rule only to twice-yearly performance moments — *"signaling overhead is a tax I pay for the calendar quarters that matter, not every PR."*
+- *A non-profit director* might map signaling onto donor-facing materials specifically, with internal team comms running unstyled and fast.
 
 ---
 
@@ -311,9 +329,13 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 - **`walter-pressure-test`** (synthesizes Kahneman + Taleb + Ariely + Pfeffer)
 - **`kowalski-operating-core`** (Minto + Covey + Dalio)
 - **`domain-specialist-routing`** (per-domain book-to-agent mapping)
-> *Mirror, not prescription — your shape will differ.*
 
 *"Every concept card is a year of operator behavior compressed into a routing rule."*
+
+**Other operator shapes for Rung 18:**
+- *A teacher* might ingest pedagogy texts → distill into a `lesson-planning` card with `decision_types: ["weekly plan", "unit design", "student-conference prep"]`. Same pipeline; entirely different output.
+- *A trader* might ingest market-microstructure books → produce a card on `decision_types: ["entry sizing", "exit discipline", "risk-limit override"]`. The card never tells them WHAT to trade; it surfaces frameworks WHEN they're making the type of decision the framework was built for.
+- *A startup operator* might compress *The Hard Thing About Hard Things* + *High Output Management* into a `people-decisions` card with triggers like *"someone disagrees with the strategy"* or *"first-time hire at this level."*
 
 ---
 
@@ -326,7 +348,6 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** 🟡 Optional. Only domains with genuine 10+ lenses justify this surface area.
 
 **Scardini's practice:** Daniel's `investment-cio` is the canonical example (see Rung 12). He's mid-experiment with a second one — a `spiritual-cte` that coordinates 25 specialists across 8 layers for theological exegesis. Both required 6+ months of operating discipline before they paid off.
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -339,7 +360,6 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** 🟡 Optional. Only when the OS has > 5 specialists and Darwin flags "interface agent did non-trivial work itself" ≥ 2 times in a governance pass.
 
 **Scardini's practice:** Daniel ran without a fallback for the first year. Added it after Darwin's third consecutive pass flagged the same pattern. *"The fallback is a Darwin signal, not a victory."*
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -352,7 +372,6 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** ✅ Required from Rung 15 onward. Otherwise the harness collapses under its own weight.
 
 **Scardini's practice:** Daniel calls this his **most important architectural commitment**. *"The OS is a guide rail, not a cage. It constrains direction, not motion. Every retained piece must keep earning its rail."* See `control-plane/best-practices/canon-self-audit-pair.md` for the canonical formulation.
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
@@ -365,7 +384,6 @@ Every one of those has a self-audit. He re-checks on the dates the audit prescri
 **Recommended?** 🟡 Optional. By definition, only operators authoring at this level reach it.
 
 **Scardini's practice:** Daniel is mid-authorship. The *Harness Engineering* canon and the *Operator OS as Compounding Asset* canon are both targeting external publication. Estimated ship: 2027. *"If the discipline only lives in my head, it dies with me. If it lives in canon+audit pairs, other operators inherit it."*
-> *Mirror, not prescription — your shape will differ.*
 
 ---
 
