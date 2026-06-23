@@ -106,7 +106,22 @@ jobs:
           NXT=$(bash $PROGRESS next)
           test "$NXT" = "2_harness_naming" || (echo "Test 6 FAIL: expected resume on 2_harness_naming, got $NXT" && exit 1)
 
-          echo "bootstrap-progress.sh contract OK — 6/6 tests pass"
+          # Test 7: status/next in a non-agentic-os directory → exit 4
+          mkdir -p /tmp/random-dir
+          rm -rf /tmp/random-dir/.bootstrap-pending /tmp/random-dir/.bootstrap-progress.json /tmp/random-dir/.claude /tmp/random-dir/control-plane
+          set +e
+          OUT=$(CLAUDE_PROJECT_DIR=/tmp/random-dir bash $PROGRESS status)
+          RC=$?
+          set -e
+          test "$RC" = "4" || (echo "Test 7 FAIL: status in random dir should exit 4, got $RC" && exit 1)
+          echo "$OUT" | jq -e '.state == "not-an-agentic-os-repo"' >/dev/null || (echo "Test 7 FAIL: state should be not-an-agentic-os-repo: $OUT" && exit 1)
+          set +e
+          CLAUDE_PROJECT_DIR=/tmp/random-dir bash $PROGRESS next 2>/dev/null
+          RC=$?
+          set -e
+          test "$RC" = "4" || (echo "Test 7 FAIL: next in random dir should exit 4, got $RC" && exit 1)
+
+          echo "bootstrap-progress.sh contract OK — 7/7 tests pass"
 
       - name: Check markdown link integrity (control-plane + root)
         run: |

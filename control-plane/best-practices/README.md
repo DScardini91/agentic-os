@@ -39,3 +39,6 @@
 
 ### 📝 Output discipline
 - [`comments-explain-why.md`](comments-explain-why.md) — Comments document the non-obvious "why"; code shows the "what"
+
+### 🧪 Testing
+- [`post-success-path-testing.md`](post-success-path-testing.md) — The terminal state of a happy path is itself a state. Test what happens AFTER the happy path completes. Case study: PR #3 → dry-run → PR #4

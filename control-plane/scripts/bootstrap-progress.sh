@@ -19,10 +19,35 @@ set -uo pipefail
 ROOT="${CLAUDE_PROJECT_DIR:-$PWD}"
 PROGRESS_FILE="$ROOT/.bootstrap-progress.json"
 SENTINEL="$ROOT/.bootstrap-pending"
+# Marker: every agentic-os install ships this file. Its presence (or any of
+# the other markers below) identifies the directory as an agentic-os repo.
+# Used by `status` / `next` to refuse to fabricate a bootstrapped answer
+# when called accidentally outside an agentic-os clone.
+REPO_MARKERS=(
+  "$ROOT/control-plane/CLAUDE.md"
+  "$ROOT/control-plane/scripts/bootstrap-progress.sh"
+  "$ROOT/.claude/settings.json"
+)
+
+# Exit codes:
+#   0 — success
+#   1 — missing prerequisite (jq)
+#   2 — usage error (missing argument)
+#   3 — wrong-state error (sentinel absent when start/complete called)
+#   4 — not-an-agentic-os-repo (no markers detected)
 
 command -v jq >/dev/null 2>&1 || { echo "jq required" >&2; exit 1; }
 
 BLOCKS=("1_identity" "2_harness_naming" "3_domains" "4_technical_wiring")
+
+# ── Marker check — is this an agentic-os repo? ────────────────────────────
+_is_agentic_os_repo() {
+  local marker
+  for marker in "${REPO_MARKERS[@]}"; do
+    [ -f "$marker" ] && return 0
+  done
+  return 1
+}
 
 # ── Initialize file if absent ──────────────────────────────────────────────
 # Only initializes if the sentinel is present (system is virgin or mid-bootstrap).
@@ -48,6 +73,10 @@ _init_if_missing() {
 
 # ── Subcommand: status ────────────────────────────────────────────────────
 _status() {
+  if ! _is_agentic_os_repo; then
+    echo '{"state":"not-an-agentic-os-repo","note":"no markers found at $CLAUDE_PROJECT_DIR"}'
+    exit 4
+  fi
   if [ ! -f "$SENTINEL" ] && [ ! -f "$PROGRESS_FILE" ]; then
     echo '{"state":"bootstrapped","note":"no sentinel and no progress file present"}'
     return
@@ -58,6 +87,10 @@ _status() {
 
 # ── Subcommand: next ──────────────────────────────────────────────────────
 _next() {
+  if ! _is_agentic_os_repo; then
+    echo "not-an-agentic-os-repo" >&2
+    exit 4
+  fi
   # If sentinel is absent (bootstrapped) and no progress file lingering,
   # the answer is "done" — do not synthesize a fresh progress file.
   if [ ! -f "$SENTINEL" ] && [ ! -f "$PROGRESS_FILE" ]; then
