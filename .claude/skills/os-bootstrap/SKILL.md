@@ -43,8 +43,9 @@ By the end of this skill, the following are true:
 
 ## Resumability — `.bootstrap-progress.json`
 
-The interview persists progress after each completed block. The file lives at repo root and tracks which blocks are done:
+The interview persists progress after each completed block via a dedicated helper script. The progress file lives at repo root and tracks which of the 4 blocks are done.
 
+**File shape:**
 ```json
 {
   "started_at": "2026-06-22T14:30:00Z",
@@ -58,13 +59,33 @@ The interview persists progress after each completed block. The file lives at re
 }
 ```
 
-On every invocation of `os-bootstrap`:
-1. Check `.bootstrap-progress.json`. If absent, start at Block 1.
-2. If present, find the first block not marked `completed` and resume there.
-3. After completing each block, update the file before moving to the next.
-4. Block 4 deletes both `.bootstrap-pending` AND `.bootstrap-progress.json` on success.
+**Helper script:** `control-plane/scripts/bootstrap-progress.sh` — read/write contract:
 
-If the operator wants to start over, delete `.bootstrap-progress.json` manually.
+```bash
+# at start of session, find where to resume
+bash control-plane/scripts/bootstrap-progress.sh next       # prints next pending block or "done"
+bash control-plane/scripts/bootstrap-progress.sh status     # prints full JSON
+
+# at the start of each block
+bash control-plane/scripts/bootstrap-progress.sh start 1_identity
+
+# at the end of each block (atomically updates state + last_updated)
+bash control-plane/scripts/bootstrap-progress.sh complete 1_identity
+
+# when Block 4 completes, the script prints "ALL_COMPLETE" and removes
+# BOTH .bootstrap-pending AND .bootstrap-progress.json automatically
+
+# operator opt-in: start over from scratch
+bash control-plane/scripts/bootstrap-progress.sh reset
+```
+
+**Skill invocation flow:**
+1. Run `bootstrap-progress.sh next` to find the resume point.
+2. If output is `done`, sanity-check the sentinel state and report to operator.
+3. Otherwise, run `bootstrap-progress.sh start <block>` and execute that block.
+4. On block completion, run `bootstrap-progress.sh complete <block>`.
+5. If the script's output contains `ALL_COMPLETE`, the bootstrap is finished — sentinel and progress file already cleaned.
+6. If interrupted mid-block, the operator re-invokes `os-bootstrap` and the next run resumes from the same block (marked `in_progress` until completion).
 
 ---
 

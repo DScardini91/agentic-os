@@ -11,6 +11,33 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ---
 
+## 🚀 [1.1.0] — 2026-06-23
+
+> Feature release closing three known limitations from v1.0.
+
+### ✨ Added
+
+- **`bootstrap-progress.sh`** — concrete implementation of the `.bootstrap-progress.json` contract documented in v1.0. Five subcommands (`status` · `next` · `start` · `complete` · `reset`). Atomic JSON writes via `jq`; auto-cleans both sentinel and progress file when all 4 blocks complete (emits `ALL_COMPLETE`). Closes Done Contract dimension #2 — bootstrap interview resumability.
+
+- **Social preview image** — `docs/diagrams/social-preview.png` (1280×640) rendered from SVG. Inline at the top of the README so GitHub link cards and LinkedIn previews carry the visual brand. Upload to repo Settings → General → Social preview for the explicit OG card.
+
+- **CI smoke tests for setup flow** — `validate.yml` now exercises:
+  - `bash scripts/install.sh --check` (prerequisite verification path)
+  - `bash scripts/install.sh --quiet` (full install on fresh CI checkout)
+  - `bootstrap-progress.sh` end-to-end contract (start → complete × 4 → ALL_COMPLETE + cleanup)
+  Catches drift between documented setup flow and actual behavior before merge.
+
+### 🔄 Updated
+
+- **`os-bootstrap` SKILL.md** — Resumability section now references the `bootstrap-progress.sh` helper directly with the canonical 5-command flow. The interview reads `next` to find the resume point and calls `start` / `complete` per block. Interruption mid-block leaves the block in `in_progress`; next invocation resumes from there.
+
+### 🔄 Migration from v1.0.x
+
+- No breaking changes. Forks that bootstrapped in v1.0 are already configured (sentinel removed); the new script does nothing on a configured system.
+- **Mid-bootstrap forks** (sentinel still present, but some blocks were already completed manually under v1.0): run `bootstrap-progress.sh status` to initialize the progress file, **then run `bootstrap-progress.sh complete <block-name>` for each block you already finished** (`1_identity`, `2_harness_naming`, `3_domains`, `4_technical_wiring` in canonical order). Without this, the next `os-bootstrap` invocation will resume from block 1 and re-execute work you already did.
+
+---
+
 ## 🚀 [1.0.0] — 2026-06-22
 
 > **First public release** of `agentic-os` — a complete template for building personal operating systems on top of Claude Code.

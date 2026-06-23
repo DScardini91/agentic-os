@@ -1,5 +1,7 @@
 <div align="center">
 
+![agentic-os social preview](docs/diagrams/social-preview.png)
+
 # 🧬 agentic-os
 
 ### A personal operating system on top of Claude Code.
