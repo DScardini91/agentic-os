@@ -11,6 +11,32 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ---
 
+## 🪞 [2.1.0] — 2026-06-23
+
+> Honesty release. A cold-eyes external review of v2.0.0 surfaced five legitimate critiques about the gap between what the repo *says* and what it *delivers*. v2.1 closes them without re-shipping the architecture.
+
+### 🔧 Fixed
+
+- **Hook enforcement language** in README clarified. Previous text claimed *"hooks enforce the rules deterministically before any tool fires"* — true only for `block-pr-merge` and `block-protected-repo-writes` (hard deny). `enforce-hub.sh` is warn-loud, not deny. New phrasing distinguishes deny vs warn per hook, notes the warn-loud default, and points to `settings.json` for the per-hook contract.
+- **Hook count math** in README. Previous text said "5 hooks across SessionStart × 6 …" — actual count is 6 hook scripts in `.claude/hooks/`, with the SessionStart × 6 invocations being control-plane scripts, not hooks. The "what ships" table and the status row now reflect that accurately.
+- **Empty `bootstrap/` directory** removed. Was shipped accidentally; carried no content; cost honesty.
+
+### 🪞 Changed
+
+- **EVOLUTION_PATH self-positioning calibrated.** Previous text said *"Scardini lives around Rung 18–20."* Honest read: he aims for 18–20 but settles around **14–16 most weeks** (Mastery, not Authorship-on-tap). The new phrasing makes the gap visible and removes unverifiable self-positioning.
+- **22 inline "Mirror, not prescription" footers removed.** Reviewer flagged that 22 repetitions read defensive, not calibrating. Single opening blockquote now carries the disclaimer ("applies to every Scardini's practice block below; we don't repeat it"). The reflection section at the end of the document is preserved as a reinforcement, not a third repetition.
+- **"Other operator shapes" alternative vignettes added** to 7 rungs (4, 7, 8, 9, 12, 17, 18). Each gives 3 different operator archetypes taking the same rung in different directions (founder vs grad student vs creative; athlete vs caregiver vs solo creator; medical vs craft vs research; weekend vs monthly vs milestone; PM vs clinician vs editor; solo creator vs IC engineer vs nonprofit director; teacher vs trader vs startup operator). The pattern is the canon; the operator-shape examples now travel without locking the reader into Scardini's specific choices.
+
+### 🔄 Migration from v2.0.0
+
+No code or schema changes. Documentation correction only. Forks pull and continue.
+
+### 📝 Honesty signal
+
+The cold-eyes review was invited (the operator asked for a critical no-context reviewer), the verdict landed approved-with-conditions, and the conditions landed in the next release. The pattern matters more than the patch itself — *"a repo whose author wrote 7 regression tests for one shell script is a repo whose claims I can trust to be tested next month too"* (reviewer's deciding factor for forking). v2.1 is the same compounding logic applied to documentation honesty.
+
+---
+
 ## 🌲 [2.0.0] — 2026-06-23
 
 > Minor-major release: introduces the **Evolution Path** — a 22-rung ladder that guides operators from fresh install all the way to authoring their own canons. Darwin gains a third invocation mode (**path mode**) that proactively surfaces the next 2-3 rungs without ever pushing.
