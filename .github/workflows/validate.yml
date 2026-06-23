@@ -64,17 +64,49 @@ jobs:
         run: |
           mkdir -p /tmp/bp-ci-test
           touch /tmp/bp-ci-test/.bootstrap-pending
-          CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh status >/dev/null
-          NXT=$(CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh next)
-          test "$NXT" = "1_identity" || (echo "expected next=1_identity, got $NXT" && exit 1)
-          CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh complete 1_identity >/dev/null
-          CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh complete 2_harness_naming >/dev/null
-          CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh complete 3_domains >/dev/null
-          OUT=$(CLAUDE_PROJECT_DIR=/tmp/bp-ci-test bash control-plane/scripts/bootstrap-progress.sh complete 4_technical_wiring)
-          echo "$OUT" | grep -q "ALL_COMPLETE" || (echo "ALL_COMPLETE not emitted: $OUT" && exit 1)
-          test ! -f /tmp/bp-ci-test/.bootstrap-pending || (echo "sentinel not removed" && exit 1)
-          test ! -f /tmp/bp-ci-test/.bootstrap-progress.json || (echo "progress file not removed" && exit 1)
-          echo "bootstrap-progress.sh contract OK"
+          PROGRESS="control-plane/scripts/bootstrap-progress.sh"
+          export CLAUDE_PROJECT_DIR=/tmp/bp-ci-test
+
+          # Test 1: virgin state — next reports first block
+          NXT=$(bash $PROGRESS next)
+          test "$NXT" = "1_identity" || (echo "Test 1 FAIL: expected next=1_identity, got $NXT" && exit 1)
+
+          # Test 2: full 4-block flow → ALL_COMPLETE + cleanup
+          bash $PROGRESS complete 1_identity >/dev/null
+          bash $PROGRESS complete 2_harness_naming >/dev/null
+          bash $PROGRESS complete 3_domains >/dev/null
+          OUT=$(bash $PROGRESS complete 4_technical_wiring)
+          echo "$OUT" | grep -q "ALL_COMPLETE" || (echo "Test 2 FAIL: ALL_COMPLETE not emitted: $OUT" && exit 1)
+          test ! -f /tmp/bp-ci-test/.bootstrap-pending || (echo "Test 2 FAIL: sentinel not removed" && exit 1)
+          test ! -f /tmp/bp-ci-test/.bootstrap-progress.json || (echo "Test 2 FAIL: progress file not removed" && exit 1)
+
+          # Test 3: post-bootstrap — next must return "done", NOT re-init the progress file
+          NXT=$(bash $PROGRESS next)
+          test "$NXT" = "done" || (echo "Test 3 FAIL (phantom re-init regression): expected done, got $NXT" && exit 1)
+          test ! -f /tmp/bp-ci-test/.bootstrap-progress.json || (echo "Test 3 FAIL: next created phantom progress file" && exit 1)
+
+          # Test 4: status reports bootstrapped state without side-effects
+          STATUS=$(bash $PROGRESS status)
+          echo "$STATUS" | jq -e '.state == "bootstrapped"' >/dev/null || (echo "Test 4 FAIL: status did not report bootstrapped: $STATUS" && exit 1)
+          test ! -f /tmp/bp-ci-test/.bootstrap-progress.json || (echo "Test 4 FAIL: status created phantom progress file" && exit 1)
+
+          # Test 5: start refused without sentinel
+          set +e
+          bash $PROGRESS start 1_identity 2>/tmp/bp-err
+          RC=$?
+          set -e
+          test "$RC" != "0" || (echo "Test 5 FAIL: start should refuse without sentinel" && exit 1)
+          grep -q "refused" /tmp/bp-err || (echo "Test 5 FAIL: refusal message missing" && exit 1)
+
+          # Test 6: mid-bootstrap resume from in_progress block
+          touch /tmp/bp-ci-test/.bootstrap-pending
+          bash $PROGRESS start 1_identity >/dev/null
+          bash $PROGRESS complete 1_identity >/dev/null
+          bash $PROGRESS start 2_harness_naming >/dev/null
+          NXT=$(bash $PROGRESS next)
+          test "$NXT" = "2_harness_naming" || (echo "Test 6 FAIL: expected resume on 2_harness_naming, got $NXT" && exit 1)
+
+          echo "bootstrap-progress.sh contract OK — 6/6 tests pass"
 
       - name: Check markdown link integrity (control-plane + root)
         run: |
