@@ -1,3 +1,12 @@
+---
+name: capture-triage
+description: Triage raw captures (free-form text, voice notes, quick thoughts) into structured artifacts — tasks, notes, project updates, follow-ups — and route to the correct domain agent. Atomic skill; consumed by intake systems (email-intake, telegram-intake) or invoked directly.
+triggers:
+  - "triage this capture"
+  - "categorize this note"
+  - "route this to the right domain"
+---
+
 # Skill: capture-triage
 
 ## Purpose

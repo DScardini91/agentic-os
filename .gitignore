@@ -48,3 +48,6 @@ control-plane/memory/darwin/health-report-*.md
 
 # Per-host overrides another operator shouldn't inherit
 .claude/settings.local.json
+
+# Bootstrap progress — local-only resumability file; never travels in commits
+.bootstrap-progress.json

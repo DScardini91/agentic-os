@@ -1,3 +1,13 @@
+---
+name: meeting-to-work-items
+description: Convert a meeting note into structured work items — tasks (with owners), decisions (verbatim when literal), follow-ups, and participant list. Atomic skill; consumed by meeting-close orchestrator or invoked directly.
+triggers:
+  - "extract work items"
+  - "process meeting notes"
+  - "convert this meeting"
+  - "what came out of this meeting"
+---
+
 # Skill: meeting-to-work-items
 
 ## Purpose

@@ -8,7 +8,7 @@ _Each entry below is a one-line pointer to a memory file in this directory. The 
 _(populated by os-bootstrap interview and ongoing operation)_
 
 ## User & relationships
-- [User profile](user_profile.md) — _filled by os-bootstrap_
+- _filled by os-bootstrap (creates `user_profile.md`). See [`_example_user_profile.md`](_example_user_profile.md) below for the expected format._
 
 ## Communication & working style
 _(filled by os-bootstrap based on interview answers)_

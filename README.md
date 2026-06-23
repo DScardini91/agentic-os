@@ -44,23 +44,27 @@ The system is opinionated and the opinions are documented. You can opt out of an
 git clone https://github.com/DScardini91/agentic-os.git
 cd agentic-os
 
-# 2. Prerequisites (one-time, per machine)
-brew install jq gh    # macOS — equivalent on Linux
-# python3 ships with macOS; on Linux: sudo apt install python3
-
-# 3. Make scripts executable (idempotent)
-chmod +x .claude/hooks/*.sh control-plane/scripts/*.sh control-plane/scripts/*.py
-
-# 4. Open Claude Code
-# The SessionStart hook detects the .bootstrap-pending sentinel and prompts
-# you to invoke the os-bootstrap skill — a 4-block interview that resolves
-# placeholders, populates memory tiers, and removes the sentinel.
-
-# 5. After bootstrap, your system is live. Confirm with:
-bash control-plane/scripts/validate-harness.sh
+# 2. Install — single command, idempotent
+bash scripts/install.sh
 ```
 
+`install.sh` verifies prerequisites (jq, python3, gh, git), makes hooks and scripts executable, primes the routing caches, validates the harness, and confirms the bootstrap sentinel is in place. Run with `--check` to verify prerequisites without changing anything.
+
+```bash
+# 3. Open Claude Code
+claude
+```
+
+The SessionStart hook detects `.bootstrap-pending` and prompts you to invoke the **os-bootstrap** skill — a 4-block interview (identity · naming · domains · technical wiring) that resolves placeholders, populates memory tiers, and removes the sentinel.
+
 The interview takes 10-15 minutes. You can pause and resume in any session.
+
+```bash
+# 4. Confirm at any time
+bash scripts/validate-all.sh
+```
+
+`validate-all.sh` runs the full check suite (frontmatter, state coverage, regex fixtures, routing compilers, YAML lint, markdown link integrity) — the same suite CI runs on every PR.
 
 ## What ships in this repo
 

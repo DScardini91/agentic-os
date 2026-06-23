@@ -41,6 +41,33 @@ By the end of this skill, the following are true:
 
 ---
 
+## Resumability — `.bootstrap-progress.json`
+
+The interview persists progress after each completed block. The file lives at repo root and tracks which blocks are done:
+
+```json
+{
+  "started_at": "2026-06-22T14:30:00Z",
+  "blocks": {
+    "1_identity": "completed",
+    "2_harness_naming": "in_progress",
+    "3_domains": "pending",
+    "4_technical_wiring": "pending"
+  },
+  "last_updated": "2026-06-22T14:42:00Z"
+}
+```
+
+On every invocation of `os-bootstrap`:
+1. Check `.bootstrap-progress.json`. If absent, start at Block 1.
+2. If present, find the first block not marked `completed` and resume there.
+3. After completing each block, update the file before moving to the next.
+4. Block 4 deletes both `.bootstrap-pending` AND `.bootstrap-progress.json` on success.
+
+If the operator wants to start over, delete `.bootstrap-progress.json` manually.
+
+---
+
 ## Interview script
 
 Run the interview in **four blocks**, in this order. Use one Agent + Skill turn per block when possible to keep the operator's cognitive load low.
