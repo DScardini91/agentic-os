@@ -62,7 +62,13 @@ jobs:
 
       - name: Smoke test bootstrap-progress.sh contract
         run: |
-          mkdir -p /tmp/bp-ci-test
+          # Simulate a real agentic-os repo layout: marker file + sentinel.
+          # The marker (control-plane/CLAUDE.md) must persist across all
+          # tests — it represents the agentic-os install that doesn't go
+          # away when bootstrap completes. Tests 3-6 specifically rely on
+          # this marker being present after sentinel removal.
+          mkdir -p /tmp/bp-ci-test/control-plane
+          touch /tmp/bp-ci-test/control-plane/CLAUDE.md
           touch /tmp/bp-ci-test/.bootstrap-pending
           PROGRESS="control-plane/scripts/bootstrap-progress.sh"
           export CLAUDE_PROJECT_DIR=/tmp/bp-ci-test
