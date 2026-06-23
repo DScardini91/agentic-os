@@ -1,75 +1,127 @@
-# EVOLUTION.md — How this repo evolves
+# 🔬 EVOLUTION.md — How this repo evolves
 
-The template encodes one operator's working discipline at one point in time. It will be wrong about some things, incomplete about others, and outdated in places within months of any release. EVOLUTION.md documents how the repo stays sharp without bloating.
+The template encodes one operator's working discipline at one point in time. It will be wrong about some things, incomplete about others, and outdated in places within months of any release. This document is **how the repo stays sharp without bloating**.
 
-## The two-rhythm governance pattern
+---
+
+## 🎼 The two-rhythm governance pattern
 
 Two complementary cadences, each doing what the other cannot:
 
-| Rhythm | Cadence | What it does | What it never does |
-|---|---|---|---|
-| **Watchdog** (light + housekeeping) | Continuous / daily | Per-session signal append, fixed daily checklist (TTL compaction, state drift, agent coverage, canon re-check). Detects FLAGs. | Deliberates. Generates structural proposals. Speaks to the principal unless ALERT fires. |
-| **Reconciliation ritual** (deep mode) | Weekly or on-demand | Reads accumulated signal + decision-log + state files. Produces an OS Health Report with ≤ 5 prioritized proposals. | Runs continuously. Fires automatically. Skips the 7-day frequency lock. |
+<table>
+<tr>
+<th width="30%">Rhythm</th>
+<th width="20%">Cadence</th>
+<th width="25%">What it does</th>
+<th width="25%">What it never does</th>
+</tr>
+<tr>
+<td>🐕 <b>Watchdog</b><br/><i>(light + housekeeping)</i></td>
+<td>Continuous / daily</td>
+<td>Per-session signal append, fixed daily checklist (TTL compaction, state drift, agent coverage, canon re-check). Detects FLAGs.</td>
+<td>Deliberates. Generates structural proposals. Speaks to the principal unless an ALERT fires.</td>
+</tr>
+<tr>
+<td>🧬 <b>Reconciliation ritual</b><br/><i>(deep mode)</i></td>
+<td>Weekly or on-demand</td>
+<td>Reads accumulated signal + decision-log + state files. Produces an OS Health Report with ≤ 5 prioritized proposals.</td>
+<td>Runs continuously. Fires automatically. Skips the 7-day frequency lock.</td>
+</tr>
+</table>
 
-Mixing the rhythms produces noise (continuous deliberation) or blindness (deliberation without accumulated signal). See [`agent-patterns/os-analyst.md`](control-plane/agent-patterns/os-analyst.md) for the full canonical reference.
+> ⚠️ **Mixing the rhythms produces noise (continuous deliberation) or blindness (deliberation without accumulated signal).** See [`agent-patterns/os-analyst.md`](control-plane/agent-patterns/os-analyst.md) for the full canonical reference.
 
-## Weekly sync ritual
+---
+
+## 📅 Weekly sync ritual
 
 Once a week, the operator invokes Darwin's deep mode:
 
 ```bash
-# (after `os-bootstrap` has run and the system has accumulated ≥ 7 days of signal)
+# (after os-bootstrap has run and the system has accumulated ≥ 7 days of signal)
 # In Claude Code:
 "darwin, deep mode now"
 ```
 
-Deep mode reads:
-- `control-plane/memory/observability/darwin-accumulator.jsonl` — light-mode session metrics
-- `control-plane/memory/observability/pre-tool-fires.jsonl` — hook fires (reminders + violations)
-- `control-plane/memory/decisions/decision-log.md` — strategic decisions
-- `control-plane/memory/darwin/state.md` — own past proposals + status
-- `learning/canon/*-self-audit.md` — canon audits
+### 📥 Deep mode reads:
+- 📊 `control-plane/memory/observability/darwin-accumulator.jsonl` — light-mode session metrics
+- 🚨 `control-plane/memory/observability/pre-tool-fires.jsonl` — hook fires (reminders + violations)
+- 📜 `control-plane/memory/decisions/decision-log.md` — strategic decisions
+- 🧠 `control-plane/memory/darwin/state.md` — own past proposals + status
+- 📚 `learning/canon/*-self-audit.md` — canon audits
 
-Produces:
-- `control-plane/memory/darwin/os-health-report-YYYY-MM-DD.md`
-- Top 3 proposals routed through the interface agent → senior advisor → principal
+### 📤 Deep mode produces:
+- 📋 `control-plane/memory/darwin/os-health-report-YYYY-MM-DD.md`
+- 🎯 Top 3 proposals routed through the interface agent → senior advisor → principal
 
-The principal decides for each:
-- **Approved** → implement, log in `decision-log.md`, mark `state.md` follow-through.
-- **Rejected** → write **reopening criteria** to `control-plane/memory/darwin/rejected-with-reopening-criteria.md`. Without criteria, the same proposal resurfaces every cycle and the analyst's signal degrades.
-- **Parked** → defer with explicit re-evaluation date.
+### 🎯 The principal decides for each:
 
-## Canon + self-audit pairing
+| Verdict | Action |
+|---|---|
+| ✅ **Approved** | Implement, log in `decision-log.md`, mark `state.md` follow-through |
+| ❌ **Rejected** | Write **reopening criteria** to `control-plane/memory/darwin/rejected-with-reopening-criteria.md`. *Without criteria, the same proposal resurfaces every cycle* |
+| ⏸️ **Parked** | Defer with explicit re-evaluation date |
 
-Every body of external knowledge absorbed into the OS (engineering standard, framework, certification) ships as two files: the canon and a self-audit. The self-audit lists items prescribed by the canon vs current OS state, with `Re-check: YYYY-MM-DD` per item.
+---
 
-`canon-recheck-due.sh` (run by housekeeping mode and on-demand) flags items due within 7 days. The anti-anchor rule: re-check by reading the **canon**, not the prior audit. Otherwise the loop becomes confirmation theater.
+## 📚 Canon + self-audit pairing
+
+Every body of external knowledge absorbed into the OS (engineering standard, framework, certification) ships as **two files**:
+
+1. 📖 **The canon** — distilled content, stable until source revises
+2. 🔍 **The self-audit** — items prescribed by the canon vs current OS state, with `Re-check: YYYY-MM-DD` per item
+
+`canon-recheck-due.sh` (run by housekeeping mode and on-demand) flags items due within 7 days.
+
+> 🚫 **The anti-anchor rule:** re-check by reading the **canon**, not the prior audit. Otherwise the loop becomes confirmation theater.
 
 See [`best-practices/canon-self-audit-pair.md`](control-plane/best-practices/canon-self-audit-pair.md).
 
-## How upstream changes land in this template
+---
+
+## 📤 How upstream changes land in this template
 
 Three categories:
 
-1. **Bug fixes** — direct PR against `main`. Reviewed via the `pr-review` skill, senior-advisor pressure-test if cross-cutting.
-2. **New agent patterns / best practices / skills** — proposed first as a GitHub Discussion with N≥2 evidence of the pattern's value. Promoted to the template only after observable use.
-3. **Structural changes** (memory tiers, hook architecture, harness machinery) — require a Darwin deep-mode proposal + senior-advisor pressure-test + explicit principal approval logged in `decision-log.md`.
+### 1️⃣ Bug fixes
+Direct PR against `main`. Reviewed via the `pr-review` skill, senior-advisor pressure-test if cross-cutting.
 
-The principle is **deliberate accretion**. Subtraction requires justification; accretion is the default — but each retained component must justify its place by being invoked or referenced. Components that go 30 days without invocation are surfaced by Darwin for re-evaluation. See [`best-practices/canon-self-audit-pair.md`](control-plane/best-practices/canon-self-audit-pair.md) and the [OS evolution principle](CLAUDE.md#opinionated-topology--and-how-to-opt-out).
+### 2️⃣ New patterns / best practices / skills
+Proposed first as a GitHub Discussion with **N≥2 evidence** of the pattern's value. Promoted to the template only after observable use.
 
-## What does NOT evolve via this loop
+### 3️⃣ Structural changes
+Memory tiers, hook architecture, harness machinery — require a Darwin deep-mode proposal + senior-advisor pressure-test + explicit principal approval logged in `decision-log.md`.
 
-- **Operator-specific identity** (`control-plane/memory/self/*`) — that is the operator's own diary, not template content.
-- **Active project state** — lives in the operator's tracker (Notion, Linear, etc.), not in the template.
-- **Domain folders the operator added post-bootstrap** — those are fork-specific.
+> 🌱 **The principle is deliberate accretion.** Subtraction requires justification; accretion is the default — but each retained component must justify its place by being invoked or referenced. Components that go 30 days without invocation are surfaced by Darwin for re-evaluation.
 
-The template covers the **shape**, not the **substance**.
+---
 
-## Versioning
+## 🚫 What does NOT evolve via this loop
+
+- 🔒 **Operator-specific identity** (`control-plane/memory/self/*`) — operator's own diary, not template content
+- 📋 **Active project state** — lives in your tracker (Notion, Linear, etc.), not in the template
+- 🌐 **Domain folders the operator added post-bootstrap** — fork-specific
+
+> 🎯 The template covers the **shape**, not the **substance**.
+
+---
+
+## 🏷️ Versioning
 
 Semantic versioning:
-- **Major (X.0.0)** — breaking changes to the harness machinery (hook schema, settings.json structure, memory tier layout). Migration notes required.
-- **Minor (X.Y.0)** — new patterns, new skills, new best practices. Backward-compatible.
-- **Patch (X.Y.Z)** — bug fixes, doc clarifications, sanitization improvements.
 
-Every release tagged `vX.Y.Z` with release notes in [`CHANGELOG.md`](CHANGELOG.md) (created at first release).
+| Bump | Trigger | Migration notes |
+|---|---|---|
+| 🚨 **Major (X.0.0)** | Breaking changes to harness machinery (hook schema, settings.json structure, memory tier layout) | Required |
+| ✨ **Minor (X.Y.0)** | New patterns, new skills, new best practices | Backward-compatible |
+| 🩹 **Patch (X.Y.Z)** | Bug fixes, doc clarifications, sanitization improvements | None |
+
+Every release tagged `vX.Y.Z` with release notes in [`CHANGELOG.md`](CHANGELOG.md).
+
+---
+
+<div align="center">
+
+🧬 **The system is alive when the operator + Darwin + the senior advisor are all reading the same signal.**
+
+</div>

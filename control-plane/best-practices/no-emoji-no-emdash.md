@@ -10,9 +10,17 @@
 
 ## How to apply
 
-- **Internal / draft output:** rules relaxed. Emoji to flag sections, em-dashes for parenthetical asides, "you" for the operator are all fine.
-- **External / publishable output:** rules active. Use en-dash, parentheses, semicolons, commas, or paragraph breaks in place of em-dashes. Use names or impersonal voice instead of second person.
-- **The interface agent should know which mode is active.** Bootstrap interview asks; operator can flip per-request.
+The default applies to **operator-bound output** — anything Claude produces FOR the principal in chat: responses, summaries, recommendations, decisions, briefings, drafts under construction. Three contexts:
+
+| Context | Emoji | Em-dash | Second person |
+|---|---|---|---|
+| Operator-bound output (chat, briefings, drafts) | ❌ off | ❌ off | ❌ off |
+| Internal scratch / WIP files | ✅ allowed | ✅ allowed | ✅ allowed |
+| Repo documentation as marketing / positioning (README, landing pages, social copy) | ✅ allowed as iconography | ✅ allowed | ✅ allowed |
+
+The marketing-copy exception exists because public README copy is read by external audiences (potential forks, recruiters, peers) under different conventions than 1:1 operator output. Emoji-as-iconography (section anchors, status indicators, visual hierarchy) carries meaning in that genre. Spamming emojis in a recommendation to the principal does not.
+
+**The interface agent should know which mode is active.** Bootstrap interview asks. The operator can flip per request with an explicit opt-in ("emoji on for this LinkedIn post" / "you can use 'you' in this email").
 
 ## Override mechanism
 
