@@ -11,6 +11,49 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ---
 
+## 🎯 [2.2.0] — 2026-06-23
+
+> **Non-technical onboarding release.** A BCG-director persona review (no code context, 10 minutes on the repo) surfaced 5 material gaps between what the README sells and what a non-engineer leigo technical can actually evaluate. v2.2 closes them — and goes further to enrich the operator-shape variety, audience qualifier, data residency, integration story, and time/cost budget.
+
+### ✨ Added — five new docs in `docs/`
+
+- **`docs/A_MONDAY.md`** — the missing narrative vignette. Three Mondays at three rungs (4, 8, 12), each showing concrete inputs/outputs of a real Monday morning at that depth. Replaces the *"system sells what it IS, not what your Monday looks like"* gap.
+- **`docs/WHO_IS_THIS_FOR.md`** — explicit audience qualifier with positive (*you'll like this if*), negative (*not for you if*), maybe band, and career-stage fit table. *"The hardest part of selling a system is honest disqualification."*
+- **`docs/DATA_AND_PRIVACY.md`** — where each kind of data lives (local · GitHub · Anthropic · external), three working postures (public-ish, private, regulated), pre-fork compliance checklist, easy-exit instructions. Resolves the *"where does my client data go?"* unknown.
+- **`docs/INTEGRATION_MAP.md`** — agentic-os vs / + Notion / Linear / Jira / Outlook / ChatGPT / Obsidian. Surface-by-surface comparison; what the OS does NOT do (deliberate non-features); four operator setup recipes.
+- **`docs/COST_AND_MAINTENANCE.md`** — honest time + dollar budget per rung. One-time setup, recurring time costs, token cost estimates, signals that the system is over-engineered for you, when to stop climbing.
+- **`docs/GLOSSARY.md`** — 12 top terms (agent · bootstrap · canon · concept card · decision log · domain · entity guardian · fork · harness · hook · skill · Walter / senior advisor) + 11 secondary terms, all in plain language. For non-engineer readers.
+
+### 🪞 Changed
+
+- **README** rewritten to lead with *output* instead of *architecture*:
+  - New **30-second pitch** at the top (5 bullets of what changes after 3 months of use)
+  - Direct callout *"What does Monday look like?"* pointing to A_MONDAY.md
+  - "Is this for you?" hardened with senior-knowledge-worker / persistent-context / regulated-environment criteria
+  - New **"Where does my data live?"** section with 3-posture table
+  - New **"How does this fit with my existing tools?"** section
+  - New **"What does this cost me?"** section with rung-by-rung budget
+  - Nav bar at top now leads with the 6 new operator-facing docs (A_MONDAY, WHO_IS_THIS_FOR, DATA, INTEGRATION, COST, GLOSSARY) before the architecture docs
+
+### 🎬 Why this release
+
+The BCG-director persona review concluded: *"Não forkaria hoje. Não porque o sistema parece ruim — ao contrário, ele me parece sério. Mas falta a vinheta concreta da semana 1."* This release lands that vinheta + the surrounding scaffolding so a senior knowledge worker who is **not a full-time engineer** can:
+
+1. Read 1 page (30-second pitch) and decide if they're curious
+2. Read 1 doc (A Monday) and decide if the output is worth their time
+3. Read 1 doc (Who is this for) and self-qualify honestly
+4. Read 1 doc (Data and Privacy) and clear it with compliance if needed
+5. Read 1 doc (Cost and Maintenance) and know the realistic budget
+6. *Then* fork
+
+Each document deliberately under 15-minute reads. Each one removable without breaking the others.
+
+### 🔄 Migration from v2.1.0
+
+No code or schema changes. All additive documentation.
+
+---
+
 ## 🪞 [2.1.0] — 2026-06-23
 
 > Honesty release. A cold-eyes external review of v2.0.0 surfaced five legitimate critiques about the gap between what the repo *says* and what it *delivers*. v2.1 closes them without re-shipping the architecture.

@@ -14,23 +14,48 @@
 [![last commit](https://img.shields.io/github/last-commit/DScardini91/agentic-os?color=orange)](https://github.com/DScardini91/agentic-os/commits/main)
 [![claude code](https://img.shields.io/badge/built%20for-Claude%20Code-1a3a5c)](https://docs.claude.com/claude-code)
 
+[**📅 A Monday**](docs/A_MONDAY.md) ·
+[**👤 Is this for me?**](docs/WHO_IS_THIS_FOR.md) ·
+[**🔒 Data and Privacy**](docs/DATA_AND_PRIVACY.md) ·
+[**🧭 Integration Map**](docs/INTEGRATION_MAP.md) ·
+[**⏱️ Cost and Maintenance**](docs/COST_AND_MAINTENANCE.md) ·
+[**📖 Glossary**](docs/GLOSSARY.md)
+
 [**🪜 Evolution Path**](EVOLUTION_PATH.md) ·
 [**📖 Architecture**](ARCHITECTURE.md) ·
 [**📋 Done Contract**](DONE_CONTRACT.md) ·
 [**📜 Changelog**](CHANGELOG.md) ·
 [**🗺️ Roadmap**](ROADMAP.md) ·
-[**🤝 Contributing**](CONTRIBUTING.md) ·
-[**🔬 Evolution**](EVOLUTION.md)
+[**🤝 Contributing**](CONTRIBUTING.md)
 
 </div>
 
 ---
 
+## ⚡ The 30-second pitch
+
+After 3 months of use, this is what changes:
+
+- 🧠 Your decisions **stop drifting** across sessions.
+- 📋 You **stop re-explaining** who you are to the model every time.
+- 🛡️ Your important commitments **stop losing** to whatever is loudest in the moment.
+- 📚 Frameworks from books you read 60 days ago **apply themselves** to today's work.
+- 🪞 Your weekly review **compounds** instead of starting from scratch.
+
+It runs on top of [Claude Code](https://docs.claude.com/claude-code), takes ~15 minutes to set up, costs ~$5–40/week in API tokens, and you can walk away in a weekend if it doesn't fit.
+
+> ⚠️ **Not for everyone — by design.** Read [👤 *Is this for me?*](docs/WHO_IS_THIS_FOR.md) before forking.
+
+---
+
 ## 📑 Table of contents
 
-- [🚀 The 90-second pitch](#-the-90-second-pitch)
+- [⚡ The 30-second pitch](#-the-30-second-pitch)
+- [📅 What does Monday look like?](#-what-does-monday-look-like)
+- [🚀 The 90-second pitch (architecture)](#-the-90-second-pitch-architecture)
 - [🎯 Is this for you?](#-is-this-for-you)
 - [⚡ Quickstart](#-quickstart)
+- [🔒 Where does my data live?](#-where-does-my-data-live)
 - [📦 What ships in this repo](#-what-ships-in-this-repo)
 - [🏗️ How it works](#️-how-it-works)
 - [🧭 Opinionated topology (and how to opt out)](#-opinionated-topology-and-how-to-opt-out)
@@ -41,7 +66,17 @@
 
 ---
 
-## 🚀 The 90-second pitch
+## 📅 What does Monday look like?
+
+If you want to see what this actually feels like before reading about how it works, **start here:**
+
+> 📅 [**A Monday at agentic-os**](docs/A_MONDAY.md) — three narrative vignettes (Rung 4 / 8 / 12) showing a real Monday at three different depths of use. ~12 min read.
+
+That document does what this one can't: shows the **output** of using the system on a real Monday, not the **architecture** that produces it.
+
+---
+
+## 🚀 The 90-second pitch (architecture)
 
 You open Claude Code in this repo. It detects you're new, runs a **10-minute interview** about who you are, how you want to be talked to, and what domains matter — then configures a multi-agent system around your answers. From that point on:
 
@@ -69,25 +104,30 @@ The system is opinionated **and the opinions are documented**. Opt out of any of
 
 ### ✅ You'll like this if you:
 
-- Operate **Claude Code daily** and notice it drifts without structure
-- Think of your own work like a small operating organization: priorities, decisions, signals, governance
-- Want **deterministic enforcement** (hooks blocking bad commands) rather than polite reminders the model ignores under pressure
-- Are comfortable reading a few markdown files before running a setup interview
-- Value an **opinionated harness** over a blank slate
+- Are a **senior knowledge worker** whose decisions get re-litigated across weeks
+- Already use **Claude Code** (or are willing to install it)
+- Have **persistent context** in your work (clients, projects, recurring decisions)
+- Are comfortable with **a few markdown files** before a setup interview
+- Value **deterministic enforcement** over soft reminders
+- Tolerate **opinionated systems** — every rule documented, every rule editable
 
 </td>
 <td width="50%" valign="top">
 
 ### ❌ This is NOT for you if you:
 
-- Want a chat companion. This is a **workbench**, not a relationship
-- Need an out-of-the-box product. The whole point is that **you instantiate it for yourself**
-- Are looking for general AI advice. The OS structures *how* Claude operates on *your* work; the work is still yours
-- Hate opinionated systems. Every rule here has a reason, but every rule is editable
+- Want a **chat companion**. This is a workbench, not a relationship
+- Need an **out-of-the-box product**. You instantiate this for yourself
+- Have **transactional work** — high volume, no persistent context per task
+- Operate in **regulated environments** where data residency is hard-constrained ([read this first](docs/DATA_AND_PRIVACY.md))
+- Need to **coordinate a team of 8+** through this — single-operator by design
+- Won't read documentation. The depth is real
 
 </td>
 </tr>
 </table>
+
+> 🔎 **Deeper qualifier with archetype matrix and career-stage fit:** [👤 *Who is this for?*](docs/WHO_IS_THIS_FOR.md)
 
 ---
 
@@ -127,6 +167,59 @@ bash scripts/validate-all.sh
 ```
 
 > 🧪 Runs the full check suite (frontmatter, state coverage, regex fixtures, routing compilers, YAML lint, markdown link integrity). Same suite CI runs on every PR.
+
+---
+
+## 🔒 Where does my data live?
+
+Your data lives in **four places** when you use agentic-os:
+
+1. 💻 **Your local machine** (the cloned repo on disk)
+2. 🐙 **Your GitHub fork** (if you committed and pushed)
+3. 🤖 **Anthropic** (whatever you send to Claude during a session — same as any other Claude Code use)
+4. 🔌 **Optional external systems** (Notion, Obsidian — only if you wire them in)
+
+The system **does not silently send anything to anywhere new.** Every byte of "where it goes" is visible in your file system and the git remote you configured.
+
+### Three working postures
+
+| Posture | When to use | What it looks like |
+|---|---|---|
+| 🌐 **Public-ish operator** | Solo, no client-confidential material | Public fork; daily logs and decisions gitignored |
+| 🔐 **Private operator** | Solo with personal-only content | Private fork; everything committed |
+| ⚖️ **Regulated operator** | Client confidentiality / compliance | Local-only or organization Git server; `control-plane/memory/` gitignored |
+
+> 📖 **Full pre-fork compliance checklist + per-tier residency table:** [🔒 *Data and Privacy*](docs/DATA_AND_PRIVACY.md)
+
+---
+
+## 🧭 How does this fit with my existing tools?
+
+It does **not replace** Notion, Linear, Outlook, ChatGPT, or whatever you already use. It **complements** them by holding the layer they all leave empty: **your operating discipline across sessions**.
+
+- 📋 **External trackers** (Notion / Linear / Jira) hold *operational state* — active projects, tasks, statuses
+- 🧬 **agentic-os** holds *structural state* — identity, decisions, frameworks, governance
+- 🤖 **Claude Code** holds *execution* — the session where work actually gets done
+
+> 🧭 **Full surface-by-surface comparison + four operator setup recipes:** [🧭 *Integration Map*](docs/INTEGRATION_MAP.md)
+
+---
+
+## ⏱️ What does this cost me?
+
+Honest budget by rung:
+
+| Rung range | Time/week | API tokens/week | What you get back |
+|---|---|---|---|
+| 1–3 (setup) | 30 min one-time + 5 min/day | ~$2–5 | Persistent context across sessions |
+| 4–7 (foundations) | 10–20 min/week | $5–15 | Decisions stop drifting |
+| 8–11 (compounding) | 30–60 min/week | $15–40 | Frameworks apply themselves |
+| 12–17 (mastery) | 1–2 hours/week | $40–100 | Reputational risk structurally managed |
+| 18–22 (authorship) | 2–4 hours/week | $100–300+ | You're authoring canon others ingest |
+
+The system is designed to **earn back its overhead** at every rung. If at any rung the weekly cost feels like overhead-without-payoff, **stop climbing** (not push harder).
+
+> ⏱️ **Full time + dollar breakdown + when to stop climbing:** [⏱️ *Cost and Maintenance*](docs/COST_AND_MAINTENANCE.md)
 
 ---
 
