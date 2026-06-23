@@ -11,6 +11,35 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ---
 
+## 🩹 [1.1.2] — 2026-06-23
+
+> Patch release closing the two remaining Walter conditions from PR #4: marker check for non-agentic-os repos, and the canon entry for post-success-path testing.
+
+### 🐛 Fixed
+
+- **`status` / `next` no longer fabricate `bootstrapped` answer outside an agentic-os repo.** If `$CLAUDE_PROJECT_DIR` (or `$PWD`) does not contain any of the canonical markers (`control-plane/CLAUDE.md`, `control-plane/scripts/bootstrap-progress.sh`, `.claude/settings.json`), both commands now exit code 4 with `{"state":"not-an-agentic-os-repo"}` instead of silently claiming the system is bootstrapped. Closes Walter LB#2 from PR #4 pressure-test.
+
+### 🧪 Added
+
+- **Test 7** in CI fixture: status + next in a non-agentic-os directory must exit 4 with the correct state JSON. CI fixture coverage: 6 → 7 tests.
+
+- **`best-practices/post-success-path-testing.md`** — canon entry promoting the lesson from PR #3 → dry-run → PR #4. The terminal state of a happy path is itself a state; test what happens after the happy path completes. Three required post-success tests per terminal-state surface: query, mutation, re-entry. Listed in `best-practices/README.md` under a new `🧪 Testing` category.
+
+### 📋 Exit code convention documented
+
+Header of `bootstrap-progress.sh` now enumerates:
+- 0 — success
+- 1 — missing prerequisite (jq)
+- 2 — usage error
+- 3 — wrong-state error (sentinel absent when start/complete called)
+- 4 — not-an-agentic-os-repo (no markers detected)
+
+### 🔄 Migration from v1.1.1
+
+No action required.
+
+---
+
 ## 🩹 [1.1.1] — 2026-06-23
 
 > Patch release fixing a phantom-reinit bug in `bootstrap-progress.sh` discovered during the v1.1.0 dry-run.
