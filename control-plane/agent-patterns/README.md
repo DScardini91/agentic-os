@@ -1,16 +1,24 @@
-# Agent patterns
+# 🧩 Agent patterns
 
-Five canonical agent roles distilled from production use of the source OS. Each pattern documents:
+> Eight canonical agent roles distilled from production use of the source OS. Each pattern documents the role, when to instantiate, when NOT to, the template, and the worked example shipped here.
 
-- **What the role is for** — the structural job it does inside the harness.
-- **When to instantiate one** — concrete signals that a new agent of this shape is needed.
-- **When NOT to instantiate** — anti-signals.
-- **Template** — a ready-to-fill agent spec.
-- **Worked example** — one or two agents in the template that already follow the pattern.
+[← Back to README](../../README.md) · [Architecture](../../ARCHITECTURE.md) · [Templates](../templates/agents/README.md) · [Best practices](../best-practices/README.md)
 
-The patterns are descriptive, not prescriptive. **You do not need every pattern.** Most installations of this OS use 3-5 agents total in early life; the patterns scale to dozens only when the operator's work genuinely fans out.
+---
 
-## Index
+## 📋 What each pattern doc covers
+
+- 🎯 **What the role is for** — the structural job it does inside the harness
+- ✅ **When to instantiate one** — concrete signals that a new agent of this shape is needed
+- ❌ **When NOT to instantiate** — anti-signals
+- 📐 **Template** — a ready-to-fill agent spec
+- 🔍 **Worked example** — one or two agents already shipped that follow the pattern
+
+> 💡 **The patterns are descriptive, not prescriptive.** You do not need every pattern. Most installations use 3-5 agents in early life; the patterns scale to dozens only when the operator's work genuinely fans out.
+
+---
+
+## 📑 Index
 
 | Pattern | One-line role | Template ships with |
 |---|---|---|

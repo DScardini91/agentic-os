@@ -1,14 +1,21 @@
-# agentic-os — Done Contract
+# 📋 agentic-os — Done Contract
 
-**Audience for this repo:** BCG peers, ex-MBB / consulting operators, builders evaluating Claude Code at scale, recruiters / hiring partners who use Daniel's GitHub as a signal of seriousness.
-
-**Daniel's intent:** this repo is the calling card. Anyone who lands here from a LinkedIn post, a BCG conversation, or a referral must be able to (1) understand what the system is in under 90 seconds, (2) clone-and-run the bootstrap in under 10 minutes, (3) leave with the impression of a thoughtful engineer who ships impeccable work.
-
-The contract below is the explicit, testable definition of "impeccable" for v1.0 launch. **Done = every box below passes.** Items grouped by surface; each has an objective verifier.
+[← Back to README](README.md) · [Architecture](ARCHITECTURE.md) · [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md)
 
 ---
 
-## 1. First impression (README + landing)
+> 🎯 **Audience:** BCG peers, ex-MBB / consulting operators, builders evaluating Claude Code at scale, recruiters / hiring partners using this GitHub as a seriousness signal.
+>
+> 🏆 **Intent:** anyone landing here from a LinkedIn post, BCG conversation, or referral should be able to:
+> 1. Understand what the system is in under **90 seconds**
+> 2. Clone-and-run the bootstrap in under **10 minutes**
+> 3. Leave with the impression of a thoughtful engineer who ships **impeccable work**
+
+The contract below is the explicit, testable definition of "impeccable" for v1.0 launch. ✅ **Done = every box below passes.** Items grouped by surface; each has an objective verifier.
+
+---
+
+## 🎬 1. First impression (README + landing)
 
 | Criterion | Verifier |
 |---|---|
@@ -22,7 +29,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | `CONTRIBUTING.md`, `LICENSE`, `CODE_OF_CONDUCT.md` present | Files exist with non-trivial content |
 | Repo description and topics set on GitHub | `gh repo edit` with description + topics: `claude-code`, `agentic-os`, `personal-os`, `harness` |
 
-## 2. Setup automation (unzip-and-go)
+## ⚡ 2. Setup automation (unzip-and-go)
 
 | Criterion | Verifier |
 |---|---|
@@ -33,7 +40,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | Bootstrap removes its own sentinel only on full success | Partial completion → sentinel persists, clear "X of 4 blocks complete" header |
 | `setup` skill complements `os-bootstrap` for non-interactive forks | `os-bootstrap --non-interactive --config=path.yaml` for CI / scripted forks |
 
-## 3. Memory layer
+## 🧠 3. Memory layer
 
 | Criterion | Verifier |
 |---|---|
@@ -43,7 +50,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | TTL rules are documented and tested | `memory-ttl-compaction.sh` runs without errors; documented in `best-practices/` |
 | Memory tier separation is visible and intuitive | A new operator can answer "where should I save X?" in under 30s by reading the memory README index |
 
-## 4. Hooks (deterministic enforcement)
+## 🪝 4. Hooks (deterministic enforcement)
 
 | Criterion | Verifier |
 |---|---|
@@ -55,7 +62,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | Loud warning when placeholders remain in active config | `session-start-placeholder-check.sh` fires when `<placeholder>` present and sentinel absent |
 | `block-pr-merge.sh` catches all common refspec variants | 15/15 fixture tests pass |
 
-## 5. Skills
+## ⚡ 5. Skills
 
 | Criterion | Verifier |
 |---|---|
@@ -66,7 +73,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | Skill list covers the canonical operator workflows | Bootstrap, decision-log entry, PR review, branch cleanup, harness-onboarding, spec cross-check, darwin housekeeping, capture triage, meeting → work items, os-bootstrap |
 | Each skill has a one-line usage example | At the top or bottom; copy-paste runnable |
 
-## 6. Agents (specs + patterns)
+## 🤖 6. Agents (specs + patterns)
 
 | Criterion | Verifier |
 |---|---|
@@ -76,7 +83,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | Agent patterns each have 1 page max, with template inline OR linked | No pattern doc exceeds 200 lines; templates separated cleanly |
 | 8 pattern docs cover every shipped agent's role | Every shipped agent is the worked example of exactly one pattern |
 
-## 7. Configs (YAML)
+## ⚙️ 7. Configs (YAML)
 
 | Criterion | Verifier |
 |---|---|
@@ -85,7 +92,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | Every placeholder in a YAML config uses consistent `<kebab-case>` notation | grep finds zero deviations |
 | YAML files are validated for parse-correctness | `scripts/tests/validate-yaml.sh` runs `yq` or `python3 -c "import yaml"` over every config |
 
-## 8. Markdowns (cross-referencing)
+## 📝 8. Markdowns (cross-referencing)
 
 | Criterion | Verifier |
 |---|---|
@@ -95,7 +102,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | Architecture, patterns, best-practices, rules, concepts each have a README index | All 5 surfaces have a `README.md` indexing their contents with one-line summaries |
 | No dead Portuguese strings (template is English) | grep for common Portuguese words (Daniel, ainda, está, são, etc.) returns zero hits outside LICENSE and decision-log examples |
 
-## 9. Capacity for evolution (continuous improvement)
+## 🔬 9. Capacity for evolution (continuous improvement)
 
 | Criterion | Verifier |
 |---|---|
@@ -105,7 +112,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | Canon + self-audit pairing is honored in `learning/canon/` examples | At least one shipped canon + self-audit pair in `learning/canon/` as a worked example |
 | `os-bootstrap-extend` skill exists for adding new agents post-bootstrap | When operator adds a new domain after initial bootstrap, a skill instantiates the agent from template with the same Q&A flow |
 
-## 10. Customization (operator's vocabulary, not template's)
+## 🎨 10. Customization (operator vocabulary, not template)
 
 | Criterion | Verifier |
 |---|---|
@@ -114,7 +121,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | All template-shipped agent names (kowalski, walter, family-guardian, maestro, terra-guide, etc.) are renamable in one place | Single command or interview step renames across all references; tested on `kowalski` → some-other-name |
 | Best-practices are opt-out, not mandatory | README states clearly that operators can delete any best-practice file they don't agree with, and explains the consequence per file |
 
-## 11. Quality gates (CI / pre-merge)
+## 🧪 11. Quality gates (CI / pre-merge)
 
 | Criterion | Verifier |
 |---|---|
@@ -123,7 +130,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 | Failed checks produce actionable error messages | Reader of a failing PR knows what to fix in under 1 minute |
 | Releases are tagged with `vX.Y.Z` and have release notes | First release `v1.0.0` includes changelog, migration notes (none for first release), known limitations |
 
-## 12. Public-facing polish
+## ✨ 12. Public-facing polish
 
 | Criterion | Verifier |
 |---|---|
@@ -135,7 +142,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 
 ---
 
-## Sequence (work plan)
+## 📅 Sequence (work plan)
 
 **Phase 1 — Stability of what exists** (1-2 sessions)
 - Frontmatter retrofit on 8 legacy agents (Walter + 4-agent critique consensus)
@@ -168,7 +175,7 @@ The contract below is the explicit, testable definition of "impeccable" for v1.0
 
 ---
 
-## Definition of done overall
+## ✅ Definition of done overall
 
 `v1.0.0` is published when every checkbox above is verified. The verifier method is named for each row. If a verifier is "tested on a clean container" or "code review", the result is recorded in `EVOLUTION.md` with a date.
 

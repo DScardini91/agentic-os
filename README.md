@@ -15,10 +15,26 @@
 [**📖 Architecture**](ARCHITECTURE.md) ·
 [**📋 Done Contract**](DONE_CONTRACT.md) ·
 [**📜 Changelog**](CHANGELOG.md) ·
+[**🗺️ Roadmap**](ROADMAP.md) ·
 [**🤝 Contributing**](CONTRIBUTING.md) ·
 [**🔬 Evolution**](EVOLUTION.md)
 
 </div>
+
+---
+
+## 📑 Table of contents
+
+- [🚀 The 90-second pitch](#-the-90-second-pitch)
+- [🎯 Is this for you?](#-is-this-for-you)
+- [⚡ Quickstart](#-quickstart)
+- [📦 What ships in this repo](#-what-ships-in-this-repo)
+- [🏗️ How it works](#️-how-it-works)
+- [🧭 Opinionated topology (and how to opt out)](#-opinionated-topology-and-how-to-opt-out)
+- [💭 Why I built this](#-why-i-built-this)
+- [🎨 Customization](#-customization)
+- [📊 Status](#-status)
+- [🤝 Contributing](#-contributing)
 
 ---
 

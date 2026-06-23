@@ -1,10 +1,34 @@
-# agentic-os — Architecture
+<div align="center">
 
-> Visual reference for the system design. For operational setup, see `control-plane/CLAUDE.md` and `control-plane/session-start.md`.
+# 🏗️ agentic-os — Architecture
+
+### Visual reference for the system design
+
+[← Back to README](README.md) · [Done Contract](DONE_CONTRACT.md) · [Evolution](EVOLUTION.md) · [Contributing](CONTRIBUTING.md)
+
+</div>
+
+> 📖 This document is the **canonical reference** for how the system is shaped. For operational setup, see [`control-plane/CLAUDE.md`](control-plane/CLAUDE.md) and [`control-plane/session-start.md`](control-plane/session-start.md).
 
 ---
 
-## 1. Agent Hierarchy
+## 📑 Table of contents
+
+1. [🤖 Agent Hierarchy](#1-agent-hierarchy)
+2. [🔄 Canonical Flow](#2-canonical-flow)
+3. [🚦 Quality Gates Pipeline](#3-quality-gates-pipeline)
+4. [🧠 Memory Architecture](#4-memory-architecture)
+5. [🌐 Domain Structure](#5-domain-structure)
+6. [📝 Agent State Lifecycle (B1 Handoff)](#6-agent-state-lifecycle-b1-handoff)
+7. [🧬 OS Governance (Darwin Loop)](#7-os-governance-darwin-loop)
+8. [🛡️ Enforcement Layer (Agentic-by-Default)](#8-enforcement-layer-agentic-by-default)
+9. [⚡ Agent Activation Model (On Invocation)](#9-agent-activation-model-on-invocation)
+10. [🗂️ Dispatch Compilation Layer](#10-dispatch-compilation-layer)
+11. [✨ Design Principles](#design-principles)
+
+---
+
+## 🤖 1. Agent Hierarchy
 
 ```mermaid
 flowchart TD
@@ -70,7 +94,7 @@ flowchart TD
 
 ---
 
-## 2. Canonical Flow
+## 🔄 2. Canonical Flow
 
 ```mermaid
 sequenceDiagram
@@ -102,7 +126,7 @@ sequenceDiagram
 
 ---
 
-## 3. Quality Gates Pipeline
+## 🚦 3. Quality Gates Pipeline
 
 ```mermaid
 flowchart LR
@@ -152,7 +176,7 @@ flowchart LR
 
 ---
 
-## 4. Memory Architecture
+## 🧠 4. Memory Architecture
 
 ```mermaid
 flowchart TB
@@ -203,7 +227,7 @@ flowchart TB
 
 ---
 
-## 5. Domain Structure
+## 🌐 5. Domain Structure
 
 ```mermaid
 flowchart LR
@@ -232,7 +256,7 @@ flowchart LR
 
 ---
 
-## 6. Agent State Lifecycle (B1 Handoff)
+## 📝 6. Agent State Lifecycle (B1 Handoff)
 
 ```mermaid
 stateDiagram-v2
@@ -256,7 +280,7 @@ stateDiagram-v2
 
 ---
 
-## 7. OS Governance (Darwin Loop)
+## 🧬 7. OS Governance (Darwin Loop)
 
 ```mermaid
 flowchart TD
@@ -346,7 +370,7 @@ Canon without self-audit tends to decay into shelfware. Self-audit without canon
 
 ---
 
-## 8. Enforcement Layer (Agentic-by-Default)
+## 🛡️ 8. Enforcement Layer (Agentic-by-Default)
 
 ```mermaid
 flowchart TD
@@ -429,7 +453,7 @@ Governance files — agent specs, operating rules, hook configurations, system-l
 
 ---
 
-## 9. Agent Activation Model (On Invocation)
+## ⚡ 9. Agent Activation Model (On Invocation)
 
 Agents operate in one of two activation modes. On-invocation is the default for all non-infrastructure agents after Hub Reform.
 
@@ -465,7 +489,7 @@ flowchart LR
 
 ---
 
-## 10. Dispatch Compilation Layer
+## 🗂️ 10. Dispatch Compilation Layer
 
 Routing is compiled at session open, not evaluated at query time. Two compilers run in the SessionStart hook and produce cached indexes injected into the Interface Agent's context.
 
@@ -510,7 +534,7 @@ flowchart TD
 
 ---
 
-## Design principles
+## ✨ Design Principles
 
 | Principle | Rationale |
 |-----------|-----------|
