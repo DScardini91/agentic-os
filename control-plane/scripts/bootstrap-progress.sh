@@ -19,11 +19,16 @@ set -uo pipefail
 ROOT="${CLAUDE_PROJECT_DIR:-$PWD}"
 PROGRESS_FILE="$ROOT/.bootstrap-progress.json"
 SENTINEL="$ROOT/.bootstrap-pending"
-# Marker: every agentic-os install ships this file. Its presence (or any of
-# the other markers below) identifies the directory as an agentic-os repo.
-# Used by `status` / `next` to refuse to fabricate a bootstrapped answer
-# when called accidentally outside an agentic-os clone.
+# Markers: any of these signals this directory is an agentic-os repo
+# (or is mid-bootstrap into one). Used by `status` / `next` to refuse to
+# fabricate a bootstrapped answer when invoked accidentally outside any
+# agentic-os clone.
+#
+# Sentinel is a valid marker — its presence means a bootstrap is in flight,
+# which only exists in agentic-os repos.
 REPO_MARKERS=(
+  "$ROOT/.bootstrap-pending"
+  "$ROOT/.bootstrap-progress.json"
   "$ROOT/control-plane/CLAUDE.md"
   "$ROOT/control-plane/scripts/bootstrap-progress.sh"
   "$ROOT/.claude/settings.json"
