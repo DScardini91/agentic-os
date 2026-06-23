@@ -32,6 +32,7 @@ All notable changes to this template are documented here. The format follows [Ke
 ### 🔄 Migration from v1.1.0
 
 - No action required. The fix only changes behavior when the system is already bootstrapped (where the old behavior was broken).
+- **If you are upgrading from v1.0 with a partial bootstrap** (sentinel `.bootstrap-pending` still present): the sentinel must exist before you run `bootstrap-progress.sh complete <block>` — that is the normal state for mid-bootstrap. If you accidentally removed the sentinel, run `bootstrap-progress.sh reset` first, then `touch .bootstrap-pending`, then resume the migration steps documented in v1.1.0.
 
 ---
 
