@@ -84,25 +84,15 @@ bash scripts/validate-all.sh
 
 ## How it works
 
-```
-You (principal)
-     │
-     ▼
-Interface agent  (kowalski by default — rename during bootstrap)
-     │
-     ├─► Domain entry agents  (professional / personal / finance / your custom domains)
-     │         │
-     │         └─► Deeper specialists, when domain fans out
-     │
-     ├─► Entity guardians  (family / craft / travel / your structural priorities)
-     │         (read-only; surface concrete observations)
-     │
-     ├─► Senior advisor  (walter — internal pressure-test, never speaks to you)
-     │
-     ├─► Quality gate  (artifact-reviewer — conformity check before delivery)
-     │
-     └─► OS analyst  (darwin — weekly governance pass, drift detection)
-```
+![Agent hierarchy](docs/diagrams/agent-hierarchy.svg)
+
+Single interface agent fronts everything. Domain entries own recurring work. Entity guardians protect what you've declared non-negotiable. Senior advisor pressure-tests internally. Quality gate verifies artifacts before delivery. OS analyst observes the system over time and proposes structural change.
+
+### The harness enforcement layer
+
+![Harness enforcement](docs/diagrams/harness-enforcement.svg)
+
+Hooks fire deterministically at SessionStart, PreToolUse, PostToolUse, and Stop. The rules you set don't drift across sessions because they're enforced at tool dispatch time, not relied on the model to remember.
 
 Read [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full canonical flow, design principles, and the 10 Mermaid diagrams describing each layer.
 
