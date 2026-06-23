@@ -33,7 +33,17 @@ command=$(echo "$payload" | jq -r '.tool_input.command // empty')
 
 block=false
 matcher=""
-if echo "$command" | grep -qE 'git[[:space:]]+push[[:space:]].*[[:space:]]origin[[:space:]]+(main|master)'; then
+# Catch direct pushes to main/master across the common refspec variants:
+#   git push <remote> main                  (plain)
+#   git push <remote> HEAD:main             (HEAD-to-named refspec)
+#   git push <remote> <local>:main          (named-to-named)
+#   git push <remote> refs/heads/main       (fully qualified)
+#   git push <remote> +main / +HEAD:main    (force with leading +)
+#   git push --force / --force-with-lease <remote> main
+# The regex requires either whitespace before the target OR a colon/plus
+# immediately preceding it, and either end-of-line, whitespace, or end-of-arg
+# immediately after.
+if echo "$command" | grep -qE 'git[[:space:]]+push([[:space:]]+--?[a-zA-Z=_-]+)*[[:space:]]+[[:alnum:]_./-]+[[:space:]]+(\+|[[:alnum:]_./-]*:)?(refs/heads/)?(main|master)([[:space:]]|$)'; then
   block=true
   matcher="git-push-main"
 elif echo "$command" | grep -qE 'gh[[:space:]]+pr[[:space:]]+merge([[:space:]]|$)'; then

@@ -1,3 +1,9 @@
+---
+name: finance-advisor
+description: Domain entry agent for Finance. First reader for invoices, statements, reimbursements, monthly close. Categorizes, records, feeds the operational system with a distilled view. Rename or remove via os-bootstrap.
+tools: Read, Write, Edit, Bash, Agent
+---
+
 # Agent: finance-advisor
 
 ## Role
