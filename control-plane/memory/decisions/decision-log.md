@@ -22,5 +22,6 @@ Run `bash control-plane/scripts/decision-log-trailing.sh` to extract entries age
 
 | ID | Date | Domain | Decision | Implemented? | Linked artifact |
 |----|------|--------|----------|--------------|-----------------|
-| D-000 | 2026-06-22 | meta | Template v1.0 launched with maximalist port from source OS (harness machinery + 8 agent patterns + 11 best practices + 9 skills + Darwin agent + os-bootstrap interview + Done Contract) | yes | [PR #1](https://github.com/DScardini91/agentic-os/pull/1), [DONE_CONTRACT.md](../../../DONE_CONTRACT.md) |
-| D-001 | _(fill after first bootstrap)_ | meta | OS bootstrap complete — operator interviewed, identity/voice/agents resolved | _pending_ | this file |
+| D-000 | 2026-06-22 | meta | Template v1.0 launched with maximalist port from source OS (harness machinery + 8 agent patterns + 11 best practices + 13 skills + Darwin agent + os-bootstrap interview + Done Contract) | yes | [PR #1](https://github.com/DScardini91/agentic-os/pull/1), [DONE_CONTRACT.md](../../../DONE_CONTRACT.md) |
+| D-001 | 2026-06-22 | meta | Direct merge of PR #1 to main authorized: scope is the inaugural release; senior-advisor pressure-test completed (two rounds, approved-with-conditions then approved-for-push); operator explicit approval given; no second-pair reviewer exists (solo-public repo). HARNESS_MERGE_OVERRIDE invoked as the documented escape valve for this exact case. | yes | this file |
+| D-002 | _(fill after first bootstrap)_ | meta | OS bootstrap complete — operator interviewed, identity/voice/agents resolved | _pending_ | this file |
