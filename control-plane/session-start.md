@@ -76,6 +76,17 @@ Populate from `registry/clients.md` and per-project `brief.md` files.
 
 ---
 
+## Daily rhythm state (read silently if files exist)
+
+Before confirming online, silently check and read if present:
+- `memory/tasks/backlog.md` — current task priorities
+- `memory/development/objectives.md` — active development objectives (used to generate daily nudges)
+- Most recent file in `memory/daily/` — what happened yesterday, what was carried
+
+If these files are empty or have placeholder content, skip without comment. They populate as the principal uses the daily rhythm skills (`morning-brief`, `eod`, `weekly-retro`).
+
+---
+
 ## Rules that never break
 
 - Do not redesign the architecture without explicit instruction from the principal.

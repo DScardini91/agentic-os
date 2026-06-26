@@ -85,6 +85,26 @@ Whenever any agent proposes something that consumes the principal's time outside
 
 **Templates:** `control-plane/templates/pre-sprint-brief.md` (A1) · `control-plane/templates/agent-state-template.md` (B1)
 
+## Daily rhythm (optional layer — activate by filling memory/tasks/backlog.md and memory/development/objectives.md)
+
+When the principal establishes a daily practice, the OS supports three recurring rituals:
+
+| Ritual | Skill | When | What it produces |
+|---|---|---|---|
+| Morning brief | `morning-brief` | Start of day | Prioritized brief + development nudge + open today's log |
+| End of day | `eod` | Close of day | Log finalized + backlog updated + tomorrow preview |
+| Weekly retro | `weekly-retro` | Fridays | Week vs. objectives review + one development intention |
+
+**Supporting agents:** `work-advisor` (prioritization) · `work-logger` (log and backlog) · `briefing-analyst` (calendar/email digest) · `support-coach` (wellbeing, reflection)
+
+**Development loop:** `feedback-intake` skill processes formal feedback → updates `memory/development/objectives.md` → daily nudges in morning-brief → evidence log in EOD → weekly-retro synthesizes → feeds next formal review. The flywheel compounds over months.
+
+**Schedule skill:** `schedule` generates prefilled calendar event links (Outlook or Google) with conflict check — works around calendar MCP read-only limitations.
+
+**Client and project lifecycle:** files in `memory/clients/` and `memory/projects/` carry a `Status` field (🟢 Active | ⚪ Closed). When an engagement ends, set Status to Closed and move the file to the `_archive/` subfolder. Archived files stay searchable but are excluded from daily briefings.
+
+---
+
 ## Agentic-by-default convention
 Sub-agents (via `Agent` tool) are the **default** for any non-trivial work. Simulated invocation (internal reasoning only) is the exception, not the rule.
 
