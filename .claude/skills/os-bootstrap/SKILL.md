@@ -41,14 +41,16 @@ Explique:
 - **O problema que ele resolve:** 🧠 o modelo de IA é brilhante por sessão mas esquece entre sessões. Você explica o contexto hoje, amanhã começa do zero. O agentic-os resolve isso com memória estruturada — arquivos que o Claude lê toda sessão, que acumulam o que ele aprende sobre você.
 
 - **O que é o sistema:** 🏗️ um OS pessoal em cima do Claude Code. Não é apenas um agente, é um **ecossistema de especialistas**:
-  - **Kowalski** (🎯 COO): seu ponto de contato, coordena tudo
-  - **Walter** (🧪 Pressure-tester): trabalha internamente, testa cada proposta antes de chegar a você
-  - **Darwin** (🔬 OS Analyst): observa padrões, detecta onde o sistema pode evoluir, propõe melhorias baseadas em evidência
+  - **Interface Agent** (🎯 COO): seu ponto de contato, coordena tudo. Você vai escolher o nome — pode ser Jarvis (competência pura), Kowalski (direção operacional), ou outro que faça sentido.
+  - **Senior Advisor** (🧪 Pressure-tester): trabalha internamente, testa cada proposta antes de chegar a você. Exemplos: Walter (crítica + alinhamento), ou qualquer nome que sinta como discernimento.
+  - **System Observer** (🔬 Evolucionista): observa padrões, detecta onde o sistema pode evoluir, propõe melhorias baseadas em evidência. Exemplos: Darwin (evolução biológica → evolução do sistema).
   - **Domain specialists** 🎲 (profissional, pessoal, finanças, etc.): entendem o vocabulário e contexto de cada área da sua vida
   - **Entity guardians** 🛡️ (família, saúde, prática espiritual, hobbies): protegem o que você declarou inegociável
   - **Quality gates** ✅ (validadores, revisores): garantem que trabalho de peso tem qualidade antes de sair
 
   Memória persistente em markdown, regras que não derivam entre sessões, evolução contínua — o sistema cresce com você.
+
+- **Nota sobre nomes:** Cada nome que você escolher reflete um papel operacional real. Seu Interface Agent será invocado quando você precisa de decisão e coordenação — seu nome deve sentir como autoridade e competência. Seu Senior Advisor será seu filtro crítico — seu nome deve refletir discernimento e pressão saudável. Seu System Observer vai acompanhar padrões e sugerir evolução — seu nome deve evocar visão de longo prazo. Nomes duráveis, não superficiais. Por isso oferecemos exemplos que já carregam peso semântico: Jarvis (pura competência técnica), Kowalski (direção operacional incisiva), Walter (crítica compassiva), Darwin (padrão evolutivo). Você pode usar esses ou criar seus próprios — mas que importem.
 
 - **O que vai acontecer agora:** vamos fazer uma **entrevista** (conversacional, não formulário) com 5 partes:
   1. **Identidade:** quem você é, seu contexto profissional
