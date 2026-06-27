@@ -41,23 +41,23 @@
   <!-- Tagline line 1 -->
   <text x="320" y="310" font-size="32" font-weight="500" fill="#8CA8C0">A personal operating system on top of Claude Code.</text>
 
-  <!-- Tagline line 2 -->
-  <text x="320" y="358" font-size="26" font-weight="400" fill="#8CA8C0">Agents · Memory · Hooks · Skills · Governance</text>
-  <text x="320" y="392" font-size="26" font-weight="400" fill="#8CA8C0">built into the harness, not improvised per session.</text>
+  <!-- Tagline line 2 – updated for v1.2.1 genericization -->
+  <text x="320" y="358" font-size="26" font-weight="400" fill="#8CA8C0">Operator-defined agents · 3-layer memory · Governance</text>
+  <text x="320" y="392" font-size="26" font-weight="400" fill="#8CA8C0">built into the harness, fully replicable across teams.</text>
 
-  <!-- Pills row -->
+  <!-- Pills row – updated numbers for v1.2.1 -->
   <g transform="translate(320, 450)" font-size="20" font-weight="600">
     <g transform="translate(0, 0)">
       <rect x="0" y="0" width="180" height="48" rx="24" fill="#1a3a5c" stroke="#4a9eff" stroke-width="1.5"/>
-      <text x="90" y="32" text-anchor="middle" fill="#ffffff">🪝 5 hooks</text>
+      <text x="90" y="32" text-anchor="middle" fill="#ffffff">🪝 10 hooks (SessionStart) + 4 (Stop)</text>
     </g>
     <g transform="translate(200, 0)">
       <rect x="0" y="0" width="180" height="48" rx="24" fill="#1a3a5c" stroke="#4a9eff" stroke-width="1.5"/>
-      <text x="90" y="32" text-anchor="middle" fill="#ffffff">🤖 10 agents</text>
+      <text x="90" y="32" text-anchor="middle" fill="#ffffff">🤖 40+ agents</text>
     </g>
     <g transform="translate(400, 0)">
       <rect x="0" y="0" width="180" height="48" rx="24" fill="#1a3a5c" stroke="#4a9eff" stroke-width="1.5"/>
-      <text x="90" y="32" text-anchor="middle" fill="#ffffff">⚡ 13 skills</text>
+      <text x="90" y="32" text-anchor="middle" fill="#ffffff">⚡ 59 skills</text>
     </g>
     <g transform="translate(600, 0)">
       <rect x="0" y="0" width="220" height="48" rx="24" fill="#1a3a5c" stroke="#4a9eff" stroke-width="1.5"/>
@@ -68,5 +68,5 @@
   <!-- Footer bar -->
   <rect x="0" y="600" width="1280" height="40" fill="#0a1520"/>
   <text x="100" y="627" font-size="20" font-weight="500" fill="#8CA8C0">github.com/DScardini91/agentic-os</text>
-  <text x="1180" y="627" text-anchor="end" font-size="20" font-weight="500" fill="url(#accent)">v1.1 · MIT</text>
+  <text x="1180" y="627" text-anchor="end" font-size="20" font-weight="500" fill="url(#accent)">v1.2.1 · MIT</text>
 </svg>

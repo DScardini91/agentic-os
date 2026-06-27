@@ -39,6 +39,22 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/inject-recent-dailies.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/state-drift-check.sh\" 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/canon-recheck-due.sh\" 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/validate-harness.sh\" all 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/memory-ttl-compaction.sh\" 2>/dev/null || true"
           }
         ]
       }
@@ -130,6 +146,14 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/darwin-accumulate.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/state-drift-check.sh\" 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/memory-ttl-compaction.sh\" 2>/dev/null || true"
           }
         ]
       }
