@@ -121,6 +121,22 @@ Aguarde a resposta.
 
 ---
 
+## Passo 5.5 — Memória: três camadas e consolidação
+
+Antes de configurar, explique a arquitetura de memória — é o que torna o sistema diferente:
+
+> "O sistema tem três camadas de memória que trabalham juntas. 
+>
+> **Episódica** é o que aconteceu hoje — seu diário da sessão, o que você fez, o que aprendeu. Fica em `memory/daily/` como logs estruturados. Clara, temporal, visceral.
+>
+> **Procedural** é como as coisas funcionam — regras que não mudam, workflows que você repetidamente usa, padrões de decisão que você constrói. Fica em `memory/self/` (identidade) e em cada domínio como `domain.md` (vocabulário, contexto). O que você faria de novo é procedural.
+>
+> **Longo prazo** é síntese — padrões que emergem depois de semanas ou meses de episódica. Fica em `memory/auto/` como consolidações. Quando você conecta 'viajei 3 vezes e percebi que gasto 40% do tempo em aeroporto' — isso é longo prazo. O sistema aprende estruturalmente.
+>
+> E tem um ritual que você controla: **consolidação**. Quando você disser 'fechar o dia', você invoca a skill `consolidate-memory`. Isso converte seu diário episódico em padrões permanentes (procedural + longo prazo), guarda tudo no filesystem, e prepara o sistema para amanhã sabendo tudo o que você descobriu hoje. Não é automático — é uma decisão sua de quando sincronizar o que aprendeu."
+
+---
+
 ## Passo 6 — Configuração narrada
 
 Agora configure tudo. **Narre cada bloco enquanto executa** — o operador deve entender o que está sendo construído.
@@ -220,6 +236,8 @@ Durante o dia, você fala o que está na sua cabeça. 🎯 **Kowalski** coordena
 - ✅ **Você aprova ou ajusta** — é conversa, não imposição
 
 Capacidades como daily rituals, development loop, tracking estruturado, ou qualquer coisa que o sistema precisar nascem naturalmente dessa conversa contínua. O sistema cresce com você.
+
+**Consolidação (você controla o timing):** Quando você disser "fechar o dia" ou "consolidate-memory", você executa o ritual que converte seu diário de hoje (episódica) em aprendizados permanentes (procedural + longo prazo). Kowalski fica pronto para amanhã sabendo tudo o que você descobriu. Você é responsável por quando isso acontece — não é automático.
 ```
 
 ---
