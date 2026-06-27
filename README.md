@@ -140,33 +140,29 @@ git clone https://github.com/DScardini91/agentic-os.git
 cd agentic-os
 ```
 
-### 2️⃣ Install — one command, idempotent
-
-```bash
-bash scripts/install.sh
-```
-
-> 🔍 `install.sh` verifies prerequisites (`jq`, `python3`, `gh`, `git`), makes hooks and scripts executable, primes the routing caches, validates the harness, and confirms the bootstrap sentinel.
->
-> Pass `--check` to verify prerequisites without changing anything.
-
-### 3️⃣ Open Claude Code
+### 2️⃣ Open Claude Code
 
 ```bash
 claude
 ```
 
-> ✨ The **SessionStart hook** detects `.bootstrap-pending` and prompts you to invoke the **`os-bootstrap`** skill — a 4-block interview (identity · naming · domains · technical wiring) that resolves placeholders, populates memory tiers, and removes the sentinel.
->
-> The interview takes 10-15 minutes. **You can pause and resume any time.**
+> ✨ That's it. Claude detects `.bootstrap-pending`, prepares the environment automatically, and asks **five questions** to configure the system around you. Takes ~5 minutes. No shell scripts to run first.
 
-### 4️⃣ Confirm at any time
+### Optional — validate the harness at any time
 
 ```bash
 bash scripts/validate-all.sh
 ```
 
-> 🧪 Runs the full check suite (frontmatter, state coverage, regex fixtures, routing compilers, YAML lint, markdown link integrity). Same suite CI runs on every PR.
+> 🧪 Full check suite: frontmatter, state coverage, regex fixtures, routing compilers, YAML lint, link integrity. Same suite CI runs on every PR.
+
+### Optional — advanced install (prereq check + harness validation)
+
+```bash
+bash scripts/install.sh
+```
+
+> 🔍 Verifies prerequisites (`jq`, `python3`, `gh`, `git`), primes routing caches, validates the harness. Not required for standard setup — useful if you want to diagnose environment issues before opening Claude Code.
 
 ---
 

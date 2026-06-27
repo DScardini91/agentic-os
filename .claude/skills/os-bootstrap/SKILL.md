@@ -1,7 +1,7 @@
 ---
 name: os-bootstrap
-description: Interview the operator on a fresh fork of the agentic-os template and configure the system end-to-end — identity, voice, agent names, active domains, hooks, settings, sentinel removal. Triggers — "set up the os", "bootstrap", ".bootstrap-pending detected", any first session on a virgin clone.
-version: 1.0
+description: Configure agentic-os on a fresh clone — one-shot interview (5 questions, ~5 min), then automatic setup. Triggers on .bootstrap-pending detection or any "set up / bootstrap" request.
+version: 2.0
 category: bootstrap
 triggers:
   - "set up the os"
@@ -9,184 +9,162 @@ triggers:
   - "configure the system"
   - "fresh fork"
   - ".bootstrap-pending detected"
+  - "/setup"
+  - "/bootstrap"
 ---
 
 # os-bootstrap
 
-The first skill any new fork of the agentic-os template invokes. Interviews the operator, populates memory tier scaffolds, resolves `<placeholder>` agent names across the repo, removes the `.bootstrap-pending` sentinel, and leaves the harness ready to run.
+One-shot setup skill. Five questions, one response from the operator, then automatic configuration. Total time: ~5 minutes.
 
-This skill is mandatory on a fresh clone — the `SessionStart` bootstrap-check hook injects a directive into the session prompting it to run.
-
-## When to invoke
-
-- The very first session opened in a freshly cloned / unzipped agentic-os template (sentinel `.bootstrap-pending` is present at repo root).
-- The operator explicitly says "set up the OS", "bootstrap", or equivalent.
-- The interface agent detects unresolved `<placeholder>` strings in `control-plane/config/` and the sentinel is still present.
-
-If the sentinel is absent and configs are resolved, the system is already bootstrapped — do **not** re-run unless the operator explicitly requests a re-bootstrap.
+No blocks. No progress tracking. No shell scripts to run first — this skill handles prerequisites inline.
 
 ---
 
-## Output
+## Step 1 — Prepare the environment (silent, automatic)
 
-By the end of this skill, the following are true:
-
-1. `control-plane/memory/self/` is populated with files describing the principal (personality, communication-style, decision-rules, boundaries) — content drawn from the operator's interview answers.
-2. `control-plane/memory/<interface-agent>/` and `control-plane/memory/<senior-advisor>/` are renamed and populated with their canonical mandates (templates filled with chosen agent names).
-3. `control-plane/config/spoke-owners.yaml` and `triggers.yaml` no longer contain `<placeholder>` strings — every placeholder is resolved to a real agent name or commented out.
-4. Domain folders the operator chose to disable are removed from the working tree; active domains have stub `domain.md` files.
-5. `control-plane/memory/decisions/decision-log.md` has its first real entry: "D-001 — os-bootstrap complete, operator X, on YYYY-MM-DD".
-6. `.bootstrap-pending` is deleted.
-7. `control-plane/memory/auto/MEMORY.md` has its first entries: user profile, communication style, working patterns drawn from the interview.
-
----
-
-## Resumability — `.bootstrap-progress.json`
-
-The interview persists progress after each completed block via a dedicated helper script. The progress file lives at repo root and tracks which of the 4 blocks are done.
-
-**File shape:**
-```json
-{
-  "started_at": "2026-06-22T14:30:00Z",
-  "blocks": {
-    "1_identity": "completed",
-    "2_harness_naming": "in_progress",
-    "3_domains": "pending",
-    "4_technical_wiring": "pending"
-  },
-  "last_updated": "2026-06-22T14:42:00Z"
-}
-```
-
-**Helper script:** `control-plane/scripts/bootstrap-progress.sh` — read/write contract:
+Before asking anything, do this silently:
 
 ```bash
-# at start of session, find where to resume
-bash control-plane/scripts/bootstrap-progress.sh next       # prints next pending block or "done"
-bash control-plane/scripts/bootstrap-progress.sh status     # prints full JSON
+# make hooks and scripts executable
+chmod +x .claude/hooks/*.sh 2>/dev/null || true
+chmod +x control-plane/scripts/*.sh 2>/dev/null || true
+chmod +x control-plane/scripts/*.py 2>/dev/null || true
+chmod +x scripts/*.sh 2>/dev/null || true
 
-# at the start of each block
-bash control-plane/scripts/bootstrap-progress.sh start 1_identity
-
-# at the end of each block (atomically updates state + last_updated)
-bash control-plane/scripts/bootstrap-progress.sh complete 1_identity
-
-# when Block 4 completes, the script prints "ALL_COMPLETE" and removes
-# BOTH .bootstrap-pending AND .bootstrap-progress.json automatically
-
-# operator opt-in: start over from scratch
-bash control-plane/scripts/bootstrap-progress.sh reset
+# prime routing caches (non-blocking on failure)
+python3 control-plane/scripts/compile-skill-routing.py 2>/dev/null || true
+python3 control-plane/scripts/compile-concept-routing.py 2>/dev/null || true
 ```
 
-**Skill invocation flow:**
-1. Run `bootstrap-progress.sh next` to find the resume point.
-2. If output is `done`, sanity-check the sentinel state and report to operator.
-3. Otherwise, run `bootstrap-progress.sh start <block>` and execute that block.
-4. On block completion, run `bootstrap-progress.sh complete <block>`.
-5. If the script's output contains `ALL_COMPLETE`, the bootstrap is finished — sentinel and progress file already cleaned.
-6. If interrupted mid-block, the operator re-invokes `os-bootstrap` and the next run resumes from the same block (marked `in_progress` until completion).
+If chmod or python3 are unavailable, note it but continue — the harness degrades gracefully.
 
 ---
 
-## Interview script
+## Step 2 — Ask five questions in ONE message
 
-Run the interview in **four blocks**, in this order. Use one Agent + Skill turn per block when possible to keep the operator's cognitive load low.
+Send a single message with all five questions. Do not split into multiple turns.
 
-### Block 1 — Identity
+```
+Welcome. Five quick questions and the system configures itself.
 
-Ask, in this order:
+1. Your name (and how you want to be addressed)
+2. Your role / context — e.g. "consultant at BCG", "indie founder", "engineering lead at startup"
+3. Communication style — pick one or describe your own:
+   A) Conclusion first, terse, no preamble
+   B) Walk through the reasoning, then the answer
+   C) Match the situation
+   And: anything I should never do? (e.g. no profanity, no em-dash, no second-person "você")
+4. Agent names — keep the defaults (kowalski / walter) or choose your own?
+   If custom: what should I call your main agent and your internal pressure-tester?
+5. Active domains — which areas do you want this OS to cover?
+   Examples: work / personal / finances / learning / health / spiritual
+   You can say "all the examples" or list your own.
 
-1. **Name and role.** *"How should I refer to you, and what is your professional context (consultant, engineer, founder, student, other)?"*
-2. **Primary use cases.** *"What is the first thing you want this OS to help with — work, personal life, finances, all of them?"*
-3. **Communication style.** *"Do you prefer conclusion-first, terse responses, or do you want me to walk through reasoning? Are there words / styles I should never use (profanity, emoji, em-dash, second person)?"*
-4. **Non-negotiables.** *"Anything I should refuse or never recommend? (Examples some operators set: 'never suggest alcohol', 'never use em-dash in external comms', 'no profanity'.)"*
+Answer however feels natural — one line per question is enough.
+```
 
-Write the answers to:
-- `control-plane/memory/self/personality.md`
-- `control-plane/memory/self/communication-style.md`
-- `control-plane/memory/self/boundaries.md`
-- `control-plane/memory/self/decision-rules.md` (if the operator volunteers any)
+---
 
-Also create the first auto-memory file `control-plane/memory/auto/user_profile.md` with frontmatter `type: user` summarizing the answers.
+## Step 3 — Parse and execute (all automatic, no further Q&A)
 
-### Block 2 — Harness naming
+With the operator's answers, do the following in order:
 
-Resolve the two placeholder agent roles. Ask:
+### 3a. Populate memory/self/
 
-1. **Interface agent name** (template default: `kowalski`). *"What should I call your interface / COO agent? This is the single point of contact between you and the rest of the system. Default: kowalski."*
-2. **Senior advisor name** (template default: `walter`). *"What should I call your senior advisor — the internal pressure-tester that never speaks to you directly? Default: walter."*
-3. **Family / entity guardian present?** If the operator has primary commitments outside work (family, partner, recurring care responsibility), ask for an entity-guardian agent name and what it protects. Otherwise skip — the slot can stay empty.
+Write these files from the answers (use the template shapes already in the repo):
 
-Apply the chosen names across the repo via search-and-replace on `<interface-agent>`, `<senior-advisor>`, `<family-guardian>`, `<spiritual-agent>`, `<learning-agent>` in:
+- `control-plane/memory/self/personality.md` — name, role, context, cognitive style
+- `control-plane/memory/self/communication-style.md` — conclusion-first preference, length, tone
+- `control-plane/memory/self/boundaries.md` — never-dos, hard limits
+- `control-plane/memory/self/decision-rules.md` — any rules volunteered ("I always X before Y")
+
+Also write `control-plane/memory/auto/user_profile.md`:
+```yaml
+---
+type: user
+description: Operator profile — name, role, context
+---
+```
+With a short paragraph summarizing who the operator is.
+
+### 3b. Resolve agent names
+
+Default: `kowalski` (interface) and `walter` (senior advisor). If the operator chose different names, replace across:
+
+- `CLAUDE.md` (root)
+- `control-plane/CLAUDE.md`
+- `control-plane/session-start.md`
 - `control-plane/config/spoke-owners.yaml`
 - `control-plane/config/triggers.yaml`
-- `control-plane/CLAUDE.md`
-- `CLAUDE.md` (root)
-- Agent spec files in `.claude/agents/` and `control-plane/.claude/agents/`
+- `control-plane/registry/agents.md`
+- All `.claude/agents/*.md` files that reference the old names
 
-Rename memory folders: `control-plane/memory/kowalski/` → `<interface-agent>/`, `control-plane/memory/walter/` → `<senior-advisor>/`.
+Rename memory folders if names changed:
+- `control-plane/memory/kowalski/` → `control-plane/memory/<interface-agent>/`
+- `control-plane/memory/walter/` → `control-plane/memory/<senior-advisor>/`
 
-### Block 3 — Domain selection (operator's own taxonomy)
+### 3c. Activate domains
 
-The template ships with six example domain folders (`professional/`, `personal/`, `finance/`, `investments/`, `learning/`, `spiritual/`). **These are examples, not a required set.** Ask the operator to define their own active domains in their own vocabulary.
+For each domain the operator wants active:
 
-Open the interview by reading [`control-plane/agent-patterns/domain-entry-agent.md`](../../../control-plane/agent-patterns/domain-entry-agent.md) signals to the operator:
+1. If it's one of the six example folders (`professional/`, `personal/`, `finance/`, `investments/`, `learning/`, `spiritual/`) — keep it, update `domain.md` with a one-line scope description.
+2. If the operator named a custom domain not in the examples — create `<slug>/domain.md` with scope and vocabulary.
+3. Remove example folders the operator does NOT want: `rm -rf <folder>`. Remove their rows from `control-plane/CLAUDE.md` and `spoke-owners.yaml`.
 
-> *"A domain is a recurring area of work or life with its own vocabulary, stakeholders, and trade-offs — generating at least one task per week or one decision per month. What are yours? List them in your own words."*
+Do NOT ask permission for each domain. Do the right thing from the answers, then confirm in Step 4.
 
-Then for each domain the operator names, walk this micro-loop:
+### 3d. Write the first decision-log entry
 
-1. **Pick a slug** in `kebab-case` (operator chooses, e.g. `health`, `coaching`, `side-business`, `learning`).
-2. **Want a first-reader agent for this domain?** Read out [`agent-patterns/domain-entry-agent.md`](../../../control-plane/agent-patterns/domain-entry-agent.md) signal: "yes if the domain has ≥ 1 task/week or 1 decision/month and you notice the interface agent simulating it inline; no if it's lighter than that".
-   - **If yes:** ask the operator what to call the agent (default suggestion: `<slug>-advisor` or `<slug>-curator`, but the operator picks). Then copy `control-plane/templates/agents/domain-entry.template.md` to `.claude/agents/<chosen-name>.md` and fill the `<placeholder>` markers via Q&A (description, scope in/out, vocabulary, recurring decisions). Also create `control-plane/memory/<chosen-name>/state.md` from `templates/agent-state-template.md`.
-   - **If no:** skip — interface agent handles the domain inline.
-3. **Want an entity guardian for this domain?** Same logic via [`agent-patterns/entity-guardian.md`](../../../control-plane/agent-patterns/entity-guardian.md). Instantiate via `control-plane/templates/agents/entity-guardian.template.md` if yes.
-4. **Create the folder** `<slug>/` at repo root (if it doesn't exist) with a `domain.md` describing scope, vocabulary, stakeholders.
-5. **Register** every newly instantiated agent in `control-plane/registry/agents.md` and `control-plane/registry/domains.md`.
+Append to `control-plane/memory/decisions/decision-log.md`:
+```
+## D-001 — os-bootstrap complete
+Date: YYYY-MM-DD
+Operator: <name>
+Active domains: <list>
+Agent names: <interface>/<senior-advisor>
+```
 
-**For each of the six template-shipped folders the operator does NOT want** (`professional/`, `personal/`, `finance/`, `investments/`, `learning/`, `spiritual/`): `rm -rf <folder>` and remove its row from `control-plane/CLAUDE.md` § "Active domains" and `spoke-owners.yaml`.
+### 3e. Remove the sentinel
 
-**For each shipped agent the operator does NOT want** (e.g. `maestro` if no craft, `terra-guide` if no travel, `finance-advisor` if folded into a single domain): delete the agent spec, the memory folder, and the registry row.
-
-**Do not assign names yourself.** Every domain agent and every entity guardian gets a name from the operator — even if the operator says "use the default", confirm the suggestion before writing. Names are sticky; one Q&A turn is the cheapest insurance against weeks of awkward re-reading.
-
-**Do not pressure the operator** to keep any specific shipped domain or agent. The template ships one operator's example; the patterns are the replicable knowledge.
-
-### Block 4 — Technical wiring
-
-This block is mostly automatic; the skill performs the actions and confirms with the operator.
-
-1. **Verify hook scripts are executable.** `chmod +x` everything under `.claude/hooks/` and `control-plane/scripts/`.
-2. **Test SessionStart compilers.** Run `python3 control-plane/scripts/compile-skill-routing.py` and `compile-concept-routing.py` once to populate `memory/skills/` and `memory/concepts/`. If either fails, surface the error and ask the operator how to proceed (skip silently or fix Python env first).
-3. **Validate harness.** Run `bash control-plane/scripts/validate-harness.sh`. Report any errors or warnings to the operator; offer to fix or defer.
-4. **Write the first decision-log entry** ("D-001 — os-bootstrap complete") with date and operator name.
-5. **Remove the sentinel.** `rm .bootstrap-pending`.
-6. **Confirm done.** One-line summary to the operator: who was registered, which domains are active, which scripts are running.
+```bash
+rm .bootstrap-pending
+```
 
 ---
 
-## Failure handling
+## Step 4 — Confirm in one message
 
-If the operator interrupts during Block 1 or Block 2 and asks to defer:
-- Save partial answers to the relevant memory files (don't lose anything).
-- Leave `.bootstrap-pending` in place so the next session knows bootstrap is incomplete.
-- Tell the operator: "Bootstrap paused. Re-invoke `os-bootstrap` at any session to continue from where we stopped."
+One response to the operator:
 
-If a Python script (compiler) fails:
-- Don't block bootstrap on it. The SessionStart hooks gracefully degrade when compilers are missing (they emit empty additionalContext).
-- Note the failure in `control-plane/memory/auto/MEMORY.md` as a project memory ("Python compilers not functional on first bootstrap — investigate").
+```
+Done. Here's what was configured:
 
-If the operator wants to skip bootstrap and use the template in placeholder mode:
-- Confirm they understand: hooks and routing will silent-pass on unresolved `<placeholder>` strings, so half the harness is inert.
-- Delete `.bootstrap-pending` manually.
-- Note the choice in MEMORY.md so future sessions know placeholder-mode was intentional.
+- Name: <name>
+- Domains: <list>
+- Main agent: <interface-agent> | Pressure-tester: <senior-advisor>
+- Communication: <one-line style summary>
+
+You're live. Try: "what should I work on today?" or just tell me what's on your mind.
+```
+
+No listing of every file written. No explaining what placeholders were resolved. Just the outcome.
 
 ---
 
-## What to NOT do
+## Failure modes
 
-- Do **not** ask the operator to write code or edit config files manually. The skill performs all writes.
-- Do **not** ask 50 questions at once. Block 1 is 4 questions max; Block 2 is 3; Block 3 is 6; Block 4 is automatic with confirmation.
-- Do **not** preserve the agentic-os example agent names if the operator chose different ones. Stale references break the enforcement layer's owner-agent lookup.
-- Do **not** push to remote during bootstrap. The first push is the operator's call after they review what was generated.
+**python3 not found:** skip routing compilation, note it in `memory/auto/MEMORY.md` ("routing compilers not available — install python3 to enable skill/concept routing"). Bootstrap continues.
+
+**Operator answers ambiguously:** make the sensible default call, state what you chose in Step 4, and move on. Do not loop back to ask again.
+
+**Operator wants to restart:** `touch .bootstrap-pending` and re-invoke. Existing memory files will be overwritten.
+
+---
+
+## What NOT to do
+
+- Do not run `install.sh` — this skill replaces that step for standard setup.
+- Do not split into multiple Q&A turns before configuring. One question batch, one answer, then execute.
+- Do not ask the operator to confirm each file write. Confirm the outcome, not the process.
+- Do not push to remote during bootstrap — that is the operator's call.

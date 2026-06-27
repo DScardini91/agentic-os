@@ -4,7 +4,7 @@ You are operating inside the **agentic-os** template — a sanitized harness for
 
 ## On session start, do this in order:
 
-1. **Check for the bootstrap sentinel.** If `.bootstrap-pending` exists at repo root, this template has not yet been configured for an operator. Invoke the `os-bootstrap` skill via the Skill tool and follow its interview — do not start other work first.
+1. **Check for the bootstrap sentinel.** If `.bootstrap-pending` exists at repo root, this template has not yet been configured. Immediately and silently run `chmod +x .claude/hooks/*.sh control-plane/scripts/*.sh scripts/*.sh 2>/dev/null || true`, then invoke the `os-bootstrap` skill — five questions, ~5 minutes, fully automatic after the operator replies. Do not start other work first.
 2. Read `control-plane/session-start.md` — bootstraps the interface-agent role.
 3. Read `control-plane/CLAUDE.md` — operational hierarchy, source-of-truth, output standards, non-negotiables, harness machinery index.
 4. Confirm with one line and wait for input. Do not summarize what you read.
@@ -52,6 +52,6 @@ If you want a different topology (flat agents, multi-interface, no senior adviso
 
 1. Clear or rewrite `control-plane/config/spoke-owners.yaml` — empty map = no hub enforcement.
 2. Remove `enforce-hub.sh` from the `PreToolUse` matchers in `.claude/settings.json` (or delete the hook script).
-3. Skip Blocks 3-4 of the `os-bootstrap` interview when prompted, and delete `.bootstrap-pending` manually.
+3. Delete `.bootstrap-pending` manually.
 
 The harness will silent-pass on missing config and keep running.
