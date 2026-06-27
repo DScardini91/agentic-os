@@ -49,7 +49,7 @@
   <g transform="translate(320, 450)" font-size="20" font-weight="600">
     <g transform="translate(0, 0)">
       <rect x="0" y="0" width="180" height="48" rx="24" fill="#1a3a5c" stroke="#4a9eff" stroke-width="1.5"/>
-      <text x="90" y="32" text-anchor="middle" fill="#ffffff">🪝 10 hooks (SessionStart) + 4 (Stop)</text>
+      <text x="90" y="32" text-anchor="middle" fill="#ffffff">🪝 14 hooks</text>
     </g>
     <g transform="translate(200, 0)">
       <rect x="0" y="0" width="180" height="48" rx="24" fill="#1a3a5c" stroke="#4a9eff" stroke-width="1.5"/>
