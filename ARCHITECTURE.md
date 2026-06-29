@@ -376,7 +376,8 @@ Canon without self-audit tends to decay into shelfware. Self-audit without canon
 flowchart TD
     subgraph Hooks ["Hook Layer"]
         PTE["PreToolUse\nInspects every tool call\nbefore execution"]
-        SSV["SessionStart\nRuns at session open\ndetects prior violations\n+ session-scoped Handoff cleanup\n⟨async · never blocks start⟩"]
+        PTU["PostToolUse\nFires after tool completes\ninjects context · triggers downstream skills\n⟨enrichment only · never blocks⟩"]
+        SSV["SessionStart\nRuns at session open\ndetects prior violations\n+ session-scoped Handoff cleanup\n+ transcript content inspection\n⟨async · never blocks start⟩"]
         STP["SessionStop\nRuns at session close\nsession telemetry report\n⟨tokens · cost · duration⟩\n⟨threshold-gated · async log⟩"]
     end
 
@@ -402,6 +403,7 @@ flowchart TD
     T1 & T2 & T4 -->|"first offense → reminder"| REM
     T1 & T2 & T4 -->|"prior violation unresolved"| BLK
     T3 --> REM
+    PTU -->|"tool matched · downstream action"| REM
     SSV -->|"cross-ref fires vs calls"| OBS
     STP -->|"above threshold\n→ usage telemetry log"| OBS
     OBS -->|"unresolved escalable violation"| ESC
@@ -409,6 +411,7 @@ flowchart TD
     BLK -->|"Agent(advisor) invoked"| REL
 
     style PTE fill:#1A3A5C,stroke:#4A9EFF,color:#fff
+    style PTU fill:#1A3A5C,stroke:#4A9EFF,color:#fff
     style SSV fill:#1A3A5C,stroke:#4A9EFF,color:#fff
     style STP fill:#1A3A5C,stroke:#4A9EFF,color:#fff
     style T1 fill:#3A2A00,stroke:#F5A623,color:#F5A623
@@ -562,3 +565,5 @@ flowchart TD
 | **Generator-evaluator as OS primitive** | Iterative refinement against declared success criteria is a first-class OS primitive. Every loop carries: a 4-field success spec (must_have, must_not_have, measurable, human_review_required), a cost ceiling, a max-iterations cap, and a dedicated evaluator with no context overlap with the generator. Without declared criteria, the loop refuses to bootstrap. Without a dedicated evaluator, pass/fail judgment is self-referential and inflated. Without a cost ceiling, autonomous loops become unbounded. |
 | **Error categorization before recovery** | Agent and tool failures fall into three categories with distinct protocols: *transient* (timeout, rate-limit) → retry once then escalate; *validation* (input malformed, resource not found) → escalate immediately, no retry; *unresolvable* (permission denied, tool unavailable, irreducible ambiguity) → stop and return structured context to the Interface Agent. Conflating categories produces retry loops for validation errors (wasted calls) and silent drops for unresolvable errors. The category determines the protocol; the protocol is not a per-instance judgment call. Escalation always returns four fields: `failure_type`, `attempted_action`, `partial_results`, `recommended_next`. |
 | **Capability-based model dispatch** | When the system spans multiple AI backends, task routing is resolved by capability class rather than a global model assignment. Each backend declares a capability profile (reasoning, code execution, tool orchestration) and the dispatch layer maps incoming tasks to the appropriate backend at invocation time via a per-class capability map. Skill and procedure definitions remain backend-agnostic — they travel with the operator as portable specs and are executed by whichever backend the capability map assigns. Degradation states are declared in advance: the router falls back gracefully when the preferred backend is throttled rather than failing silently. *(Status: emerging — single-backend deployments are unaffected; the pattern applies only when multiple backends are active.)* |
+| **Skill boundary contracts** | Every skill must declare not only when to invoke it, but when NOT to invoke it — with explicit redirects to the correct skill for adjacent cases. The negative boundary is as load-bearing as the positive trigger: without it, skills absorb adjacent cases they were not designed for, producing silent quality degradation rather than clean handoffs. A skill definition without a "when not to use" section is incomplete by design. Redirects should name the specific skill to route to, not just describe the category. *(Pattern formalized mid-2026 after a skills audit across 59 skills identified consistent scope-bleed in boundary-free definitions.)* |
+| **PostToolUse as enrichment hook** | The hook lifecycle has a fourth phase: PostToolUse, which fires after a tool completes successfully. PostToolUse hooks inject context, trigger downstream skills, or emit telemetry — they never block. This is structurally different from PreToolUse: PreToolUse gates execution (can deny); PostToolUse enriches the result (always proceeds). Common patterns: detect a completed tool call by name, extract output (e.g., PR number from `gh pr create`), inject an instruction to run a downstream skill. PostToolUse creates automated feedback loops that would otherwise require explicit operator invocation. |
