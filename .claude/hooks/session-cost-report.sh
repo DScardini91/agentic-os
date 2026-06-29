@@ -1,68 +1,183 @@
 #!/usr/bin/env bash
-# session-cost-report.sh — Stop hook (session telemetry)
+# Stop hook — session cost & token report
 #
-# At session close, append a single line summary to
-# control-plane/memory/observability/session-cost.jsonl with model usage,
-# tokens, and approximate cost when above threshold. Async, never blocks
-# session delivery.
+# Fires at session close. Displays usage summary if the session exceeded
+# MIN_TOKENS or MIN_SECONDS. Appends to ~/.claude/usage-log.jsonl.
 #
-# Threshold ($USD): writes line only if cost >= HARNESS_COST_THRESHOLD
-# (default 0.10). Below threshold = noise, skipped.
+# To suppress for a specific session:
+#   export HARNESS_SKIP_COST_REPORT=1
 
-set -uo pipefail
+[ "${HARNESS_SKIP_COST_REPORT:-0}" = "1" ] && exit 0
 
-ROOT="${CLAUDE_PROJECT_DIR:-$PWD}"
-LOG="$ROOT/control-plane/memory/observability/session-cost.jsonl"
-THRESHOLD="${HARNESS_COST_THRESHOLD:-0.10}"
+INPUT=$(cat 2>/dev/null || true)
 
-command -v jq >/dev/null 2>&1 || exit 0
+python3 - "$INPUT" << 'PYEOF'
+import json, sys, os
+from datetime import datetime, timezone
 
-payload=$(cat)
-[ -z "$payload" ] && exit 0
-echo "$payload" | jq -e . >/dev/null 2>&1 || exit 0
+# ── Config ──────────────────────────────────────────────────────────────────
+MIN_TOKENS   = 50_000   # show report above 50k tokens
+MIN_SECONDS  = 300      # or above 5 minutes
+USAGE_LOG    = os.path.expanduser("~/.claude/usage-log.jsonl")
 
-# Stop hook payload includes: session_id, transcript_path, stop_hook_active, etc.
-session=$(echo "$payload" | jq -r '.session_id // "unknown"')
-ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-transcript=$(echo "$payload" | jq -r '.transcript_path // empty')
+# Anthropic pricing (USD per 1M tokens) — update if pricing changes
+PRICING = {
+    "default": {
+        "input":         3.00,
+        "output":       15.00,
+        "cache_write":   3.75,
+        "cache_read":    0.30,
+    },
+    "claude-opus": {
+        "input":        15.00,
+        "output":       75.00,
+        "cache_write":  18.75,
+        "cache_read":    1.50,
+    },
+    "claude-haiku": {
+        "input":         0.80,
+        "output":        4.00,
+        "cache_write":   1.00,
+        "cache_read":    0.08,
+    },
+}
 
-# Extract usage from transcript if available. JSONL transcript — sum input/output tokens.
-input_tokens=0
-output_tokens=0
-cache_read=0
-cache_write=0
-if [ -n "$transcript" ] && [ -f "$transcript" ]; then
-  while IFS= read -r line; do
-    usage=$(echo "$line" | jq -r 'select(.message.usage) | .message.usage' 2>/dev/null)
-    [ -z "$usage" ] && continue
-    [ "$usage" = "null" ] && continue
-    it=$(echo "$usage" | jq -r '.input_tokens // 0')
-    ot=$(echo "$usage" | jq -r '.output_tokens // 0')
-    cr=$(echo "$usage" | jq -r '.cache_read_input_tokens // 0')
-    cw=$(echo "$usage" | jq -r '.cache_creation_input_tokens // 0')
-    input_tokens=$((input_tokens + it))
-    output_tokens=$((output_tokens + ot))
-    cache_read=$((cache_read + cr))
-    cache_write=$((cache_write + cw))
-  done < "$transcript"
-fi
+def get_pricing(model: str) -> dict:
+    m = (model or "").lower()
+    if "opus"  in m: return PRICING["claude-opus"]
+    if "haiku" in m: return PRICING["claude-haiku"]
+    return PRICING["default"]
 
-# Rough cost estimate (Opus 4 pricing; adjust if your model changes):
-# input  $15/M, output $75/M, cache read $1.50/M, cache write $18.75/M
-cost=$(awk -v i="$input_tokens" -v o="$output_tokens" -v cr="$cache_read" -v cw="$cache_write" \
-  'BEGIN { printf "%.4f", (i*15 + o*75 + cr*1.5 + cw*18.75) / 1000000 }')
+# ── Parse hook input ─────────────────────────────────────────────────────────
+raw_input = sys.argv[1] if len(sys.argv) > 1 else ""
+try:
+    hook_data = json.loads(raw_input)
+except Exception:
+    hook_data = {}
 
-# Threshold gate
-above=$(awk -v c="$cost" -v t="$THRESHOLD" 'BEGIN { print (c+0 >= t+0) ? "1" : "0" }')
-[ "$above" = "0" ] && exit 0
+transcript_path = hook_data.get("transcript_path", "")
+session_id      = hook_data.get("session_id", "unknown")
 
-mkdir -p "$(dirname "$LOG")"
-jq -nc \
-  --arg ts "$ts" --arg session "$session" \
-  --argjson it "$input_tokens" --argjson ot "$output_tokens" \
-  --argjson cr "$cache_read" --argjson cw "$cache_write" \
-  --arg cost "$cost" \
-  '{kind:"session-cost", ts:$ts, session:$session, input_tokens:$it, output_tokens:$ot, cache_read:$cr, cache_write:$cw, cost_usd:($cost|tonumber)}' \
-  >> "$LOG"
+if not transcript_path or not os.path.isfile(transcript_path):
+    sys.exit(0)
 
-exit 0
+# ── Parse transcript ─────────────────────────────────────────────────────────
+input_tokens  = 0
+output_tokens = 0
+cache_write   = 0
+cache_read    = 0
+tool_calls    = 0
+first_ts      = None
+last_ts       = None
+model_used    = "default"
+
+with open(transcript_path) as f:
+    for line in f:
+        try:
+            entry = json.loads(line.strip())
+        except Exception:
+            continue
+
+        ts = entry.get("timestamp")
+        if ts:
+            if first_ts is None:
+                first_ts = ts
+            last_ts = ts
+
+        if entry.get("type") == "assistant":
+            msg = entry.get("message", {})
+            if msg.get("model"):
+                model_used = msg["model"]
+            usage = msg.get("usage", {})
+            input_tokens  += usage.get("input_tokens", 0)
+            output_tokens += usage.get("output_tokens", 0)
+            cache_write   += usage.get("cache_creation_input_tokens", 0)
+            cache_read    += usage.get("cache_read_input_tokens", 0)
+
+        if entry.get("type") == "assistant":
+            content = entry.get("message", {}).get("content", [])
+            if isinstance(content, list):
+                tool_calls += sum(1 for c in content if isinstance(c, dict) and c.get("type") == "tool_use")
+
+# ── Elapsed time ─────────────────────────────────────────────────────────────
+elapsed_secs = 0
+elapsed_str  = "?"
+if first_ts and last_ts:
+    try:
+        def parse_ts(s):
+            s = s[:26].rstrip("Z")
+            return datetime.fromisoformat(s).replace(tzinfo=timezone.utc)
+        t0 = parse_ts(first_ts)
+        t1 = parse_ts(last_ts)
+        elapsed_secs = int((t1 - t0).total_seconds())
+        h, rem = divmod(elapsed_secs, 3600)
+        m, s   = divmod(rem, 60)
+        if h:
+            elapsed_str = f"{h}h {m:02d}m {s:02d}s"
+        elif m:
+            elapsed_str = f"{m}m {s:02d}s"
+        else:
+            elapsed_str = f"{s}s"
+    except Exception:
+        pass
+
+# ── Threshold check ───────────────────────────────────────────────────────────
+total_tokens = input_tokens + output_tokens
+if total_tokens < MIN_TOKENS and elapsed_secs < MIN_SECONDS:
+    sys.exit(0)
+
+# ── Cost calculation ──────────────────────────────────────────────────────────
+p = get_pricing(model_used)
+cost = (
+    (input_tokens  / 1_000_000) * p["input"]       +
+    (output_tokens / 1_000_000) * p["output"]      +
+    (cache_write   / 1_000_000) * p["cache_write"] +
+    (cache_read    / 1_000_000) * p["cache_read"]
+)
+
+# ── Print report ──────────────────────────────────────────────────────────────
+CYAN  = "\033[96m"
+GREY  = "\033[90m"
+BOLD  = "\033[1m"
+RESET = "\033[0m"
+
+def p_(label, value, unit=""):
+    print(f"│  {GREY}{label:<18}{RESET}  {BOLD}{value}{RESET}{unit}", file=sys.stderr)
+
+print("", file=sys.stderr)
+print(f"{CYAN}┌─ Session Usage ──────────────────────────────────────────{RESET}", file=sys.stderr)
+p_("Model",        model_used)
+p_("Elapsed",      elapsed_str)
+p_("Tool calls",   f"{tool_calls:,}")
+p_("Input tokens", f"{input_tokens:>12,}", "")
+p_("Output tokens",f"{output_tokens:>12,}", "")
+if cache_write or cache_read:
+    p_("Cache write",  f"{cache_write:>12,}", "")
+    p_("Cache read",   f"{cache_read:>12,}", "")
+p_("Total tokens", f"{total_tokens:>12,}", "")
+print(f"│  {'─'*50}", file=sys.stderr)
+p_("Est. cost",    f"$ {cost:>9.4f}", "  USD")
+print(f"{CYAN}└──────────────────────────────────────────────────────────{RESET}", file=sys.stderr)
+print("", file=sys.stderr)
+
+# ── Append to usage log ───────────────────────────────────────────────────────
+log_entry = {
+    "ts":             last_ts or first_ts or datetime.now(timezone.utc).isoformat(),
+    "session_id":     session_id,
+    "model":          model_used,
+    "elapsed_secs":   elapsed_secs,
+    "tool_calls":     tool_calls,
+    "input_tokens":   input_tokens,
+    "output_tokens":  output_tokens,
+    "cache_write":    cache_write,
+    "cache_read":     cache_read,
+    "total_tokens":   total_tokens,
+    "cost_usd":       round(cost, 6),
+}
+try:
+    with open(USAGE_LOG, "a") as f:
+        f.write(json.dumps(log_entry) + "\n")
+except Exception:
+    pass
+
+PYEOF

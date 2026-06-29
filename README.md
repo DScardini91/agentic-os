@@ -140,6 +140,11 @@ git clone https://github.com/DScardini91/agentic-os.git
 cd agentic-os
 ```
 
+> ⚠️ **Do not clone inside a cloud-synced folder** (OneDrive, iCloud, Dropbox, Google Drive).
+> agentic-os fires shell hooks on every tool call. When the repo sits inside a synced folder,
+> the sync daemon locks files mid-execution, adding 20–30 s of latency per hook and causing
+> sessions to hang or time out. Clone to a plain local path — `~/Developer/agentic-os` works well.
+
 ### 2️⃣ Open Claude Code
 
 ```bash
