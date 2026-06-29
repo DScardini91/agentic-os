@@ -18,43 +18,43 @@
         "hooks": [
           {
             "type": "command",
+            "timeout": 10,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/session-start-bootstrap-check.sh\""
           },
           {
             "type": "command",
+            "timeout": 10,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/session-start-placeholder-check.sh\""
           },
           {
             "type": "command",
+            "timeout": 20,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/session-start-violations.sh\""
           },
           {
             "type": "command",
+            "timeout": 10,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/inject-skill-routing.sh\""
           },
           {
             "type": "command",
+            "timeout": 10,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/inject-concept-routing.sh\""
           },
           {
             "type": "command",
+            "timeout": 10,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/inject-recent-dailies.sh\""
           },
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/state-drift-check.sh\" 2>/dev/null || true"
-          },
-          {
-            "type": "command",
+            "timeout": 5,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/canon-recheck-due.sh\" 2>/dev/null || true"
           },
           {
             "type": "command",
+            "timeout": 10,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/validate-harness.sh\" all 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/memory-ttl-compaction.sh\" 2>/dev/null || true"
           }
         ]
       }
@@ -65,61 +65,37 @@
         "hooks": [
           {
             "type": "command",
+            "timeout": 5,
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/auto-gh-auth.sh\""
           },
           {
             "type": "command",
+            "timeout": 5,
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/block-pr-merge.sh\""
           },
           {
             "type": "command",
+            "timeout": 5,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/pre-tool-use-trigger-check.sh\""
           }
         ]
       },
       {
-        "matcher": "Write",
+        "matcher": "Write|Edit|MultiEdit",
         "hooks": [
           {
             "type": "command",
+            "timeout": 5,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/pre-tool-use-trigger-check.sh\""
           },
           {
             "type": "command",
+            "timeout": 5,
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/block-protected-repo-writes.sh\""
           },
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-hub.sh\""
-          }
-        ]
-      },
-      {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/pre-tool-use-trigger-check.sh\""
-          },
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/block-protected-repo-writes.sh\""
-          },
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-hub.sh\""
-          }
-        ]
-      },
-      {
-        "matcher": "MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/block-protected-repo-writes.sh\""
-          },
-          {
-            "type": "command",
+            "timeout": 5,
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-hub.sh\""
           }
         ]
@@ -131,6 +107,7 @@
         "hooks": [
           {
             "type": "command",
+            "timeout": 5,
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-agent-call.sh\""
           }
         ]
@@ -141,18 +118,22 @@
         "hooks": [
           {
             "type": "command",
+            "timeout": 10,
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-cost-report.sh\""
           },
           {
             "type": "command",
+            "timeout": 10,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/darwin-accumulate.sh\""
           },
           {
             "type": "command",
+            "timeout": 10,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/state-drift-check.sh\" 2>/dev/null || true"
           },
           {
             "type": "command",
+            "timeout": 10,
             "command": "bash \"$CLAUDE_PROJECT_DIR/control-plane/scripts/memory-ttl-compaction.sh\" 2>/dev/null || true"
           }
         ]
