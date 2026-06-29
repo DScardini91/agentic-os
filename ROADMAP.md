@@ -8,8 +8,8 @@
 
 ## 🎯 Currently shipped
 
-**Latest:** `v2.0.0` released **2026-06-23** — Evolution Path (22-rung ladder) + Darwin path mode.
-Release history: `v1.0.0` → `v1.0.1` → `v1.1.0` → `v1.1.1` → `v1.1.2` → **`v2.0.0`**.
+**Latest:** `v2.2.2` released **2026-06-29** — Stop hook upgraded to Python (multi-model pricing, rich output) + OneDrive placement warning in README.
+Release history: `v1.0.0` → `v1.0.1` → `v1.1.0` → `v1.1.1` → `v1.1.2` → `v2.0.0` → `v2.1.0` → `v2.2.0` → `v2.2.1` → **`v2.2.2`**.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the full inventory and [`EVOLUTION_PATH.md`](EVOLUTION_PATH.md) for the rung ladder itself.
 
@@ -24,6 +24,9 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the full inventory and [`EVOLUTION_PATH.m
 | Phantom-reinit fix + 6 CI fixture tests | v1.1.1 |
 | Marker check for non-agentic-os repos + post-success-path canon | v1.1.2 |
 | **Evolution Path** (22 rungs, 4 phases) + **Darwin path mode** + `darwin-path-mode` skill | **v2.0.0** |
+| Non-technical onboarding docs (A_MONDAY, WHO_IS_THIS_FOR, DATA, INTEGRATION, COST, GLOSSARY) + README rewrite | **v2.2.0** |
+| Hook performance patch: session-start-violations single-pass rewrite + all hooks timeout-gated | **v2.2.1** |
+| Stop hook Python upgrade (multi-model pricing, elapsed time, rich output) + OneDrive warning | **v2.2.2** |
 
 ---
 
