@@ -11,6 +11,26 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ---
 
+## 🔧 [2.2.2] — 2026-06-29
+
+> **Stop hook upgrade + OneDrive placement warning.** `session-cost-report` rewritten in Python for accurate multi-model cost tracking. README gains a hard warning against cloning into cloud-synced folders.
+
+### Fixed
+
+- **`session-cost-report.sh` — Python rewrite**: replaced bash/jq implementation with a Python script.
+  - Multi-model pricing auto-detected from transcript (`claude-opus`, `claude-haiku`, `default` for Sonnet/other)
+  - Tracks elapsed session time, tool call count, and cache token breakdown
+  - Rich ANSI-formatted output (box drawing, color)
+  - Log destination moved to `~/.claude/usage-log.jsonl` (off-repo; avoids issues when repo is on a synced drive)
+  - Threshold changed from flat `$0.10` cost gate to `50k tokens OR 5 min elapsed` — fires meaningfully on short expensive sessions too
+  - Override: `HARNESS_SKIP_COST_REPORT=1`
+
+### Documentation
+
+- **`README.md` — cloud-sync placement warning**: added explicit warning before the Clone step that the repo must not be placed inside a cloud-synced folder (OneDrive, iCloud, Dropbox, Google Drive). Root cause: sync daemons lock files mid-hook execution, adding 20–30 s latency per hook and causing sessions to hang indefinitely.
+
+---
+
 ## 🔧 [2.2.1] — 2026-06-28
 
 > **Hook performance & reliability patch.** Session startup was slow (full-file jq scan on every start) and sessions could freeze indefinitely due to missing timeouts. This patch fixes both.
