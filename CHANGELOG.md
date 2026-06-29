@@ -11,6 +11,19 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ---
 
+## 🔧 [2.2.1] — 2026-06-28
+
+> **Hook performance & reliability patch.** Session startup was slow (full-file jq scan on every start) and sessions could freeze indefinitely due to missing timeouts. This patch fixes both.
+
+### Fixed
+
+- **`session-start-violations.sh` — single-pass rewrite**: replaced N-session loop (2N+1 file reads) with a single jq slurp pass over `tail -2000` of each log file. Session startup time drops from ~20s to under 1s. Uses `any(. == $t)` for reliable jq 1.5/1.6/1.7 membership test (per Walter review).
+- **`settings.json` — timeouts on all hooks**: all 19 hooks now have explicit timeouts (5–20s). Previously `timeout=none` meant any hanging hook froze the session indefinitely.
+- **`settings.json` — deduplicate PreToolUse matchers**: `Write`, `Edit`, and `MultiEdit` matchers consolidated into a single `Write|Edit|MultiEdit` matcher. Reduces hook count from 26 to 19 with no behavioral loss; MultiEdit gains `pre-tool-use-trigger-check` coverage it was missing.
+- **`settings.json` — remove `state-drift-check` and `memory-ttl-compaction` from SessionStart**: both scripts were registered in SessionStart and Stop, running twice per session. Now Stop-only.
+
+---
+
 ## 🎯 [2.2.0] — 2026-06-23
 
 > **Non-technical onboarding release.** A BCG-director persona review (no code context, 10 minutes on the repo) surfaced 5 material gaps between what the README sells and what a non-engineer leigo technical can actually evaluate. v2.2 closes them — and goes further to enrich the operator-shape variety, audience qualifier, data residency, integration story, and time/cost budget.

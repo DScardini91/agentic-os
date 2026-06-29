@@ -37,28 +37,28 @@ fi
 
 # Look only at the last 24h window — older violations are forgiven.
 RECENT_CUTOFF=$(date -u -v-24H +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u -d "24 hours ago" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || echo "1970-01-01T00:00:00Z")
-prev_sessions=$(jq -r --arg cutoff "$RECENT_CUTOFF" 'select(.ts >= $cutoff) | .session // empty' "$FIRES_LOG" 2>/dev/null | sort -u | grep -v '^$' || true)
 
-violations=""
-for sess in $prev_sessions; do
-  fires=$(jq -c --arg s "$sess" 'select(.kind=="pre-fire" and .session==$s)' "$FIRES_LOG" 2>/dev/null || true)
-  [ -z "$fires" ] && continue
-  agents_called=""
-  if [ -f "$CALLS_LOG" ]; then
-    agents_called=$(jq -r --arg s "$sess" 'select(.kind=="call" and .session==$s) | .agent' "$CALLS_LOG" 2>/dev/null | sort -u || true)
-  fi
-  while IFS= read -r fire; do
-    [ -z "$fire" ] && continue
-    trig=$(echo "$fire" | jq -r '.trigger')
-    matcher=$(echo "$fire" | jq -r '.matcher')
-    fp=$(echo "$fire" | jq -r '.file_path // .command // ""')
-    sev=$(echo "$fire" | jq -r '.severity')
-    if ! echo "$agents_called" | grep -qx "$trig"; then
-      violations+="$sess	$matcher	$trig	$fp	$sev
-"
-    fi
-  done <<< "$fires"
-done
+# Single-pass: read each file once, join in memory via jq.
+# Replaces the N-session loop that did 2N+1 file reads (one per session).
+# Walter-reviewed pattern — any(. == $t) for reliable jq 1.5/1.6/1.7 membership test.
+FIRES_RAW=$(tail -2000 "$FIRES_LOG")
+CALLS_RAW=""
+[ -f "$CALLS_LOG" ] && CALLS_RAW=$(tail -500 "$CALLS_LOG")
+
+violations=$(printf '%s\n%s\n' "$FIRES_RAW" "$CALLS_RAW" \
+  | jq -rs --arg cutoff "$RECENT_CUTOFF" '
+    (map(select(.kind == "pre-fire" and (.ts // "") >= $cutoff))) as $fires |
+    (map(select(.kind == "call"))
+      | group_by(.session)
+      | map({key: .[0].session, value: [.[].agent]})
+      | from_entries) as $call_map |
+    $fires[] |
+    . as $f |
+    ($call_map[$f.session] // []) as $agents |
+    select(($f.trigger as $t | $agents | any(. == $t)) | not) |
+    [$f.session, $f.matcher, $f.trigger, ($f.file_path // $f.command // ""), $f.severity] |
+    @tsv
+  ' 2>/dev/null || true)
 
 # Escalable matchers (configurable list — these turn into hard-blocks).
 escalable_violated=$(echo "$violations" | awk -F'\t' '$2=="edit-control-plane" || $2=="edit-personal-domain" || $2=="no-direct-merge" || $2=="protected-repo-write-without-owner" {print $2}' | sort -u | grep -v '^$' || true)
