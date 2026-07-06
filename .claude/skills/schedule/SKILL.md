@@ -1,4 +1,5 @@
 ---
+name: schedule
 description: Fast-lane calendar scheduling — checks conflicts and availability, then delivers a prefilled calendar event link the principal can open in one click. Works around MCP calendar read-only limitations.
 triggers:
   - "/schedule"

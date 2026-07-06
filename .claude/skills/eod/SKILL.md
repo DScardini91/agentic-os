@@ -1,4 +1,5 @@
 ---
+name: eod
 description: End of day — finalizes today's log, updates the task backlog, reconciles external trackers, and previews tomorrow's first priority.
 triggers:
   - "/eod"

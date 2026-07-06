@@ -1,4 +1,5 @@
 ---
+name: feedback-intake
 description: Processes formal performance feedback (project review, annual review, 360) into structured files and updates active development objectives. Keeps the career development loop closed.
 triggers:
   - "/feedback"
