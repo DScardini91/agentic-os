@@ -11,6 +11,17 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ---
 
+## 📐 [2.2.3] — 2026-07-06
+
+> **Enforcement layer expansion (W28).** Section 8 trigger severity matrix gains two new matchers that were deployed in the reference implementation this week: A2 artifact detection and hub-mandate violation. Both reminder-only; both close gaps in the enforcement coverage that the previous version left undocumented.
+
+### Architecture
+
+- **Section 8 — Trigger severity matrix: `a2-artifact-candidate`**: new row documenting the PreToolUse reminder that fires when a write targets a formal artifact path in the professional domain. Never blocks; `A2: skip` annotation silences for confirmed intermediate drafts.
+- **Section 8 — Trigger severity matrix: `hub-mandate · direct override`**: new row documenting two sub-matchers (`hub-direct-override` and `hub-mandate-violation`) that fire when a write bypasses the hub-and-spoke dispatch protocol. Both reminder-only; never accumulate escalation state.
+
+---
+
 ## 🔧 [2.2.2] — 2026-06-29
 
 > **Stop hook upgrade + OneDrive placement warning.** `session-cost-report` rewritten in Python for accurate multi-model cost tracking. README gains a hard warning against cloning into cloud-synced folders.
