@@ -8,8 +8,8 @@
 
 ## 🎯 Currently shipped
 
-**Latest:** `v2.2.2` released **2026-06-29** — Stop hook upgraded to Python (multi-model pricing, rich output) + OneDrive placement warning in README.
-Release history: `v1.0.0` → `v1.0.1` → `v1.1.0` → `v1.1.1` → `v1.1.2` → `v2.0.0` → `v2.1.0` → `v2.2.0` → `v2.2.1` → **`v2.2.2`**.
+**Latest:** `v2.3.0` released **2026-07-10** — Codex-facing runtime contracts, context-budget best practice, and `agentic-os-reference-sync` skill for safe public-template sync from a private reference OS.
+Release history: `v1.0.0` → `v1.0.1` → `v1.1.0` → `v1.1.1` → `v1.1.2` → `v2.0.0` → `v2.1.0` → `v2.2.0` → `v2.2.1` → `v2.2.2` → `v2.2.3` → **`v2.3.0`**.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the full inventory and [`EVOLUTION_PATH.md`](EVOLUTION_PATH.md) for the rung ladder itself.
 
@@ -27,10 +27,12 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the full inventory and [`EVOLUTION_PATH.m
 | Non-technical onboarding docs (A_MONDAY, WHO_IS_THIS_FOR, DATA, INTEGRATION, COST, GLOSSARY) + README rewrite | **v2.2.0** |
 | Hook performance patch: session-start-violations single-pass rewrite + all hooks timeout-gated | **v2.2.1** |
 | Stop hook Python upgrade (multi-model pricing, elapsed time, rich output) + OneDrive warning | **v2.2.2** |
+| Enforcement matrix expansion: A2 artifact reminder + hub-mandate direct override matchers | **v2.2.3** |
+| Codex-facing runtime contracts + context-budget best practice + reference-sync skill | **v2.3.0** |
 
 ---
 
-## 🧪 Tentative (v2.1+)
+## 🧪 Tentative (v2.4+)
 
 | Item | Trigger | Effort |
 |---|---|---|
@@ -41,6 +43,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the full inventory and [`EVOLUTION_PATH.m
 | 🔧 **`install.sh` Linux smoke test** in CI | Validate beyond macOS dev environment | M |
 | 🪜 **Rung completion auto-detection** beyond Darwin manual evaluation | After 30+ days of path-mode usage data | L |
 | 🎴 **Per-rung skill triggers** so the path is invokable by rung number | Path mode usage validates the rung naming | M |
+| 🧭 **Codex hook parity probe** | Only after at least one fork wires Codex-native hook equivalents and publishes evidence | M |
 
 ---
 
@@ -62,7 +65,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the full inventory and [`EVOLUTION_PATH.m
 
 - ❌ **Slack / Discord integration** — by design. Async, durable text > ephemeral channels.
 - ❌ **Web app version** — Claude Code is the substrate; replacing it defeats the point.
-- ❌ **Provider-agnostic abstraction** (OpenAI / Gemini / Claude) — the template is Claude-Code-specific because Claude Code's hook architecture is what makes deterministic enforcement possible.
+- ❌ **Full provider-agnostic abstraction** (OpenAI / Gemini / Claude as interchangeable substrates) — not until hook semantics and agent invocation can be validated per runtime. v2.3.0 adds Codex orientation, not automatic multi-provider parity.
 - ❌ **"Better defaults" preset packs** — opinionation belongs in the operator's fork, not in upstream variants.
 
 ---

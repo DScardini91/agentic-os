@@ -7,7 +7,34 @@ All notable changes to this template are documented here. The format follows [Ke
 ## [Unreleased]
 
 ### Added
-- _(track in-flight changes here before they land in a release)_
+
+- **ARCHITECTURE — Design Principle: Mechanical subagent model tiers**: Lightweight model selection for mechanical subagents (search, grep, log-summary, existence checks). Deciding heuristic: trivially detectable errors warrant the lightest model; errors that cascade into scope decisions require human confirmation. Notes composition with capability-based dispatch in multi-backend setups.
+- **ARCHITECTURE — Design Principle: Worktree lifecycle safety**: Before pruning or destroying a worktree, verify no active session has it open. Active session detection (open file descriptors via OS process table) is a prerequisite; detection is heuristic not guarantee; manual confirmation required before destructive prune.
+- **ARCHITECTURE — Design Principle: Observability path anchoring**: `git rev-parse --show-toplevel` returns the current worktree root, not the main checkout. Observability logs must anchor to the main checkout via `git rev-parse --git-common-dir`. Without anchoring, multi-worktree sessions write to isolated shards invisible to the Darwin watchdog.
+- **ARCHITECTURE — Design Principle: Opt-in gate for model-invoking hooks**: Hooks that spawn LLM calls at session stop must be opt-in (explicit enable variable). Opt-out defaults impose cost on every session including short or automated runs where the signal doesn't justify the latency.
+
+---
+
+## 🧭 [2.3.0] — 2026-07-10
+
+> **Runtime contract + reference-sync release.** The reference implementation moved beyond a Claude-only mental model: Codex sessions now get first-class orientation, context-budget discipline becomes a documented operating rule, and the public template gains a reusable skill for syncing advances from a private lived OS without leaking private context.
+
+### Added
+
+- **`AGENTS.md` + `control-plane/AGENTS.md`**: Codex-facing root orientation and control-plane contract. They mirror the core operating hierarchy while making runtime caveats explicit: Claude Code remains the reference runtime for deterministic hook execution; Codex can operate the same filesystem contract when it reads the AGENTS path.
+- **`context-budget` best practice**: new public practice in `control-plane/best-practices/context-budget.md`, with README index entry. Captures the reference implementation lesson that mature agentic systems need progressive disclosure and evidence paths, not maximal preload.
+- **`agentic-os-reference-sync` skill**: new orchestrating skill for converting private reference-implementation advances into public template updates. Includes a sanitization checklist under `references/sanitization-checklist.md`.
+
+### Changed
+
+- **README**: updated pitch, quickstart, runtime-surface table, repo inventory counts, and status metrics. The repo is now described as Claude Code reference-runtime plus Codex orientation, not as automatic multi-runtime hook parity.
+- **ARCHITECTURE**: added Section 11, "Runtime Contracts & Context Budget", plus design principles for explicit runtime contracts and context budget as governance.
+- **`control-plane/CLAUDE.md`**: added a Codex orientation note so Claude operators understand the AGENTS files are complementary, not a replacement for Claude hook wiring.
+- **ROADMAP**: updated latest release and next bets to reflect v2.3.0.
+
+### Migration
+
+No breaking changes. Claude Code users continue through `CLAUDE.md`. Codex users can start from `AGENTS.md`, but hook behavior should still be validated in Claude Code unless their fork has wired Codex-native equivalents.
 
 ---
 

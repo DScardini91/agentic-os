@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agentic OS Reference Sync"
+  short_description: "Safely sync public template from a private reference"
+  default_prompt: "Use $agentic-os-reference-sync to update agentic-os from the reference implementation without leaking private context."
