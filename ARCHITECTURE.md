@@ -192,21 +192,37 @@ flowchart TB
         TOPIC["memory/auto/&lt;topic&gt;.md\nuser profile · operating mode\nclient context · working patterns…"]
     end
 
-    subgraph T3 ["Tier 3 — Operational (session-scoped)"]
-        DAILY["memory/daily/YYYY-MM-DD.md"]
+    subgraph T3 ["Tier 3 — Operational (session-scoped, daily logs)"]
+        DAILY["memory/daily/YYYY-MM-DD.md\n(raw daily journal)"]
+        DIGEST["memory/daily/digests/YYYY-MM-DD.digest.md\n(dense Haiku compression)"]
         DEC["memory/decisions/decision-log.md"]
-        STATE["memory/&lt;agent&gt;/state.md\n(B1 handoff blocks)"]
         OBS["memory/observability/\nagent-calls.jsonl · pre-tool-fires.jsonl\ndarwin-accumulator.jsonl"]
     end
 
-    HOOK_START(["SessionStart Hook\n(injects T2 + recent dailies)"])
+    subgraph T4 ["Tier 4 — Progressive Rollup (cross-session digest)"]
+        WEEKLY["memory/daily/weekly/&lt;iso-week&gt;.md\n(narrative rollup of last 7 daily digests)"]
+        MEDTERM["memory/medium-term/rollup.md\n(theme-organized rollup of last N weeks\nrolling window · not calendar slice)"]
+    end
+
+    subgraph T5 ["Tier 5 — Agent-State Compaction (threshold-gated)"]
+        STATE_KEEP["memory/&lt;agent&gt;/state.md\n⟨KEEP — active threads · open decisions\nmost recent handoff · unresolved objections⟩"]
+        STATE_ARCH["memory/&lt;agent&gt;/state-history.md\n⟨ARCHIVE — completed items · old handoffs\nsuperseded context · append-only⟩"]
+    end
+
+    HOOK_START(["SessionStart Hook\n(injects T2 + T4 digest + T3 recent dailies)"])
     HOOK_STOP(["SessionStop Hook\n(commits memory files)"])
     K_AGENT["Interface Agent"]
 
     HOOK_START -->|"injects at session open"| T2
     T2 --> K_AGENT
     T1 -->|"read on demand"| K_AGENT
-    T3 -->|"read by agents as needed"| K_AGENT
+    T3 -->|"agents read on demand"| K_AGENT
+    T4 -->|"injected as rollup context"| K_AGENT
+    T5 -->|"fast path — state.md only"| K_AGENT
+    DAILY -->|"digest script\n(mtime-gated)"| DIGEST
+    DIGEST -->|"weekly rollup script"| WEEKLY
+    WEEKLY -->|"medium-term rollup script\n(time-interval-gated)"| MEDTERM
+    STATE_KEEP -->|"compaction script\n(threshold-gated · &gt;100 lines)"| STATE_ARCH
     K_AGENT -->|"writes on session close"| HOOK_STOP
     HOOK_STOP -->|"commits T2 + T3"| T2
 
@@ -215,7 +231,11 @@ flowchart TB
     style T1 fill:#0A1A0F,stroke:#007A4D
     style T2 fill:#0A1520,stroke:#1A3A5C
     style T3 fill:#1A1500,stroke:#3A2A00
+    style T4 fill:#1A0A1A,stroke:#6A3A8C
+    style T5 fill:#0A1A1A,stroke:#2A6A6A
 ```
+
+> **Memory pyramid rule:** Each tier is a deterministic compression of the tier below — concat of sources + a single LLM call writing to a temp file, then atomic copy to production. Never semantic clustering until the simpler mechanism proves insufficient. Every tier points explicitly to where more detail lives — no dead ends.
 
 ### Source-of-truth split
 
@@ -647,3 +667,5 @@ Agentic systems accumulate context pressure as they mature. The public template 
 | **Worktree lifecycle safety** | Before pruning or destroying a worktree, verify no active session has it open. A merge-complete worktree may still be in use: the session that created it may be mid-flight, or an unrelated session may have opened it. Active session detection — checking for open file descriptors pointing at the worktree via the OS process table — is a first-class prerequisite for any worktree cleanup operation. Detection is a heuristic, not a guarantee; manual confirmation before any destructive prune remains required. Inventory and status reports are read-only; destroy is always a separate explicit action. |
 | **Observability path anchoring** | `git rev-parse --show-toplevel` returns the current worktree root, not the main checkout root. Observability logs, breadcrumb files, and cross-session accumulator shards must resolve to the main checkout (obtainable via `git rev-parse --git-common-dir` — its parent is stable across all worktrees in the tree). Without anchoring, each worktree session writes to isolated log shards that the watchdog never aggregates, making governance metrics from multi-worktree runs invisible to Darwin. |
 | **Opt-in gate for model-invoking hooks** | Hooks that spawn model calls at session stop must be opt-in. An opt-out default imposes the cost on every session — including short sessions, reactive fixes, and automated runs where a model invocation adds latency without value. The hook wiring stays in place; the model-calling path is gated behind an explicit enable variable. This preserves the automation capability while letting operators activate it only for sessions where the signal is worth the cost. |
+| **Memory pyramid as tiered progressive disclosure** | The operator's own memory follows the same progressive disclosure pattern as agent specs: compact synthesis at the top (auto-memory index — always injected), expanding detail on demand (weekly rollups, medium-term theme digest), and historical depth behind paths (archived logs, raw daily journals). Each tier is generated from the tier below by a deterministic first-pass (concat of sources + single LLM call to a temp file, then atomic copy). Idempotence gates (mtime for daily/weekly, time-interval for medium-term) prevent redundant re-generation. The pattern composes: what works for journal-style memory applies equally to agent operational state — the same principle, two different domains. |
+| **Agent-state compaction with threshold gate** | Agent `state.md` files accumulate B1 Handoff blocks, resolved decisions, and superseded snapshots over time. When a `state.md` exceeds a threshold (100 lines recommended default), a compaction pass splits it: KEEP goes back into `state.md` (active threads, open decisions, most recent handoff, unresolved objections); ARCHIVE goes into `state-history.md` in the same directory — append-only, never overwritten. The mechanism is deterministic-first (single LLM call with an explicit split instruction) and writes through temp files, never directly to production files. ARCHIVE blocks are preserved verbatim — the purpose is to move resolved context out of the fast-path window, not to lose information. Below threshold: no-op. The OS Analyst monitors `state.md` sizes as part of OS health and triggers compaction when warranted. |

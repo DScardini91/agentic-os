@@ -32,6 +32,7 @@
 - [`no-direct-merge.md`](no-direct-merge.md) — Merges to main on shared / public repos require pressure-test + explicit approval
 - [`atomic-commits.md`](atomic-commits.md) — One concern per commit; commit message answers "why", not "what"
 - [`code-ownership-respect.md`](code-ownership-respect.md) — Do not edit another developer's open PR directly; surface the blocker
+- [`no-ai-attribution.md`](no-ai-attribution.md) — Do not credit AI tools in commit messages, PR descriptions, or code comments; operator is author of record
 
 ### 🏛️ Architecture
 - [`agentic-by-default.md`](agentic-by-default.md) — Sub-agents are the default; simulated reasoning is the exception
