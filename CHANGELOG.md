@@ -6,6 +6,10 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ## [Unreleased]
 
+### Changed (2026-W30)
+
+- **ARCHITECTURE — T5 (Agent-State Compaction) marked production-validated**: added a validation note under the Memory Pyramid diagram documenting real-world results across 3 distinct agents in the reference implementation (709→154+306 lines, 264→105+138, 217→60+178), each compacted from above the 100-line threshold with ARCHIVE preserved verbatim. Moves T5 from "designed" (W29) to "validated, clears the template's own N≥2 promotion bar" (W30). No new mechanism introduced — this is evidence consolidation on an existing pattern, per `ROADMAP.md`'s promotion bar.
+
 ### Added (2026-W29)
 
 - **ARCHITECTURE — Section 4 expanded: 5-tier Memory Pyramid**: Memory Architecture diagram updated from 3-tier to 5-tier, reflecting the Memory Pyramid Principle now deployed in the reference implementation.
