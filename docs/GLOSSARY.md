@@ -96,7 +96,9 @@ A specific kind of agent that pressure-tests strategic output **internally**, be
 |---|---|
 | **Anti-anchor rule** | When re-checking a self-audit, you re-read the canon, not the prior audit. Prevents the system from following itself in circles. |
 | **CI** (Continuous Integration) | A workflow on GitHub that runs tests every time someone proposes changes. The OS uses CI to make sure documentation links work and scripts behave. |
+| **Codex orientation** | The `AGENTS.md` path that lets Codex operate the same control-plane files. It does not automatically mean Claude Code hooks fire inside Codex. |
 | **Compounding** | The idea that small operating disciplines, sustained, multiply in value over months and years. The OS is built to be a compounding asset. |
+| **Context budget** | The discipline of loading only the files needed for the current decision, keeping bulky history behind paths or scratchpads instead of preloading everything. |
 | **Darwin** | The name of the OS-analyst agent — the one that observes the system over weeks and proposes structural improvements. "Darwin" because it evolves the OS itself. |
 | **Deterministic enforcement** | A rule that's checked by code (e.g., a hook that blocks a merge) — not a soft reminder the model might forget under pressure. |
 | **Orchestrator** | An agent that coordinates 3+ named specialists into a single synthesis. Used when a decision has multiple lenses (e.g., should I accept this engagement? → committee of strategic-fit · capacity · relationship · risk lenses). |

@@ -169,6 +169,12 @@ Forks add their own cards by dropping a `*.md` file with the canonical frontmatt
 
 A fresh fork ships with `.bootstrap-pending` at repo root. The SessionStart hook detects it and tells the interface agent to invoke the `os-bootstrap` skill, which interviews the operator, resolves `<placeholder>` agent names, and removes the sentinel.
 
+## Codex orientation
+
+Claude Code remains the reference runtime for deterministic hook execution. Codex sessions should read root `AGENTS.md` and `control-plane/AGENTS.md`, which mirror the control-plane contract while preserving Codex-specific context-budget discipline and runtime caveats.
+
+Do not claim hook parity in Codex unless the fork has explicitly wired equivalent Codex hooks. The portable pieces are the filesystem contract, agent/skill specs, memory tiers, decision-log, and validation suite.
+
 ## Observability layer — current state
 
 The harness writes signal to `control-plane/memory/observability/*.jsonl` via the Stop hook (`darwin-accumulate.sh`) and the PreToolUse hooks (`pre-tool-fires.jsonl`). The complementary `agent-calls.jsonl` feed — which is what `pre-tool-use-trigger-check.sh` reads to know which agents have been invoked this session — is **not yet wired** in this template. Forks that need full observability should either:

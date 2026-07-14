@@ -1,4 +1,5 @@
 ---
+name: morning-brief
 description: Start the day — reads the brain, pulls calendar and email digest, and delivers a single prioritized briefing with a development nudge tied to today's actual agenda.
 triggers:
   - "bom dia"

@@ -14,6 +14,7 @@
 | 📤 Producing output for an external stakeholder | Communication + Review |
 | 💾 Committing or merging | Engineering (git discipline) |
 | 🧩 Building a new agent or skill | Architecture |
+| 🪟 Long-running or broad repo work | Context management |
 
 > 💡 After bootstrap, the operator can **add, remove, or override** any of these. The `Why` block explains the cost so the deletion is informed.
 
@@ -36,6 +37,9 @@
 - [`agentic-by-default.md`](agentic-by-default.md) — Sub-agents are the default; simulated reasoning is the exception
 - [`progressive-disclosure.md`](progressive-disclosure.md) — Agent spec has two tiers — fast path (state.md) and deep context (full spec)
 - [`canon-self-audit-pair.md`](canon-self-audit-pair.md) — Every absorbed canon ships with a living self-audit; the pair is the unit
+
+### 🪟 Context management
+- [`context-budget.md`](context-budget.md) — Treat context as an operating budget; load narrow evidence first and keep bulky history behind paths
 
 ### 📝 Output discipline
 - [`comments-explain-why.md`](comments-explain-why.md) — Comments document the non-obvious "why"; code shows the "what"

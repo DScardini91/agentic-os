@@ -8,7 +8,7 @@
 
 </div>
 
-> 📖 This document is the **canonical reference** for how the system is shaped. For operational setup, see [`control-plane/CLAUDE.md`](control-plane/CLAUDE.md) and [`control-plane/session-start.md`](control-plane/session-start.md).
+> 📖 This document is the **canonical reference** for how the system is shaped. For operational setup, see [`control-plane/CLAUDE.md`](control-plane/CLAUDE.md), [`control-plane/AGENTS.md`](control-plane/AGENTS.md), and [`control-plane/session-start.md`](control-plane/session-start.md).
 
 ---
 
@@ -24,7 +24,8 @@
 8. [🛡️ Enforcement Layer (Agentic-by-Default)](#8-enforcement-layer-agentic-by-default)
 9. [⚡ Agent Activation Model (On Invocation)](#9-agent-activation-model-on-invocation)
 10. [🗂️ Dispatch Compilation Layer](#10-dispatch-compilation-layer)
-11. [✨ Design Principles](#design-principles)
+11. [🧭 Runtime Contracts & Context Budget](#11-runtime-contracts--context-budget)
+12. [✨ Design Principles](#design-principles)
 
 ---
 
@@ -552,6 +553,63 @@ flowchart TD
 
 ---
 
+## 🧭 11. Runtime Contracts & Context Budget
+
+The control plane is portable, but runtime behavior is not assumed to be identical across tools. Claude Code is the reference runtime for deterministic hooks. Codex can operate the same filesystem contract through explicit `AGENTS.md` orientation.
+
+```mermaid
+flowchart LR
+    OP["Operator"]
+
+    subgraph Claude ["Claude Code reference runtime"]
+        CLROOT["CLAUDE.md"]
+        CLCP["control-plane/CLAUDE.md"]
+        HOOKS[".claude/settings.json\n.claude/hooks/*"]
+    end
+
+    subgraph Codex ["Codex runtime orientation"]
+        CXROOT["AGENTS.md"]
+        CXCP["control-plane/AGENTS.md"]
+        CXCAVEAT["Hook parity only if\nfork wires equivalent hooks"]
+    end
+
+    subgraph Shared ["Shared control plane"]
+        AG[".claude/agents/*"]
+        SK[".claude/skills/*"]
+        MEM["control-plane/memory/*"]
+        VAL["scripts/validate-all.sh"]
+    end
+
+    OP --> CLROOT --> CLCP --> HOOKS --> Shared
+    OP --> CXROOT --> CXCP --> CXCAVEAT --> Shared
+```
+
+### Runtime claim discipline
+
+| Claim | Required evidence |
+|---|---|
+| Orientation works | Root runtime file exists and points to the correct control-plane contract |
+| Hook behavior works | Run the hook through the runtime that should execute it |
+| Validation works | `bash scripts/validate-all.sh` passes in the public repo |
+| Runtime parity works | Same behavior validated in both runtimes, or explicitly documented as not equivalent |
+
+### Context budget policy
+
+Agentic systems accumulate context pressure as they mature. The public template therefore treats context as an operating budget:
+
+| Layer | Default read behavior |
+|---|---|
+| Root orientation | Always read on session start |
+| `state.md` fast paths | Read before full agent specs |
+| Agent specs | Read on demand when the task needs the full mandate |
+| Skill bodies | Load through skill invocation, not by preloading all skills |
+| Historical logs and transcripts | Search narrowly; summarize into scratchpads when bulky |
+| Generated artifacts | Avoid unless the artifact itself is the target |
+
+> The pattern is not "smaller prompts." It is progressive disclosure: current state first, deep history only when it changes the decision.
+
+---
+
 ## ✨ Design Principles
 
 | Principle | Rationale |
@@ -573,6 +631,8 @@ flowchart TD
 | **SessionStop as signal layer** | The hook lifecycle is three-phase: SessionStart (context bootstrap + cleanup), PreToolUse (gate + mutation), SessionStop (telemetry flush). SessionStop closes the signal loop — emitting session cost and token data into the observability stack when above threshold. Runs async; never blocks session delivery. |
 | **Progressive disclosure in agent specs** | An agent spec has two reading tiers: `state.md` (fast path — live context, open handoff, active threads, always read at invocation) and the full spec (deep context — frameworks, rules, pipeline, read only when task complexity requires it). Agents that conflate these tiers force the Interface Agent to load full specs for trivial tasks, burning context on work that doesn't need it. |
 | **Dispatch compilation at session open** | Skill routing and concept routing are compiled indexes, not evaluated at query time. Compilers run once at SessionStart, check source freshness against cache, and produce routing tables injected into context. Runtime dispatch is a lookup; the slow path runs once per session, not once per request. |
+| **Runtime contracts are explicit** | Claude Code and Codex read different root orientation files and have different hook mechanics. The shared control plane is portable, but deterministic hook behavior is runtime-specific until validated. Explicit contracts prevent accidental claims of parity. |
+| **Context budget is governance** | Context window is an operating budget, not a dump for every memory and transcript. The OS reads narrow state first, compiles routing indexes, and moves bulky evidence behind paths or scratchpads. This preserves both cost discipline and decision quality. |
 | **Least privilege by activation model** | Agents are invoked on demand, not loaded at session start. On-invocation agents receive context proportional to their task (state.md fast path) rather than full ambient context from session open. Blast radius per invocation is bounded by what the task required — not by what the agent spec declares. Code-owner agents (those with Write access to high-trust paths) require explicit invocation before their paths accept edits. Non-code-owner agents explicitly restrict their tool sets in the agent spec — absence of a restriction is an oversight, not a grant. |
 | **OS evolution as deliberate accretion** | The OS grows by addition, not by replacement. Subtraction requires justification, accretion is the default — each retained component is treated as a compounding asset. External frameworks pass through a mandatory filter before adoption: does this refine an existing rail, or does it impose a new cage? Patterns that would force the operator to abandon working rails are rejected even when locally appealing. The system is a guide rail, not a cage — it constrains direction, not motion. *(This principle is recent and is expected to gain qualifying conditions as the Darwin loop encounters edge cases. Forks should treat it as direction, not law.)* |
 | **Watchdog and reconciliation as separate rhythms** | Governance has two cognitive modes: pattern-matching against thresholds (watchdog, continuous, per-session) and judgment on accumulated patterns (reconciliation, weekly or on-demand). Mixing the rhythms produces noise (continuous deliberation) or blindness (deliberation without accumulated signal). The watchdog never blocks and never deliberates; the reconciliation ritual never runs continuously and never fires automatically without operator invocation. |
@@ -583,3 +643,7 @@ flowchart TD
 | **Skill boundary contracts** | Every skill must declare not only when to invoke it, but when NOT to invoke it — with explicit redirects to the correct skill for adjacent cases. The negative boundary is as load-bearing as the positive trigger: without it, skills absorb adjacent cases they were not designed for, producing silent quality degradation rather than clean handoffs. A skill definition without a "when not to use" section is incomplete by design. Redirects should name the specific skill to route to, not just describe the category. *(Pattern formalized mid-2026 after a skills audit across 59 skills identified consistent scope-bleed in boundary-free definitions.)* |
 | **PostToolUse as enrichment hook** | The hook lifecycle has a fourth phase: PostToolUse, which fires after a tool completes successfully. PostToolUse hooks inject context, trigger downstream skills, or emit telemetry — they never block. This is structurally different from PreToolUse: PreToolUse gates execution (can deny); PostToolUse enriches the result (always proceeds). Common patterns: detect a completed tool call by name, extract output (e.g., PR number from `gh pr create`), inject an instruction to run a downstream skill. PostToolUse creates automated feedback loops that would otherwise require explicit operator invocation. |
 | **Enforcement promotion gates** | Every enforcement trigger starts at log-only and earns each severity increase through evidence: reliable caller attribution, a false-positive classification pass, Senior Advisor approval, and a decision-log entry. Promoting a trigger before attribution reliability is established produces enforcement that fires on the wrong caller. This is distinct from escalation state (which tracks per-session violations) — promotion is a structural change to the trigger's severity floor, not a session-level reaction. The gate protocol makes enforcement earned, not assumed. |
+| **Mechanical subagent model tiers** | When delegating to a subagent for mechanical work — search, grep, log-summary, file existence checks — use the lightest capable model. The deciding heuristic: *is an error here trivially detectable and correctable, or does it cascade silently into decision scope?* Trivially detectable errors (missed file path, spurious search hit) warrant the lightest model. Errors that feed scope decisions — especially absent-result searches used to declare "this no longer exists" — require human confirmation, not a lighter model. Mechanical subagents also isolate noisy intermediate output, protecting the main context window. *(Composes with capability-based model dispatch in multi-backend deployments; applies within a single backend as a per-task model selection rule.)* |
+| **Worktree lifecycle safety** | Before pruning or destroying a worktree, verify no active session has it open. A merge-complete worktree may still be in use: the session that created it may be mid-flight, or an unrelated session may have opened it. Active session detection — checking for open file descriptors pointing at the worktree via the OS process table — is a first-class prerequisite for any worktree cleanup operation. Detection is a heuristic, not a guarantee; manual confirmation before any destructive prune remains required. Inventory and status reports are read-only; destroy is always a separate explicit action. |
+| **Observability path anchoring** | `git rev-parse --show-toplevel` returns the current worktree root, not the main checkout root. Observability logs, breadcrumb files, and cross-session accumulator shards must resolve to the main checkout (obtainable via `git rev-parse --git-common-dir` — its parent is stable across all worktrees in the tree). Without anchoring, each worktree session writes to isolated log shards that the watchdog never aggregates, making governance metrics from multi-worktree runs invisible to Darwin. |
+| **Opt-in gate for model-invoking hooks** | Hooks that spawn model calls at session stop must be opt-in. An opt-out default imposes the cost on every session — including short sessions, reactive fixes, and automated runs where a model invocation adds latency without value. The hook wiring stays in place; the model-calling path is gated behind an explicit enable variable. This preserves the automation capability while letting operators activate it only for sessions where the signal is worth the cost. |

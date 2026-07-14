@@ -16,7 +16,7 @@ Your data lives in **four places** when you use agentic-os:
 
 1. **Your local machine** (the cloned repo on disk)
 2. **Your GitHub fork** (if you committed and pushed)
-3. **Anthropic** (whatever you send to Claude during a session — same as any other Claude Code use)
+3. **The active AI provider** (Anthropic for Claude Code, OpenAI for Codex, or whatever runtime your fork uses)
 4. **Optional external systems** (Notion, Obsidian, etc. — only if you wire them in)
 
 The system does **not** silently send anything to anywhere new. Every byte of "where it goes" is visible in the file system and the git remote you configured.
@@ -34,7 +34,7 @@ These are markdown files like `personality.md`, `communication-style.md`, `bound
 
 - Local machine: yes
 - GitHub fork: yes if you committed
-- Anthropic: yes when injected into a session's context
+- Active AI provider: yes when injected into a session's context
 - External: no (unless you explicitly copy these files elsewhere)
 
 **Confidentiality posture:** these typically describe you in operator terms ("I prefer conclusion-first", "no emoji in external output"), not client-confidential material. Most operators are comfortable having this in a private GitHub fork. **Do not write client-confidential material into these files.**
@@ -46,7 +46,7 @@ These are the narrative log of what you actually worked on and decided.
 
 - Local machine: yes
 - GitHub fork: **yes if you committed and pushed**
-- Anthropic: injected into context only for the last 2 daily logs and the decision log (~last 30 entries) per session
+- Active AI provider: injected into context only for the last 2 daily logs and the decision log (~last 30 entries) per session
 - External: no (unless you explicitly mirror)
 
 **Confidentiality posture:** **this is where it gets sensitive.** If your daily log says *"discussed [Client X's] acquisition target with [Senior Partner Y]"*, that text lives wherever you push it. Three working postures:
@@ -64,7 +64,7 @@ These are append-only telemetry files: which agents got invoked, which hooks fir
 
 - Local machine: yes
 - GitHub fork: **default `.gitignore` excludes these.** They are local telemetry, not shared history.
-- Anthropic: no (telemetry is post-hoc analysis of completed sessions)
+- Active AI provider: no (telemetry is post-hoc analysis of completed sessions)
 - External: no
 
 **Confidentiality posture:** low concern by default. The files are gitignored shipped. Verify your `.gitignore` after bootstrap to make sure that's still true.
@@ -76,7 +76,7 @@ When you use `ingest-content` on a book or paper, the distilled analysis (TL;DR 
 
 - Local machine: yes
 - GitHub fork: yes if you committed
-- Anthropic: the original source (PDF, URL) was processed by Claude during ingestion. The committed analysis is what you write to disk.
+- Active AI provider: the original source (PDF, URL) was processed by the runtime during ingestion. The committed analysis is what you write to disk.
 - External: depends on your source (if the book is licensed material, **the committed analysis is a derivative work** — apply your judgment per the source's terms)
 
 **Confidentiality posture:** the analysis is your synthesis. If the source was internal client material, the analysis derived from it carries the same confidentiality. **Do not commit canon files derived from client-confidential material to a public fork.**
@@ -86,23 +86,23 @@ When you use `ingest-content` on a book or paper, the distilled analysis (TL;DR 
 
 - Local machine: yes (where you produced them)
 - GitHub fork: no (unless you commit them — and you probably shouldn't)
-- Anthropic: yes during the session that produced them
+- Active AI provider: yes during the session that produced them
 - External: wherever you delivered them
 
 **Confidentiality posture:** unchanged from how you would handle these artifacts without agentic-os. The system adds no new attack surface here.
 
 ---
 
-## 🌐 What Anthropic sees
+## 🌐 What the AI provider sees
 
-Same as any other Claude Code use. Specifically:
+Same as any other use of the runtime you choose. Specifically:
 
-- Every prompt you send during a session is sent to Anthropic for processing.
-- Every file Claude reads during a session is sent to Anthropic as context.
-- Anthropic's data usage policy (at the time of writing) treats these as input data, subject to their published terms.
-- **agentic-os does not add any new data path to Anthropic** beyond standard Claude Code behavior.
+- Every prompt you send during a session is sent to the active provider for processing.
+- Every file the runtime reads during a session is sent to that provider as context.
+- The provider's data usage policy applies to those inputs, subject to their published terms and your account/workspace configuration.
+- **agentic-os does not add any new data path to the provider** beyond standard runtime behavior.
 
-If your organization has constraints on what you can send to Anthropic, those constraints apply unchanged. The OS will not magically make a regulated workflow compliant.
+If your organization has constraints on what you can send to Anthropic, OpenAI, or any other provider, those constraints apply unchanged. The OS will not magically make a regulated workflow compliant.
 
 ---
 
@@ -142,7 +142,7 @@ Run through this before you fork:
 - [ ] I have chosen Posture A, B, or C above.
 - [ ] If Posture A: I have audited my `.gitignore` to confirm gitignored paths are correct.
 - [ ] If Posture C: I have compliance approval, or I am working locally with no push to any remote.
-- [ ] I understand Claude Code's data flow to Anthropic (this is unchanged by agentic-os).
+- [ ] I understand the data flow of the runtime I am using (Claude Code, Codex, or another fork-specific runtime). This is unchanged by agentic-os.
 - [ ] I have a backup of any local data before I start (the OS is not a backup; your laptop disk is your single source of truth for unpushed memory).
 
 If you can check all six, you're cleared to fork.

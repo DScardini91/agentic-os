@@ -4,7 +4,7 @@
 
 # 🧬 agentic-os
 
-### A personal operating system on top of Claude Code.
+### A personal operating system on top of Claude Code — now with Codex orientation.
 
 **Agents · Memory · Hooks · Skills · Governance — built into the harness, not improvised per session.**
 
@@ -13,6 +13,7 @@
 [![latest tag](https://img.shields.io/github/v/tag/DScardini91/agentic-os?sort=semver&color=success)](https://github.com/DScardini91/agentic-os/releases)
 [![last commit](https://img.shields.io/github/last-commit/DScardini91/agentic-os?color=orange)](https://github.com/DScardini91/agentic-os/commits/main)
 [![claude code](https://img.shields.io/badge/built%20for-Claude%20Code-1a3a5c)](https://docs.claude.com/claude-code)
+[![codex oriented](https://img.shields.io/badge/Codex-oriented-0f766e)](AGENTS.md)
 
 [**📅 A Monday**](docs/A_MONDAY.md) ·
 [**👤 Is this for me?**](docs/WHO_IS_THIS_FOR.md) ·
@@ -42,7 +43,7 @@ After 3 months of use, this is what changes:
 - 📚 Frameworks from books you read 60 days ago **apply themselves** to today's work.
 - 🪞 Your weekly review **compounds** instead of starting from scratch.
 
-It runs on top of [Claude Code](https://docs.claude.com/claude-code), takes ~15 minutes to set up, costs ~$5–40/week in API tokens, and you can walk away in a weekend if it doesn't fit.
+Claude Code is the reference runtime because its hooks provide deterministic enforcement. The repo now also ships Codex-facing orientation (`AGENTS.md` + `control-plane/AGENTS.md`) so the same control plane can be operated from Codex with explicit runtime caveats. Setup takes ~15 minutes, costs ~$5–40/week in API tokens, and you can walk away in a weekend if it doesn't fit.
 
 > ⚠️ **Not for everyone — by design.** Read [👤 *Is this for me?*](docs/WHO_IS_THIS_FOR.md) before forking.
 
@@ -55,6 +56,7 @@ It runs on top of [Claude Code](https://docs.claude.com/claude-code), takes ~15 
 - [🚀 The 90-second pitch (architecture)](#-the-90-second-pitch-architecture)
 - [🎯 Is this for you?](#-is-this-for-you)
 - [⚡ Quickstart](#-quickstart)
+- [🧭 Runtime surfaces](#-runtime-surfaces)
 - [🔒 Where does my data live?](#-where-does-my-data-live)
 - [📦 What ships in this repo](#-what-ships-in-this-repo)
 - [🏗️ How it works](#️-how-it-works)
@@ -91,6 +93,8 @@ You open Claude Code in this repo. It detects you're new, runs a **10-minute int
 > 🧬 **An OS analyst (Darwin)** observes the system over weeks. Surfaces drift. Proposes structural change in a weekly governance pass.
 >
 > 🚧 **Hooks** run *before every tool fires* — some hard-deny (direct merges to main, writes to declared protected repos without owner agent invoked); others warn-loud (edits to control-plane files without senior-advisor invocation, hub-mandate violations). Deny vs warn is documented per-hook in `.claude/settings.json`; the harness ships in warn-loud mode by default so a fork operator can observe drift before promoting hooks to hard-deny.
+>
+> 🧭 **Runtime contracts** split by surface: `CLAUDE.md` / `control-plane/CLAUDE.md` for Claude Code, `AGENTS.md` / `control-plane/AGENTS.md` for Codex. Claude Code remains canonical for hook execution; Codex gets the same operating hierarchy and context-budget policy without pretending hook parity exists automatically.
 
 The system is opinionated **and the opinions are documented**. Opt out of any of them with a one-line config edit. See [the opt-out section](#-opinionated-topology-and-how-to-opt-out).
 
@@ -169,6 +173,29 @@ bash scripts/install.sh
 
 > 🔍 Verifies prerequisites (`jq`, `python3`, `gh`, `git`), primes routing caches, validates the harness. Not required for standard setup — useful if you want to diagnose environment issues before opening Claude Code.
 
+### Optional — operate from Codex
+
+Codex sessions read:
+
+```text
+AGENTS.md
+control-plane/AGENTS.md
+```
+
+Use Codex for repo work, documentation, skill edits, and validation. If the task depends on Claude Code hooks firing, run or validate that behavior in Claude Code unless your fork has wired equivalent Codex hooks.
+
+---
+
+## 🧭 Runtime surfaces
+
+| Layer | Claude Code | Codex |
+|---|---|---|
+| Root orientation | `CLAUDE.md` | `AGENTS.md` |
+| Control-plane contract | `control-plane/CLAUDE.md` | `control-plane/AGENTS.md` |
+| Agent specs | `.claude/agents/` | `.claude/agents/` unless the fork creates `.codex/agents/` |
+| Skills | `.claude/skills/` | `.claude/skills/` unless the fork creates `.codex/skills/` |
+| Deterministic hooks | `.claude/settings.json` + `.claude/hooks/` | fork-specific; not automatic |
+
 ---
 
 ## 🔒 Where does my data live?
@@ -177,7 +204,7 @@ Your data lives in **four places** when you use agentic-os:
 
 1. 💻 **Your local machine** (the cloned repo on disk)
 2. 🐙 **Your GitHub fork** (if you committed and pushed)
-3. 🤖 **Anthropic** (whatever you send to Claude during a session — same as any other Claude Code use)
+3. 🤖 **The active AI provider** (Anthropic for Claude Code, OpenAI for Codex, or whatever runtime your fork uses)
 4. 🔌 **Optional external systems** (Notion, Obsidian — only if you wire them in)
 
 The system **does not silently send anything to anywhere new.** Every byte of "where it goes" is visible in your file system and the git remote you configured.
@@ -200,7 +227,7 @@ It does **not replace** Notion, Linear, Outlook, ChatGPT, or whatever you alread
 
 - 📋 **External trackers** (Notion / Linear / Jira) hold *operational state* — active projects, tasks, statuses
 - 🧬 **agentic-os** holds *structural state* — identity, decisions, frameworks, governance
-- 🤖 **Claude Code** holds *execution* — the session where work actually gets done
+- 🤖 **Claude Code** holds *reference execution* — the session where deterministic hooks fire; Codex can operate the same files when it reads the AGENTS contract
 
 > 🧭 **Full surface-by-surface comparison + four operator setup recipes:** [🧭 *Integration Map*](docs/INTEGRATION_MAP.md)
 
@@ -234,7 +261,7 @@ The system is designed to **earn back its overhead** at every rung. If at any ru
 </tr>
 <tr>
 <td>🪝 <b>Hooks</b><br/>(<code>.claude/hooks/</code> + <code>settings.json</code>)</td>
-<td>6 hook scripts in <code>.claude/hooks/</code>; wired in <code>settings.json</code> as: SessionStart × 6 invocations (calling control-plane scripts), PreToolUse × 4 matchers (Bash/Write/Edit/MultiEdit), PostToolUse × 1 (Agent → <code>log-agent-call</code>), Stop × 2</td>
+<td>6 hook scripts in <code>.claude/hooks/</code>; wired in <code>settings.json</code> as: SessionStart × 8 invocations (calling control-plane scripts), PreToolUse × 2 matcher groups, PostToolUse × 1 (Agent → <code>log-agent-call</code>), Stop × 4</td>
 <td><a href="./.claude/settings.json"><code>.claude/settings.json</code></a></td>
 </tr>
 <tr>
@@ -243,13 +270,18 @@ The system is designed to **earn back its overhead** at every rung. If at any ru
 <td><a href="./control-plane/scripts/validate-harness.sh"><code>validate-harness.sh</code></a></td>
 </tr>
 <tr>
+<td>🧭 <b>Runtime contracts</b></td>
+<td>Claude Code orientation plus Codex-facing <code>AGENTS.md</code> contracts with explicit hook-parity caveats and context-budget policy</td>
+<td><a href="./control-plane/AGENTS.md"><code>control-plane/AGENTS.md</code></a></td>
+</tr>
+<tr>
 <td>⚙️ <b>Configs</b><br/>(<code>control-plane/config/</code>)</td>
 <td>3 YAML — spoke-owners, protected-repos, triggers</td>
 <td><a href="./control-plane/config/triggers.yaml"><code>triggers.yaml</code></a></td>
 </tr>
 <tr>
 <td>🧠 <b>Memory tiers</b></td>
-<td>11 — self · interface-agent · senior-advisor · auto · decisions · daily · observability · darwin · scratchpads · skills · concepts · agent-state</td>
+<td>12 — self · interface-agent · senior-advisor · auto · decisions · daily · observability · darwin · scratchpads · skills · concepts · agent-state</td>
 <td><a href="./control-plane/memory/auto/MEMORY.md"><code>memory/auto/MEMORY.md</code></a></td>
 </tr>
 <tr>
@@ -264,7 +296,7 @@ The system is designed to **earn back its overhead** at every rung. If at any ru
 </tr>
 <tr>
 <td>📋 <b>Best practices</b></td>
-<td>11 universal operating rules — Communication · Engineering · Architecture · Output discipline</td>
+<td>12 universal operating rules — Communication · Engineering · Architecture · Context management · Output discipline</td>
 <td><a href="./control-plane/best-practices/README.md"><code>best-practices/README.md</code></a></td>
 </tr>
 <tr>
@@ -279,12 +311,12 @@ The system is designed to **earn back its overhead** at every rung. If at any ru
 </tr>
 <tr>
 <td>🤖 <b>Agents</b><br/>(<code>.claude/agents/</code>)</td>
-<td>10 shipped — kowalski · walter · darwin · artifact-reviewer · 3 domain entries · 3 entity-guardian examples</td>
+<td>14 shipped — core interface/advisor/analyst, artifact reviewer, 3 domain entries, 3 entity guardians, and 4 daily-rhythm agents</td>
 <td><a href="./.claude/agents/darwin.md"><code>agents/darwin.md</code></a></td>
 </tr>
 <tr>
 <td>⚡ <b>Skills</b><br/>(<code>.claude/skills/</code>)</td>
-<td>13 — os-bootstrap · os-bootstrap-extend · decision-log-entry · pr-review · harness-onboarding · branch-cleanup · darwin-housekeeping · spec-cross-check · memory-consolidate · capture-triage · meeting-to-work-items · ingest-content · ux-critique · expert-interview-guide</td>
+<td>21 — bootstrap, extension, daily rhythm, decision logging, PR/repo review, ingestion, housekeeping, and public-reference sync workflows</td>
 <td><a href="./.claude/skills/os-bootstrap/SKILL.md"><code>os-bootstrap/SKILL.md</code></a></td>
 </tr>
 </table>
@@ -303,7 +335,7 @@ Single interface agent fronts everything. Domain entries own recurring work. Ent
 
 Hooks fire deterministically at **SessionStart**, **PreToolUse**, **PostToolUse**, and **Stop**. The rules you set don't drift across sessions because they're enforced at tool dispatch time, not relied on the model to remember.
 
-> 📖 Read [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full canonical flow, design principles, and the 10 Mermaid diagrams describing each layer.
+> 📖 Read [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full canonical flow, runtime surfaces, design principles, and diagrams describing each layer.
 
 ---
 
@@ -367,6 +399,7 @@ Everything in this repo is meant to be edited:
 | 📋 **Best practices** (`control-plane/best-practices/`) | Delete any rule you disagree with. The `Why` block explains the cost so the deletion is informed. |
 | 🤖 **Agents** (`.claude/agents/`) | Rename, repurpose, or delete. `os-bootstrap` offers default names; patterns library shows how to instantiate new ones. |
 | 🪝 **Hooks** (`.claude/settings.json`) | Remove a hook by deleting its entry. Override per-invocation via documented env vars (`HARNESS_MERGE_OVERRIDE`, `HARNESS_HUB_OVERRIDE`, `HARNESS_PROTECTED_WRITE_OVERRIDE`). |
+| 🧭 **Runtime contracts** (`CLAUDE.md`, `AGENTS.md`) | Keep Claude Code as the hook reference runtime, or add your own Codex-native hook layer and document the difference. |
 | 🌐 **Domains** (`professional/`, `personal/`, ...) | Six example folders ship. Bootstrap asks which to keep. Patterns library shows how to add your own. |
 | 🎴 **Concept cards** (`control-plane/concepts/_cards/`) | Drop a markdown file with the canonical frontmatter — the SessionStart compiler picks it up next session. |
 
@@ -378,10 +411,10 @@ Everything in this repo is meant to be edited:
 
 | Metric | Value |
 |---|---|
-| 📦 Skills shipped | **13** |
-| 🤖 Agents shipped | **10** (all with YAML frontmatter) |
+| 📦 Skills shipped | **21** |
+| 🤖 Agents shipped | **14** (all with YAML frontmatter) |
 | 🧩 Agent patterns documented | **8** |
-| 📋 Universal best practices | **11** |
+| 📋 Universal best practices | **12** |
 | 🪝 Hook integrations | **6 hook scripts** wired across SessionStart / PreToolUse / PostToolUse / Stop |
 | 🧪 CI checks | **6 (frontmatter, fixtures, compilers, YAML lint, link integrity, regex)** |
 | ✅ Status | All CI green |

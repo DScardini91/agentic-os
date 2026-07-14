@@ -90,11 +90,11 @@ This is the half no one quantifies in productivity-tool reviews. Concretely:
 
 ---
 
-## 💵 Token cost (Claude API)
+## 💵 Token cost (runtime API)
 
 ### How costs accrue
 
-agentic-os runs on Claude Code. Every session uses Claude API tokens, billed at Anthropic's standard rates. **agentic-os does not add a separate fee.**
+agentic-os uses the API tokens of whichever runtime is active. Claude Code sessions use Claude API tokens billed at Anthropic's standard rates. Codex sessions use the pricing attached to the operator's OpenAI/Codex environment. **agentic-os does not add a separate fee.**
 
 The OS does affect token usage in two directions:
 
@@ -107,7 +107,7 @@ Net effect for most operators: **5–15% higher per-session token cost, 20–40%
 
 ### Rough weekly budgets
 
-At Anthropic's current Claude Sonnet pricing (Nov 2026), assuming 5–15 sessions per week:
+Using the June 2026 Claude Sonnet pricing assumptions above, assuming 5–15 sessions per week:
 
 | Rung range | Sessions/week | Tokens/week | Estimated cost |
 |---|---|---|---|

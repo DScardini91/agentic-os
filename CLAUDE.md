@@ -1,6 +1,6 @@
 # agentic-os — Root Orientation
 
-You are operating inside the **agentic-os** template — a sanitized harness for building a personal operating system on top of Claude (agents, memory, rules, conventions, hooks, scripts).
+You are operating inside the **agentic-os** template — a sanitized harness for building a personal operating system on top of Claude Code, with Codex orientation files for forks that also operate from Codex.
 
 ## On session start, do this in order:
 
@@ -8,6 +8,8 @@ You are operating inside the **agentic-os** template — a sanitized harness for
 2. Read `control-plane/session-start.md` — bootstraps the interface-agent role.
 3. Read `control-plane/CLAUDE.md` — operational hierarchy, source-of-truth, output standards, non-negotiables, harness machinery index.
 4. Confirm with one line and wait for input. Do not summarize what you read.
+
+Codex sessions use the analogous `AGENTS.md` + `control-plane/AGENTS.md` path. Claude Code remains the reference runtime for hooks in `.claude/settings.json`.
 
 ## Key paths (read on demand, not upfront)
 
@@ -24,6 +26,7 @@ You are operating inside the **agentic-os** template — a sanitized harness for
 - `control-plane/config/` — spoke-owners.yaml · protected-repos.yaml · triggers.yaml
 - `.claude/settings.json` — hook wiring
 - `.claude/hooks/` — PreToolUse / Stop hook scripts
+- `AGENTS.md` and `control-plane/AGENTS.md` — Codex-facing orientation and context-budget policy
 - `control-plane/scripts/` — SessionStart / Stop / utility scripts
 
 ## Domain folders

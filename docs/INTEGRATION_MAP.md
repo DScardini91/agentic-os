@@ -18,7 +18,8 @@ The split is consistent:
 
 - **External systems** (Notion, Linear, Jira) hold **operational state** — active projects, tasks, meeting notes, statuses
 - **agentic-os** holds **structural state** — identity, decisions, frameworks, governance
-- **Claude Code** holds **execution** — the actual session where work gets done
+- **Claude Code** holds **reference execution** — the actual session where deterministic hooks fire
+- **Codex** can operate the same repo through `AGENTS.md`, but hook parity is fork-specific unless explicitly wired
 
 ---
 
@@ -42,9 +43,9 @@ The split is consistent:
 │            └──────────────┬─────────────┘                    │
 │                           ▼                                  │
 │              ┌─────────────────────────┐                    │
-│              │      Claude Code         │                    │
-│              │  (the execution layer    │                    │
-│              │   — where work happens)  │                    │
+│              │ Claude Code / Codex      │                    │
+│              │  (execution surfaces;    │                    │
+│              │  Claude hooks canonical) │                    │
 │              └─────────────────────────┘                    │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -78,11 +79,12 @@ The OS reads from external trackers when needed (via MCP servers or by you pasti
 | Tool | What it does | When to use |
 |---|---|---|
 | **ChatGPT Plus / Claude.ai web** | General-purpose conversation, quick lookups, one-off tasks | Anything that doesn't need persistent context — research, brainstorming, throwaway analysis |
-| **agentic-os (via Claude Code)** | Persistent operator context across sessions — your voice, decisions, frameworks all auto-loaded | Anything that benefits from the system knowing who you are and what you've decided |
+| **agentic-os (via Claude Code)** | Persistent operator context across sessions — your voice, decisions, frameworks all auto-loaded; deterministic hooks fire in the reference runtime | Anything that benefits from the system knowing who you are and what you've decided |
+| **agentic-os (via Codex)** | Same filesystem contract and control-plane rules through `AGENTS.md`; hook behavior only if the fork has equivalent Codex wiring | Repo maintenance, docs, skills, validation, and coding work where Codex is the active tool |
 
-**Together:** ChatGPT for the throwaway question; Claude Code + agentic-os for the work that compounds.
+**Together:** ChatGPT for the throwaway question; Claude Code + agentic-os for hook-enforced work that compounds; Codex + agentic-os for repo/operator work where the AGENTS contract is enough.
 
-> 💡 Most agentic-os operators **keep both**. Not every interaction with an LLM needs persistent context.
+> 💡 Most agentic-os operators **keep multiple AI surfaces**. Not every interaction with an LLM needs persistent context, and not every runtime has the same enforcement hooks.
 
 ### Calendar and meetings
 
@@ -136,7 +138,7 @@ The OS reads from external trackers when needed (via MCP servers or by you pasti
 
 - **Operational:** Linear (tasks) + GitHub (code) + Obsidian (notes)
 - **Structural:** agentic-os + GitHub fork for the OS itself
-- **Execution:** Claude Code + occasional ChatGPT Plus for throwaway research
+- **Execution:** Claude Code for hook-enforced sessions + Codex for repo work if desired + occasional ChatGPT Plus for throwaway research
 
 **Result:** Engineering workflow integrated; OS lives next to code.
 
@@ -144,7 +146,7 @@ The OS reads from external trackers when needed (via MCP servers or by you pasti
 
 - **Operational:** OneDrive (docs) + Outlook (calendar/email) + Notion (personal)
 - **Structural:** agentic-os in a private GitHub fork
-- **Execution:** Claude Code with regulated-sector posture (memory/daily and memory/decisions gitignored, local only)
+- **Execution:** Claude Code with regulated-sector posture (memory/daily and memory/decisions gitignored, local only); Codex only if the same data-residency posture is acceptable
 
 **Result:** Confidentiality preserved; system runs locally; operator gets compounding benefit without compliance risk.
 
@@ -152,7 +154,7 @@ The OS reads from external trackers when needed (via MCP servers or by you pasti
 
 - **Operational:** Linear (team tasks) + Notion (personal) + Slack (team)
 - **Structural:** agentic-os with multiple custom canons + orchestrator agents
-- **Execution:** Claude Code (deep) + ChatGPT Plus (light)
+- **Execution:** Claude Code (deep) + Codex (repo/operator work where appropriate) + ChatGPT Plus (light)
 
 **Result:** Strategic discipline scales with the role; orchestrator handles recurring high-stakes decisions.
 
@@ -176,14 +178,14 @@ When you see something agentic-os doesn't do that your existing tool does — ke
 
 ## 🔌 Optional integrations (if you want them)
 
-These work via MCP servers (Model Context Protocol — Claude Code's plugin system):
+These work via MCP servers (Model Context Protocol — commonly used through Claude Code, and runtime-specific elsewhere):
 
 - **Notion MCP** — read/write your Notion workspace from sessions
 - **GitHub MCP** — read PRs, issues, repos
 - **Outlook MCP** — read calendar and email
 - **Filesystem MCP** — read/write your local files outside the repo
 
-These are not bundled with agentic-os. You install them separately into Claude Code. The OS provides skill patterns (`email-intake`, `meeting-close`) that work well with these MCPs once they're connected.
+These are not bundled with agentic-os. You install them separately into the runtime you use. The OS provides skill patterns (`email-intake`, `meeting-close`) that work well with these MCPs once they're connected.
 
 ---
 

@@ -1,4 +1,5 @@
 ---
+name: weekly-retro
 description: Weekly retro — reviews the week against active development objectives, surfaces patterns vs. prior weeks, and lands on one concrete development intention for next week. Run on Fridays.
 triggers:
   - "/retro"

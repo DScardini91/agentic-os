@@ -12,7 +12,7 @@
 
 ## TL;DR
 
-**This is for one specific kind of operator:** a senior knowledge worker whose decisions compound, who already uses Claude Code daily, and who wants the discipline of an internal Chief of Staff without hiring one.
+**This is for one specific kind of operator:** a senior knowledge worker whose decisions compound, who already uses Claude Code daily (or uses Codex for repo work with the runtime caveats understood), and who wants the discipline of an internal Chief of Staff without hiring one.
 
 **It is not for most people.** That's by design.
 
@@ -21,7 +21,7 @@
 ## ✅ This is for you if
 
 - You are a **senior knowledge worker** — consultant, founder, researcher, strategist, senior IC, executive — whose decisions get re-litigated across weeks and months.
-- You already use **Claude Code** (or are willing to install it). This is not a standalone product; it lives on top of Claude Code's harness.
+- You already use **Claude Code** (or are willing to install it). Codex can operate the same repo via `AGENTS.md`, but Claude Code remains the reference runtime for deterministic hooks.
 - Your work generates **persistent context** — clients, projects, recurring decisions, frameworks you re-apply. The system's value comes from preserving and compounding that context.
 - You are comfortable reading **a few markdown files** before running a setup interview. Roughly 30 minutes of reading + 15 minutes of bootstrap = first use.
 - You think of your work in **operator terms** — priorities, decisions, signals, governance, drift — rather than purely in task-list terms.
