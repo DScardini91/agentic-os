@@ -6,7 +6,18 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ## [Unreleased]
 
-### Added
+### Added (2026-W29)
+
+- **ARCHITECTURE — Section 4 expanded: 5-tier Memory Pyramid**: Memory Architecture diagram updated from 3-tier to 5-tier, reflecting the Memory Pyramid Principle now deployed in the reference implementation.
+  - **T3** (Operational): explicit split between raw daily journal and dense digest file.
+  - **T4** (Progressive Rollup): weekly narrative rollup of last 7 daily digests + medium-term theme-organized rollup of last N weeks (rolling window, not calendar slice). Both are deterministic-first (concat + single LLM call → temp file → atomic copy); mtime-gated (daily/weekly) or time-interval-gated (medium-term).
+  - **T5** (Agent-State Compaction): threshold-gated compaction of `state.md` files. When above threshold (100 lines recommended): KEEP (active threads, open decisions, most recent handoff, unresolved objections) stays in `state.md`; ARCHIVE (resolved items, old handoffs, superseded context) moves to `state-history.md` append-only. Below threshold: no-op. Blocks preserved verbatim in ARCHIVE — never condensed.
+  - Added pyramid rule note: each tier is a deterministic compression of the tier below; no semantic clustering until simpler mechanism proves insufficient.
+- **ARCHITECTURE — Design Principle: Memory pyramid as tiered progressive disclosure**: The operator's own memory follows the same progressive disclosure pattern as agent specs — compact synthesis at top (always injected), expanding detail on demand, historical depth behind paths. Deterministic-first; idempotence-gated. Pattern composes across journal memory and agent operational state.
+- **ARCHITECTURE — Design Principle: Agent-state compaction with threshold gate**: `state.md` files above threshold are split into KEEP + ARCHIVE via LLM call through temp files (never direct writes to production). ARCHIVE is append-only and verbatim. OS Analyst monitors state file sizes as a health signal and triggers compaction when warranted.
+- **best-practices/no-ai-attribution.md** (new): Do not credit the AI tool or model in commit messages, PR titles, PR descriptions, or code comments. Operator is the author of record; commit messages answer "why the change exists", not "how it was produced". Anti-pattern table included.
+
+### Added (2026-W28)
 
 - **ARCHITECTURE — Design Principle: Mechanical subagent model tiers**: Lightweight model selection for mechanical subagents (search, grep, log-summary, existence checks). Deciding heuristic: trivially detectable errors warrant the lightest model; errors that cascade into scope decisions require human confirmation. Notes composition with capability-based dispatch in multi-backend setups.
 - **ARCHITECTURE — Design Principle: Worktree lifecycle safety**: Before pruning or destroying a worktree, verify no active session has it open. Active session detection (open file descriptors via OS process table) is a prerequisite; detection is heuristic not guarantee; manual confirmation required before destructive prune.
