@@ -237,6 +237,8 @@ flowchart TB
 
 > **Memory pyramid rule:** Each tier is a deterministic compression of the tier below — concat of sources + a single LLM call writing to a temp file, then atomic copy to production. Never semantic clustering until the simpler mechanism proves insufficient. Every tier points explicitly to where more detail lives — no dead ends.
 
+> **T5 production validation (2026-W30):** Agent-state compaction is no longer a design-only pattern — it has run against real `state.md` files across 3 distinct agents in the reference implementation, each compacted from well above the 100-line threshold: 709→154 (KEEP) + 306 (ARCHIVE) lines, 264→105+138, 217→60+178. All three preserved ARCHIVE content verbatim (append-only, no condensation) and left KEEP holding only active threads/open decisions/most recent handoff, matching the design contract exactly. This clears the template's own promotion bar (N≥2 evidence across distinct domains) for treating T5 as validated rather than provisional.
+
 ### Source-of-truth split
 
 | Category | Owner |
