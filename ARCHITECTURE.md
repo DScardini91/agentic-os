@@ -456,7 +456,7 @@ flowchart TD
 | `git commit` | Senior Advisor | No | Reminder-only; commits with strategic weight should precede Senior Advisor review |
 | `no-direct-merge` | Senior Advisor | Yes | Blocks `git push <remote> <main-branch>` and `gh pr merge` commands. First offense: reminder. Prior unresolved violation: hard-block. Override: `MERGE_OVERRIDE=1` env var for emergency/authorized cases. |
 | `a2-artifact-candidate — Write/Edit to formal artifact paths in professional scope` | Artifact Reviewer | No | Fires on Write/Edit/MultiEdit to professional domain paths when the file matches artifact naming patterns (deck, document, report, model). Reminder-only; never blocks. Reminds Interface Agent to invoke artifact-reviewer before external sharing. `A2: skip` annotation in file content silences the reminder for files that are confirmed intermediate drafts. |
-| `hub-mandate · direct override — Write/Edit to spoke path without hub coordination` | Interface Agent | No | Two sub-matchers: `hub-direct-override` (write to a spoke-owned path when the Interface Agent has not coordinated dispatch through the hub) and `hub-mandate-violation` (write to a non-canonical destination for the hub's own scope). Both reminder-only. Signals the operator that the spoke owner agent should have been invoked before writing, not after. |
+| `hub-mandate · direct override — Write/Edit to spoke path without hub coordination` | Interface Agent | Yes | **Escalable as of 2026-W31**, after completing the 3-phase enforcement promotion protocol: log-only → 7-day warn-only (false-positive characterization) → hard-block (Senior Advisor approval + decision-log entry). Two sub-matchers: `hub-direct-override` (write to a spoke-owned path when the Interface Agent has not coordinated dispatch through the hub) and `hub-mandate-violation` (write to a non-canonical destination for the hub's own scope). Block released by invoking the Interface Agent in the current session. Per-invocation override: include an inline `reason: <justification>` annotation in the triggering context to signal deliberate intent. Hook deployed in both Claude Code and Codex runtimes. |
 
 > Escalable matchers carry their state across session boundaries via `escalation-state.json`. Releasing a block requires invoking the corresponding agent in the current session. Reminder-only matchers never accumulate state.
 
@@ -629,6 +629,24 @@ Agentic systems accumulate context pressure as they mature. The public template 
 | Generated artifacts | Avoid unless the artifact itself is the target |
 
 > The pattern is not "smaller prompts." It is progressive disclosure: current state first, deep history only when it changes the decision.
+
+### Effort-level tiering
+
+Context budget discipline extends to **effort level** — the quality signal passed to the model for each session. A 3-tier stack avoids two failure modes: always-maximum effort burns quality budget on routine tasks; always-minimum effort silently degrades shared or external work.
+
+| Tier | Scope | Default effort | Rationale |
+|------|-------|---------------|-----------|
+| Project | Shared/external work (e.g., client repos, colleague handoffs) | High | Output may reach external audience; quality bar is always high |
+| Global operator | Operator's routine personal work | Medium | Most sessions are personal; high effort on every personal task inflates cost without proportional gain |
+| Local override | Session-specific (quick lookup, mechanical fix) | Low | Operator signals intent; model adjusts depth accordingly |
+
+> Tiers compose: project overrides global; local override wins within the session scope. The stack is explicit rather than inferred so the model's calibration is auditable.
+
+### Compact boundary telemetry
+
+When the context window compresses (autoCompact fires), the event is structurally significant — it marks where session memory was lossy. Tracking compact boundary events (count + average pre-compression token count) makes the context budget real rather than theoretical: operators see how often compression fires and at what load, enabling principled adjustment of window limits and session length.
+
+> **Practice:** Log each compact boundary event with count and average pre-compression tokens. Over time this reveals whether compression is rare (window is well-sized) or chronic (sessions routinely overfill, requiring scope changes or tighter reading discipline).
 
 ---
 
