@@ -6,6 +6,11 @@ All notable changes to this template are documented here. The format follows [Ke
 
 ## [Unreleased]
 
+### Changed (2026-W31)
+
+- **ARCHITECTURE — Section 8, trigger severity matrix: `hub-mandate` promoted to escalable**: The hub-mandate matcher completed the 3-phase enforcement promotion protocol (log-only → 7-day warn-only for false-positive characterization → hard-block with Senior Advisor approval + decision-log entry). Both sub-matchers (`hub-direct-override`, `hub-mandate-violation`) are now escalable. Block released by invoking the Interface Agent in the current session. Per-invocation override via inline `reason: <justification>` annotation. Hook active in both Claude Code and Codex runtimes. This is the first end-to-end exercise of the enforcement promotion gates pattern documented in the previous release.
+- **ARCHITECTURE — Section 11, context budget policy: effort-level tiering and compact boundary telemetry**: Added two new subsections. (1) **Effort-level tiering** — 3-tier stack (project=high, global-operator=medium, local=low) that prevents two failure modes: always-maximum effort burns quality budget on routine tasks; always-minimum silently degrades shared/external work. Tiers compose explicitly. (2) **Compact boundary telemetry** — tracking autoCompact fire count and average pre-compression token count makes context budget real rather than theoretical.
+
 ### Changed (2026-W30)
 
 - **ARCHITECTURE — T5 (Agent-State Compaction) marked production-validated**: added a validation note under the Memory Pyramid diagram documenting real-world results across 3 distinct agents in the reference implementation (709→154+306 lines, 264→105+138, 217→60+178), each compacted from above the 100-line threshold with ARCHIVE preserved verbatim. Moves T5 from "designed" (W29) to "validated, clears the template's own N≥2 promotion bar" (W30). No new mechanism introduced — this is evidence consolidation on an existing pattern, per `ROADMAP.md`'s promotion bar.
